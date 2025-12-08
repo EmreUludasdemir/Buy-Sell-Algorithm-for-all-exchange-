@@ -196,17 +196,17 @@ atr = ta.atr(14)
 
 // Demand Zone Detection (Bullish Order Block)
 // Strong bullish move after consolidation or bearish candle
-demandZoneCondition = isBullish and
-                      close > high[1] and
-                      bodySize > atr * 0.5 and
-                      close[1] < open[1]  // Previous candle was bearish
+demandZoneCondition = (isBullish and
+                       close > high[1] and
+                       bodySize > atr * 0.5 and
+                       close[1] < open[1])  // Previous candle was bearish
 
 // Supply Zone Detection (Bearish Order Block)
 // Strong bearish move after consolidation or bullish candle
-supplyZoneCondition = isBearish and
-                      close < low[1] and
-                      bodySize > atr * 0.5 and
-                      close[1] > open[1]  // Previous candle was bullish
+supplyZoneCondition = (isBearish and
+                       close < low[1] and
+                       bodySize > atr * 0.5 and
+                       close[1] > open[1])  // Previous candle was bullish
 
 // Create Demand Zones
 if showZoneBoxes and demandZoneCondition
@@ -274,18 +274,18 @@ recentSwingHigh = ta.highest(high, 20)[1]
 recentSwingLow = ta.lowest(low, 20)[1]
 
 // Bearish SFP: Price wicks above swing high but closes below
-bearishSFP = showSFP and
-             high > recentSwingHigh and
-             close < recentSwingHigh and
-             close < open and
-             upperWick > bodySize * sfpWickRatio
+bearishSFP = (showSFP and
+              high > recentSwingHigh and
+              close < recentSwingHigh and
+              close < open and
+              upperWick > bodySize * sfpWickRatio)
 
 // Bullish SFP: Price wicks below swing low but closes above
-bullishSFP = showSFP and
-             low < recentSwingLow and
-             close > recentSwingLow and
-             close > open and
-             lowerWick > bodySize * sfpWickRatio
+bullishSFP = (showSFP and
+              low < recentSwingLow and
+              close > recentSwingLow and
+              close > open and
+              lowerWick > bodySize * sfpWickRatio)
 
 // Draw SFP signals
 if bearishSFP and showLabels
@@ -402,20 +402,20 @@ if not na(pivotLow)
 
 // Detect failure swings (mitigation setup)
 // Bearish: Price attempts to break above last swing high but fails
-bearishMitigation = showMitigation and
-                    not na(lastSwingHigh) and
-                    high[2] > lastSwingHigh and
-                    close[2] < lastSwingHigh and
-                    close[1] < close[2] and
-                    close < close[1]
+bearishMitigation = (showMitigation and
+                     not na(lastSwingHigh) and
+                     high[2] > lastSwingHigh and
+                     close[2] < lastSwingHigh and
+                     close[1] < close[2] and
+                     close < close[1])
 
 // Bullish: Price attempts to break below last swing low but fails
-bullishMitigation = showMitigation and
-                    not na(lastSwingLow) and
-                    low[2] < lastSwingLow and
-                    close[2] > lastSwingLow and
-                    close[1] > close[2] and
-                    close > close[1]
+bullishMitigation = (showMitigation and
+                     not na(lastSwingLow) and
+                     low[2] < lastSwingLow and
+                     close[2] > lastSwingLow and
+                     close[1] > close[2] and
+                     close > close[1])
 
 // Draw mitigation signals
 if bearishMitigation and showLabels
@@ -446,20 +446,20 @@ eqhlThresholdValue = close * (eqhlThreshold / 100)
 
 // Detect Equal Highs (EQH) - Bearish liquidity
 // Two or more highs at approximately the same level
-eqhDetected = showEQHL and
-              not na(pivotHigh) and
-              array.size(eqhLevels) > 0 and
-              math.abs(pivotHigh - array.get(eqhLevels, array.size(eqhLevels) - 1)) < eqhlThresholdValue
+eqhDetected = (showEQHL and
+               not na(pivotHigh) and
+               array.size(eqhLevels) > 0 and
+               math.abs(pivotHigh - array.get(eqhLevels, array.size(eqhLevels) - 1)) < eqhlThresholdValue)
 
-newEQH = showEQHL and not na(pivotHigh) and not eqhDetected
+newEQH = (showEQHL and not na(pivotHigh) and not eqhDetected)
 
 // Detect Equal Lows (EQL) - Bullish liquidity
-eqlDetected = showEQHL and
-              not na(pivotLow) and
-              array.size(eqlLevels) > 0 and
-              math.abs(pivotLow - array.get(eqlLevels, array.size(eqlLevels) - 1)) < eqhlThresholdValue
+eqlDetected = (showEQHL and
+               not na(pivotLow) and
+               array.size(eqlLevels) > 0 and
+               math.abs(pivotLow - array.get(eqlLevels, array.size(eqlLevels) - 1)) < eqhlThresholdValue)
 
-newEQL = showEQHL and not na(pivotLow) and not eqlDetected
+newEQL = (showEQHL and not na(pivotLow) and not eqlDetected)
 
 // Store and draw EQH
 if eqhDetected
