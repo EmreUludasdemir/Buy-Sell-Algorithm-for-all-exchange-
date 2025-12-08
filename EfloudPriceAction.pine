@@ -471,14 +471,9 @@ if array.size(eqlLevels) > 10
 //                    MTF DASHBOARD (Optimized)
 // ═══════════════════════════════════════════════════════════════════════════
 
-// Single optimized MTF request
-htf1Data = request.security(syminfo.tickerid, htfTimeframe1, [close, ta.ema(close, dmaLength)], lookahead=barmerge.lookahead_off)
-htf2Data = request.security(syminfo.tickerid, htfTimeframe2, [close, ta.ema(close, 20)], lookahead=barmerge.lookahead_off)
-
-htf1Close = htf1Data[0]
-htf1EMA = htf1Data[1]
-htf2Close = htf2Data[0]
-htf2EMA = htf2Data[1]
+// MTF requests with tuple unpacking
+[htf1Close, htf1EMA] = request.security(syminfo.tickerid, htfTimeframe1, [close, ta.ema(close, dmaLength)], lookahead=barmerge.lookahead_off)
+[htf2Close, htf2EMA] = request.security(syminfo.tickerid, htfTimeframe2, [close, ta.ema(close, 20)], lookahead=barmerge.lookahead_off)
 
 htf1Bias = htf1Close > htf1EMA ? "BULL" : "BEAR"
 htf2Bias = htf2Close > htf2EMA ? "BULL" : "BEAR"
