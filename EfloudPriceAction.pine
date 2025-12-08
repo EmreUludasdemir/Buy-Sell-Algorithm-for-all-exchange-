@@ -2,7 +2,7 @@
 // © Efloud Price Action Trading System
 // Based on @EfloudTheSurfer's methodology
 
-//@version=5
+//@version=6
 indicator("Efloud Price Action System", shorttitle="EPA", overlay=true, max_boxes_count=500, max_lines_count=500, max_labels_count=500)
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -554,9 +554,7 @@ obvTrend = obv > obvMA ? "Bullish" : "Bearish"
 obvColor = obv > obvMA ? color.green : color.red
 
 // Create dashboard table
-var table dashboard = table.new(getDashboardPosition(dashboardPosition), 3, 10,
-                                bgcolor=color.new(color.black, 80),
-                                border_width=1, border_color=color.gray)
+var table dashboard = table.new(position=getDashboardPosition(dashboardPosition), columns=3, rows=10, bgcolor=color.new(color.black, 80), border_width=1, border_color=color.gray)
 
 if showDashboard and barstate.islast
     // Header
