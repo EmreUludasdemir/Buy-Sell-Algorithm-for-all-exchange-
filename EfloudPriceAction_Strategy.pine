@@ -1,0 +1,395 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Efloud Price Action Trading System v2.0 - STRATEGY VERSION
+// Based on @EfloudTheSurfer's methodology
+
+//@version=6
+strategy("EPA Strategy v2", shorttitle="EPA-STR", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=10,
+         initial_capital=10000, commission_type=strategy.commission.percent,
+         commission_value=0.1, slippage=2, pyramiding=0)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              STRATEGY INPUTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+grpStrategy = "═══ Strategy Settings ═══"
+useStopLoss = input.bool(true, "Use Stop Loss", group=grpStrategy)
+stopLossATR = input.float(1.5, "Stop Loss (ATR multiplier)", minval=0.5, maxval=5.0, step=0.1, group=grpStrategy)
+useTakeProfit = input.bool(true, "Use Take Profit", group=grpStrategy)
+takeProfitATR = input.float(3.0, "Take Profit (ATR multiplier)", minval=1.0, maxval=10.0, step=0.5, group=grpStrategy)
+useTrailingStop = input.bool(false, "Use Trailing Stop", group=grpStrategy)
+trailingStopATR = input.float(2.0, "Trailing Stop (ATR multiplier)", minval=0.5, maxval=5.0, step=0.1, group=grpStrategy)
+
+grpFilter = "═══ Trade Filters ═══"
+useHTFFilter = input.bool(true, "Use HTF Trend Filter", group=grpFilter)
+htfTimeframe = input.timeframe("D", "HTF Timeframe", group=grpFilter)
+useSFPEntry = input.bool(true, "Enter on SFP Signals", group=grpFilter)
+useBreakerEntry = input.bool(true, "Enter on Breaker Signals", group=grpFilter)
+useMitigationEntry = input.bool(true, "Enter on Mitigation Signals", group=grpFilter)
+useZoneEntry = input.bool(true, "Require Zone Confirmation", group=grpFilter)
+
+grpTime = "═══ Time Filter ═══"
+useTimeFilter = input.bool(false, "Use Trading Hours Filter", group=grpTime)
+startHour = input.int(9, "Start Hour (UTC)", minval=0, maxval=23, group=grpTime)
+endHour = input.int(17, "End Hour (UTC)", minval=0, maxval=23, group=grpTime)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              STRUCTURE INPUTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+grpStructure = "═══ Structure Settings ═══"
+pivotLookback = input.int(10, "Pivot Lookback", minval=3, maxval=50, group=grpStructure)
+pivotLookforward = input.int(10, "Pivot Lookforward", minval=3, maxval=50, group=grpStructure)
+showZoneBoxes = input.bool(true, "Show Zones", group=grpStructure)
+zoneExtendBars = input.int(50, "Zone Extension", minval=10, maxval=200, group=grpStructure)
+
+grpPatterns = "═══ Pattern Settings ═══"
+sfpWickRatio = input.float(2.0, "SFP Wick/Body Ratio", minval=1.0, maxval=5.0, step=0.1, group=grpPatterns)
+minBarsBetween = input.int(5, "Min Bars Between Signals", minval=1, maxval=20, group=grpPatterns)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              CALCULATIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Basic calculations
+bodySize = math.abs(close - open)
+upperWick = high - math.max(close, open)
+lowerWick = math.min(close, open) - low
+isBullish = close > open
+isBearish = close < open
+atr = ta.atr(14)
+
+// Pivot Detection
+pivotHigh = ta.pivothigh(high, pivotLookback, pivotLookforward)
+pivotLow = ta.pivotlow(low, pivotLookback, pivotLookforward)
+
+// Range Structure
+var float rangeHigh = na
+var float rangeLow = na
+var float equilibrium = na
+
+if not na(pivotHigh)
+    rangeHigh := pivotHigh
+if not na(pivotLow)
+    rangeLow := pivotLow
+if not na(rangeHigh) and not na(rangeLow)
+    equilibrium := (rangeHigh + rangeLow) / 2
+
+// HTF Trend Filter
+[htfClose, htfEMA] = request.security(syminfo.tickerid, htfTimeframe, [close, ta.ema(close, 50)], lookahead=barmerge.lookahead_off)
+htfBullish = htfClose > htfEMA
+htfBearish = htfClose < htfEMA
+
+// Time Filter
+currentHour = hour(time, "UTC")
+inTradingHours = not useTimeFilter or (currentHour >= startHour and currentHour < endHour)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                           SUPPLY/DEMAND ZONES
+// ═══════════════════════════════════════════════════════════════════════════
+
+var box[] demandBoxes = array.new_box()
+var float[] demandTops = array.new_float()
+var float[] demandBottoms = array.new_float()
+var int[] demandBars = array.new_int()
+
+var box[] supplyBoxes = array.new_box()
+var float[] supplyTops = array.new_float()
+var float[] supplyBottoms = array.new_float()
+var int[] supplyBars = array.new_int()
+
+var int lastZoneBar = -100
+
+demandZoneCondition = (isBullish and close > high[1] and bodySize > atr * 0.5 and close[1] < open[1])
+supplyZoneCondition = (isBearish and close < low[1] and bodySize > atr * 0.5 and close[1] > open[1])
+canCreateZone = bar_index - lastZoneBar >= minBarsBetween
+
+// Create Demand Zones
+if showZoneBoxes and demandZoneCondition and canCreateZone
+    zoneTop = math.max(high[1], open[1])
+    zoneBottom = low[1]
+    newBox = box.new(bar_index - 1, zoneTop, bar_index + zoneExtendBars, zoneBottom, bgcolor=color.new(color.green, 85), border_color=color.new(color.green, 50), border_width=1)
+    array.push(demandBoxes, newBox)
+    array.push(demandTops, zoneTop)
+    array.push(demandBottoms, zoneBottom)
+    array.push(demandBars, bar_index)
+    lastZoneBar := bar_index
+
+// Create Supply Zones
+if showZoneBoxes and supplyZoneCondition and canCreateZone
+    zoneTop = high[1]
+    zoneBottom = math.min(low[1], open[1])
+    newBox = box.new(bar_index - 1, zoneTop, bar_index + zoneExtendBars, zoneBottom, bgcolor=color.new(color.red, 85), border_color=color.new(color.red, 50), border_width=1)
+    array.push(supplyBoxes, newBox)
+    array.push(supplyTops, zoneTop)
+    array.push(supplyBottoms, zoneBottom)
+    array.push(supplyBars, bar_index)
+    lastZoneBar := bar_index
+
+// Zone cleanup
+if array.size(demandBoxes) > 0
+    for i = array.size(demandBoxes) - 1 to 0
+        if i < array.size(demandBottoms) and i < array.size(demandBars)
+            if close < array.get(demandBottoms, i) or bar_index - array.get(demandBars, i) > 150
+                box.delete(array.get(demandBoxes, i))
+                array.remove(demandBoxes, i)
+                array.remove(demandTops, i)
+                array.remove(demandBottoms, i)
+                array.remove(demandBars, i)
+
+if array.size(supplyBoxes) > 0
+    for i = array.size(supplyBoxes) - 1 to 0
+        if i < array.size(supplyTops) and i < array.size(supplyBars)
+            if close > array.get(supplyTops, i) or bar_index - array.get(supplyBars, i) > 150
+                box.delete(array.get(supplyBoxes, i))
+                array.remove(supplyBoxes, i)
+                array.remove(supplyTops, i)
+                array.remove(supplyBottoms, i)
+                array.remove(supplyBars, i)
+
+// Limit arrays
+if array.size(demandBoxes) > 10
+    box.delete(array.get(demandBoxes, 0))
+    array.shift(demandBoxes)
+    array.shift(demandTops)
+    array.shift(demandBottoms)
+    array.shift(demandBars)
+
+if array.size(supplyBoxes) > 10
+    box.delete(array.get(supplyBoxes, 0))
+    array.shift(supplyBoxes)
+    array.shift(supplyTops)
+    array.shift(supplyBottoms)
+    array.shift(supplyBars)
+
+// Check zone status
+inDemandZone = false
+demandZoneBottom = 0.0
+if array.size(demandBoxes) > 0
+    for i = 0 to array.size(demandBoxes) - 1
+        if i < array.size(demandTops) and i < array.size(demandBottoms)
+            if low <= array.get(demandTops, i) and high >= array.get(demandBottoms, i)
+                inDemandZone := true
+                demandZoneBottom := array.get(demandBottoms, i)
+
+inSupplyZone = false
+supplyZoneTop = 0.0
+if array.size(supplyBoxes) > 0
+    for i = 0 to array.size(supplyBoxes) - 1
+        if i < array.size(supplyTops) and i < array.size(supplyBottoms)
+            if high >= array.get(supplyBottoms, i) and low <= array.get(supplyTops, i)
+                inSupplyZone := true
+                supplyZoneTop := array.get(supplyTops, i)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                           SIGNAL DETECTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+var int lastSignalBar = -100
+
+// SFP Detection
+recentSwingHigh = ta.highest(high, 20)[1]
+recentSwingLow = ta.lowest(low, 20)[1]
+
+bearishSFP = (high > recentSwingHigh and close < recentSwingHigh and close < open and upperWick > bodySize * sfpWickRatio)
+bullishSFP = (low < recentSwingLow and close > recentSwingLow and close > open and lowerWick > bodySize * sfpWickRatio)
+
+// Breaker Detection
+var float[] obHighs = array.new_float()
+var float[] obLows = array.new_float()
+var int[] obBars = array.new_int()
+var bool[] obBullish = array.new_bool()
+
+bullishOB = isBullish and bodySize > atr * 0.8 and close > high[1]
+bearishOB = isBearish and bodySize > atr * 0.8 and close < low[1]
+
+if bullishOB and bar_index - lastSignalBar >= 3
+    array.push(obHighs, high)
+    array.push(obLows, low[1])
+    array.push(obBars, bar_index)
+    array.push(obBullish, true)
+
+if bearishOB and bar_index - lastSignalBar >= 3
+    array.push(obHighs, high[1])
+    array.push(obLows, low)
+    array.push(obBars, bar_index)
+    array.push(obBullish, false)
+
+bearishBreaker = false
+bullishBreaker = false
+
+if array.size(obHighs) > 0
+    for i = array.size(obHighs) - 1 to 0
+        if i < array.size(obHighs)
+            obHigh = array.get(obHighs, i)
+            obLow = array.get(obLows, i)
+            obBar = array.get(obBars, i)
+            wasBullish = array.get(obBullish, i)
+
+            if wasBullish and close[1] < obLow and high >= obLow and high <= obHigh
+                bearishBreaker := true
+                array.remove(obHighs, i)
+                array.remove(obLows, i)
+                array.remove(obBars, i)
+                array.remove(obBullish, i)
+            else if not wasBullish and close[1] > obHigh and low <= obHigh and low >= obLow
+                bullishBreaker := true
+                array.remove(obHighs, i)
+                array.remove(obLows, i)
+                array.remove(obBars, i)
+                array.remove(obBullish, i)
+            else if bar_index - obBar > 100
+                array.remove(obHighs, i)
+                array.remove(obLows, i)
+                array.remove(obBars, i)
+                array.remove(obBullish, i)
+
+if array.size(obHighs) > 20
+    array.shift(obHighs)
+    array.shift(obLows)
+    array.shift(obBars)
+    array.shift(obBullish)
+
+// Mitigation Detection
+var float lastSwingHigh = na
+var float lastSwingLow = na
+
+if not na(pivotHigh)
+    lastSwingHigh := pivotHigh
+if not na(pivotLow)
+    lastSwingLow := pivotLow
+
+bearishMitigation = (not na(lastSwingHigh) and high[2] > lastSwingHigh and close[2] < lastSwingHigh and close[1] < close[2] and close < close[1])
+bullishMitigation = (not na(lastSwingLow) and low[2] < lastSwingLow and close[2] > lastSwingLow and close[1] > close[2] and close > close[1])
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                           ENTRY CONDITIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+canTrade = bar_index - lastSignalBar >= minBarsBetween and inTradingHours
+
+// Long conditions
+sfpLong = useSFPEntry and bullishSFP
+breakerLong = useBreakerEntry and bullishBreaker
+mitigationLong = useMitigationEntry and bullishMitigation
+zoneLong = not useZoneEntry or inDemandZone
+htfLong = not useHTFFilter or htfBullish
+
+longCondition = canTrade and (sfpLong or breakerLong or mitigationLong) and zoneLong and htfLong
+
+// Short conditions
+sfpShort = useSFPEntry and bearishSFP
+breakerShort = useBreakerEntry and bearishBreaker
+mitigationShort = useMitigationEntry and bearishMitigation
+zoneShort = not useZoneEntry or inSupplyZone
+htfShort = not useHTFFilter or htfBearish
+
+shortCondition = canTrade and (sfpShort or breakerShort or mitigationShort) and zoneShort and htfShort
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                           STRATEGY EXECUTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Calculate SL/TP levels
+longSL = close - (atr * stopLossATR)
+longTP = close + (atr * takeProfitATR)
+shortSL = close + (atr * stopLossATR)
+shortTP = close - (atr * takeProfitATR)
+
+// Execute Long
+if longCondition and strategy.position_size == 0
+    strategy.entry("Long", strategy.long)
+    lastSignalBar := bar_index
+
+    if useStopLoss and useTakeProfit
+        strategy.exit("Long Exit", "Long", stop=longSL, limit=longTP)
+    else if useStopLoss
+        strategy.exit("Long SL", "Long", stop=longSL)
+    else if useTakeProfit
+        strategy.exit("Long TP", "Long", limit=longTP)
+
+// Execute Short
+if shortCondition and strategy.position_size == 0
+    strategy.entry("Short", strategy.short)
+    lastSignalBar := bar_index
+
+    if useStopLoss and useTakeProfit
+        strategy.exit("Short Exit", "Short", stop=shortSL, limit=shortTP)
+    else if useStopLoss
+        strategy.exit("Short SL", "Short", stop=shortSL)
+    else if useTakeProfit
+        strategy.exit("Short TP", "Short", limit=shortTP)
+
+// Trailing Stop (if enabled)
+if useTrailingStop and strategy.position_size != 0
+    trailOffset = atr * trailingStopATR
+    if strategy.position_size > 0
+        strategy.exit("Long Trail", "Long", trail_price=close, trail_offset=trailOffset)
+    else
+        strategy.exit("Short Trail", "Short", trail_price=close, trail_offset=trailOffset)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              VISUAL ELEMENTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Plot entry signals
+plotshape(longCondition, title="Long Signal", location=location.belowbar, style=shape.triangleup, size=size.small, color=color.green, text="L")
+plotshape(shortCondition, title="Short Signal", location=location.abovebar, style=shape.triangledown, size=size.small, color=color.red, text="S")
+
+// Plot SFP markers
+plotshape(bullishSFP, title="Bullish SFP", location=location.belowbar, style=shape.circle, size=size.tiny, color=color.new(color.green, 50))
+plotshape(bearishSFP, title="Bearish SFP", location=location.abovebar, style=shape.circle, size=size.tiny, color=color.new(color.red, 50))
+
+// Range lines
+var line rhLine = na
+var line rlLine = na
+var line eqLine = na
+
+if barstate.islast
+    line.delete(rhLine)
+    line.delete(rlLine)
+    line.delete(eqLine)
+
+    if not na(rangeHigh)
+        rhLine := line.new(bar_index - 50, rangeHigh, bar_index + 5, rangeHigh, color=color.red, width=2)
+    if not na(rangeLow)
+        rlLine := line.new(bar_index - 50, rangeLow, bar_index + 5, rangeLow, color=color.green, width=2)
+    if not na(equilibrium)
+        eqLine := line.new(bar_index - 50, equilibrium, bar_index + 5, equilibrium, color=color.blue, width=1, style=line.style_dashed)
+
+// Zone background
+bgcolor(inDemandZone ? color.new(color.green, 95) : na)
+bgcolor(inSupplyZone ? color.new(color.red, 95) : na)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              INFO TABLE
+// ═══════════════════════════════════════════════════════════════════════════
+
+var table infoTable = table.new(position=position.top_right, columns=2, rows=6, bgcolor=color.new(color.black, 85), border_width=1, border_color=color.gray)
+
+if barstate.islast
+    table.cell(infoTable, 0, 0, "EPA Strategy", text_color=color.white, text_size=size.tiny, bgcolor=color.new(color.blue, 70))
+    table.cell(infoTable, 1, 0, syminfo.ticker, text_color=color.yellow, text_size=size.tiny, bgcolor=color.new(color.blue, 70))
+
+    table.cell(infoTable, 0, 1, "HTF Trend", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 1, htfBullish ? "BULL" : "BEAR", text_color=htfBullish ? color.green : color.red, text_size=size.tiny)
+
+    table.cell(infoTable, 0, 2, "Position", text_color=color.gray, text_size=size.tiny)
+    posText = strategy.position_size > 0 ? "LONG" : strategy.position_size < 0 ? "SHORT" : "FLAT"
+    posColor = strategy.position_size > 0 ? color.green : strategy.position_size < 0 ? color.red : color.gray
+    table.cell(infoTable, 1, 2, posText, text_color=posColor, text_size=size.tiny)
+
+    table.cell(infoTable, 0, 3, "Win Rate", text_color=color.gray, text_size=size.tiny)
+    winRate = strategy.wintrades / math.max(strategy.closedtrades, 1) * 100
+    table.cell(infoTable, 1, 3, str.tostring(winRate, "#.#") + "%", text_color=winRate >= 50 ? color.green : color.red, text_size=size.tiny)
+
+    table.cell(infoTable, 0, 4, "Trades", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTable, 1, 4, str.tostring(strategy.closedtrades), text_color=color.white, text_size=size.tiny)
+
+    table.cell(infoTable, 0, 5, "Net P/L", text_color=color.gray, text_size=size.tiny)
+    netPL = strategy.netprofit
+    table.cell(infoTable, 1, 5, str.tostring(netPL, "#.##"), text_color=netPL >= 0 ? color.green : color.red, text_size=size.tiny)
+
+// ═══════════════════════════════════════════════════════════════════════════
+// END OF STRATEGY
+// ═══════════════════════════════════════════════════════════════════════════
