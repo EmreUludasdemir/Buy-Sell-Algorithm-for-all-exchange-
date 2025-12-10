@@ -1,9 +1,9 @@
 // This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
-// © Efloud Price Action Trading System v3.0 - IMPROVED STRATEGY
-// Enhanced version with better filters and risk management
+// © Efloud Price Action Trading System v3.1 - BALANCED STRATEGY
+// More trades while maintaining quality - optimized defaults
 
 //@version=6
-strategy("EPA Strategy v3 Pro", shorttitle="EPA-PRO", overlay=true,
+strategy("EPA Strategy v3.1", shorttitle="EPA-v3.1", overlay=true,
          default_qty_type=strategy.percent_of_equity, default_qty_value=5,
          initial_capital=10000, commission_type=strategy.commission.percent,
          commission_value=0.1, slippage=2, pyramiding=0, calc_on_every_tick=false)
@@ -13,44 +13,44 @@ strategy("EPA Strategy v3 Pro", shorttitle="EPA-PRO", overlay=true,
 // ═══════════════════════════════════════════════════════════════════════════
 
 grpStrategy = "═══ Risk Management ═══"
-riskPercent = input.float(1.0, "Risk Per Trade (%)", minval=0.5, maxval=5.0, step=0.5, group=grpStrategy, tooltip="Percentage of equity to risk per trade")
-stopLossATR = input.float(2.0, "Stop Loss (ATR x)", minval=1.0, maxval=5.0, step=0.5, group=grpStrategy)
-takeProfitRR = input.float(2.5, "Take Profit (R:R)", minval=1.5, maxval=5.0, step=0.5, group=grpStrategy, tooltip="Risk to Reward ratio")
+riskPercent = input.float(1.5, "Risk Per Trade (%)", minval=0.5, maxval=5.0, step=0.5, group=grpStrategy, tooltip="Percentage of equity to risk per trade")
+stopLossATR = input.float(1.5, "Stop Loss (ATR x)", minval=1.0, maxval=5.0, step=0.5, group=grpStrategy)
+takeProfitRR = input.float(2.0, "Take Profit (R:R)", minval=1.0, maxval=5.0, step=0.5, group=grpStrategy, tooltip="Risk to Reward ratio")
 useTrailingStop = input.bool(true, "Use Trailing Stop", group=grpStrategy)
-trailActivation = input.float(1.5, "Trail Activation (R)", minval=1.0, maxval=3.0, step=0.5, group=grpStrategy, tooltip="Activate trailing after X times risk")
-trailOffset = input.float(1.0, "Trail Offset (ATR x)", minval=0.5, maxval=3.0, step=0.5, group=grpStrategy)
+trailActivation = input.float(1.0, "Trail Activation (R)", minval=0.5, maxval=3.0, step=0.5, group=grpStrategy, tooltip="Activate trailing after X times risk")
+trailOffset = input.float(0.75, "Trail Offset (ATR x)", minval=0.5, maxval=3.0, step=0.25, group=grpStrategy)
 
 grpFilters = "═══ Entry Filters ═══"
 useHTFFilter = input.bool(true, "HTF Trend Filter", group=grpFilters)
 htfTimeframe = input.timeframe("D", "HTF Timeframe", group=grpFilters)
-useHTF2Filter = input.bool(true, "HTF2 Structure Filter", group=grpFilters)
+useHTF2Filter = input.bool(false, "HTF2 Structure Filter", group=grpFilters)
 htf2Timeframe = input.timeframe("240", "HTF2 Timeframe", group=grpFilters)
 useRSIFilter = input.bool(true, "RSI Filter", group=grpFilters)
-rsiOverbought = input.int(65, "RSI Overbought", minval=60, maxval=80, group=grpFilters)
-rsiOversold = input.int(35, "RSI Oversold", minval=20, maxval=40, group=grpFilters)
-useVolatilityFilter = input.bool(true, "Volatility Filter", group=grpFilters)
-minATRMultiple = input.float(0.5, "Min ATR Multiple", minval=0.1, maxval=2.0, step=0.1, group=grpFilters)
-maxATRMultiple = input.float(3.0, "Max ATR Multiple", minval=1.5, maxval=5.0, step=0.5, group=grpFilters)
+rsiOverbought = input.int(70, "RSI Overbought", minval=60, maxval=85, group=grpFilters)
+rsiOversold = input.int(30, "RSI Oversold", minval=15, maxval=40, group=grpFilters)
+useVolatilityFilter = input.bool(false, "Volatility Filter", group=grpFilters)
+minATRMultiple = input.float(0.3, "Min ATR Multiple", minval=0.1, maxval=2.0, step=0.1, group=grpFilters)
+maxATRMultiple = input.float(4.0, "Max ATR Multiple", minval=1.5, maxval=6.0, step=0.5, group=grpFilters)
 
 grpConfluence = "═══ Confluence Requirements ═══"
-minConfluence = input.int(2, "Min Confluence Score", minval=1, maxval=5, group=grpConfluence, tooltip="Minimum signals needed to enter")
-useZoneConfirmation = input.bool(true, "Require Zone Entry", group=grpConfluence)
+minConfluence = input.int(1, "Min Confluence Score", minval=1, maxval=5, group=grpConfluence, tooltip="Minimum signals needed to enter")
+useZoneConfirmation = input.bool(false, "Require Zone Entry", group=grpConfluence)
 useSFP = input.bool(true, "Use SFP Signals", group=grpConfluence)
 useBreaker = input.bool(true, "Use Breaker Signals", group=grpConfluence)
 useMitigation = input.bool(true, "Use Mitigation Signals", group=grpConfluence)
 useEQLevel = input.bool(true, "Use EQ Level Bounce", group=grpConfluence)
 
 grpTiming = "═══ Trade Timing ═══"
-minBarsBetweenTrades = input.int(10, "Min Bars Between Trades", minval=5, maxval=50, group=grpTiming)
-maxDailyTrades = input.int(2, "Max Daily Trades", minval=1, maxval=10, group=grpTiming)
+minBarsBetweenTrades = input.int(3, "Min Bars Between Trades", minval=1, maxval=50, group=grpTiming)
+maxDailyTrades = input.int(5, "Max Daily Trades", minval=1, maxval=10, group=grpTiming)
 useSessionFilter = input.bool(false, "Use Session Filter", group=grpTiming)
 sessionStart = input.int(8, "Session Start (UTC)", minval=0, maxval=23, group=grpTiming)
 sessionEnd = input.int(20, "Session End (UTC)", minval=0, maxval=23, group=grpTiming)
 
 grpStructure = "═══ Structure Settings ═══"
-pivotLookback = input.int(15, "Pivot Lookback", minval=5, maxval=50, group=grpStructure)
-pivotLookforward = input.int(15, "Pivot Lookforward", minval=5, maxval=50, group=grpStructure)
-sfpWickRatio = input.float(2.5, "SFP Wick Ratio", minval=1.5, maxval=5.0, step=0.5, group=grpStructure)
+pivotLookback = input.int(10, "Pivot Lookback", minval=5, maxval=50, group=grpStructure)
+pivotLookforward = input.int(10, "Pivot Lookforward", minval=5, maxval=50, group=grpStructure)
+sfpWickRatio = input.float(1.5, "SFP Wick Ratio", minval=1.0, maxval=5.0, step=0.5, group=grpStructure)
 
 // ═══════════════════════════════════════════════════════════════════════════
 //                              CALCULATIONS
