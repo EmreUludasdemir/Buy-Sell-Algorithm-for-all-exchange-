@@ -1,0 +1,267 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Efloud Price Action Trading System v5.0 - OPTIMIZED VISUAL & PROFITABILITY EDITION
+// Fixed: Labels now properly follow candle charts
+// Improved: Better profitability to beat Buy & Hold
+
+//@version=6
+strategy("EPA Strategy v5", shorttitle="EPA-v5", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=100,
+         initial_capital=10000, commission_type=strategy.commission.percent,
+         commission_value=0.1, slippage=2, pyramiding=5, calc_on_every_tick=false,
+         process_orders_on_close=true)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              STRATEGY INPUTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+grpStrategy = "═══ Position Management ═══"
+positionSize = input.float(25, "Position Size (%)", minval=10, maxval=100, step=5, group=grpStrategy)
+maxPyramiding = input.int(5, "Max Pyramid Entries", minval=1, maxval=10, group=grpStrategy)
+pyramidThreshold = input.float(5.0, "Pyramid After (% profit)", minval=2.0, maxval=20.0, step=1.0, group=grpStrategy)
+
+grpRisk = "═══ Risk Management ═══"
+useStopLoss = input.bool(true, "Use Stop Loss", group=grpRisk)
+stopLossPercent = input.float(8.0, "Stop Loss (%)", minval=3.0, maxval=20.0, step=0.5, group=grpRisk)
+useTrailingStop = input.bool(true, "Use Trailing Stop", group=grpRisk)
+trailPercent = input.float(5.0, "Trailing Stop (%)", minval=2.0, maxval=15.0, step=0.5, group=grpRisk)
+trailActivation = input.float(15.0, "Trail Activation (%)", minval=5.0, maxval=50.0, step=5.0, group=grpRisk)
+
+grpTrend = "═══ Trend Detection ═══"
+fastEMA = input.int(12, "Fast EMA", minval=5, maxval=30, group=grpTrend)
+slowEMA = input.int(26, "Slow EMA", minval=15, maxval=100, group=grpTrend)
+trendEMA = input.int(100, "Trend EMA (Major)", minval=50, maxval=300, group=grpTrend)
+superTrendMult = input.float(2.0, "SuperTrend Multiplier", minval=1.0, maxval=5.0, step=0.5, group=grpTrend)
+superTrendLen = input.int(10, "SuperTrend Length", minval=5, maxval=20, group=grpTrend)
+
+grpFilter = "═══ Entry Filters ═══"
+useHTFFilter = input.bool(true, "Use Weekly Trend Filter", group=grpFilter)
+useMomentumFilter = input.bool(true, "Use Momentum Filter", group=grpFilter)
+rsiLength = input.int(14, "RSI Length", minval=7, maxval=21, group=grpFilter)
+rsiOverbought = input.int(70, "RSI Overbought", minval=60, maxval=85, group=grpFilter)
+rsiOversold = input.int(30, "RSI Oversold", minval=15, maxval=40, group=grpFilter)
+
+grpSignal = "═══ Signal Types ═══"
+useBreakout = input.bool(true, "Use Breakout Signals", group=grpSignal)
+breakoutLength = input.int(20, "Breakout Length", minval=10, maxval=55, group=grpSignal)
+useSuperTrend = input.bool(true, "Use SuperTrend Signals", group=grpSignal)
+useEMACross = input.bool(true, "Use EMA Cross Signals", group=grpSignal)
+
+grpTiming = "═══ Trade Timing ═══"
+minBarsBetween = input.int(3, "Min Bars Between Entries", minval=1, maxval=10, group=grpTiming)
+allowLong = input.bool(true, "Allow Long Trades", group=grpTiming)
+allowShort = input.bool(true, "Allow Short Trades", group=grpTiming)
+
+grpVisual = "═══ Visual Settings ═══"
+showEMAs = input.bool(true, "Show EMAs", group=grpVisual)
+showSignals = input.bool(true, "Show Entry Signals", group=grpVisual)
+showBackground = input.bool(true, "Show Trend Background", group=grpVisual)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              CALCULATIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// EMAs - Core trend indicators
+emaFast = ta.ema(close, fastEMA)
+emaSlow = ta.ema(close, slowEMA)
+emaTrend = ta.ema(close, trendEMA)
+
+// SuperTrend - Trend following with volatility
+atr = ta.atr(superTrendLen)
+[superTrend, stDirection] = ta.supertrend(superTrendMult, superTrendLen)
+
+// RSI - Momentum
+rsi = ta.rsi(close, rsiLength)
+
+// Donchian Breakout levels
+breakoutHigh = ta.highest(high, breakoutLength)[1]
+breakoutLow = ta.lowest(low, breakoutLength)[1]
+
+// HTF Trend - Weekly direction
+htfEMA = request.security(syminfo.tickerid, "W", ta.ema(close, 21), lookahead=barmerge.lookahead_off)
+htfClose = request.security(syminfo.tickerid, "W", close, lookahead=barmerge.lookahead_off)
+htfBullish = htfClose > htfEMA
+htfBearish = htfClose < htfEMA
+
+// MACD for additional confirmation
+[macdLine, signalLine, histLine] = ta.macd(close, 12, 26, 9)
+macdBullish = macdLine > signalLine and histLine > 0
+macdBearish = macdLine < signalLine and histLine < 0
+
+// ADX for trend strength
+[diPlus, diMinus, adxValue] = ta.dmi(14, 14)
+strongTrend = adxValue > 20
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              TREND DETECTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Multi-factor trend scoring
+bullScore = 0
+bearScore = 0
+
+// EMA alignment
+bullScore += emaFast > emaSlow ? 1 : 0
+bullScore += emaSlow > emaTrend ? 1 : 0
+bullScore += close > emaTrend ? 1 : 0
+
+bearScore += emaFast < emaSlow ? 1 : 0
+bearScore += emaSlow < emaTrend ? 1 : 0
+bearScore += close < emaTrend ? 1 : 0
+
+// SuperTrend
+bullScore += stDirection < 0 ? 1 : 0
+bearScore += stDirection > 0 ? 1 : 0
+
+// Price position
+bullScore += close > emaFast ? 1 : 0
+bearScore += close < emaFast ? 1 : 0
+
+// Final trend determination
+isBullTrend = bullScore >= 4
+isBearTrend = bearScore >= 4
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              SIGNAL DETECTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+// EMA Cross Signals
+emaCrossLong = useEMACross and ta.crossover(emaFast, emaSlow)
+emaCrossShort = useEMACross and ta.crossunder(emaFast, emaSlow)
+
+// Breakout Signals
+breakoutLong = useBreakout and close > breakoutHigh and close[1] <= breakoutHigh
+breakoutShort = useBreakout and close < breakoutLow and close[1] >= breakoutLow
+
+// SuperTrend Signals
+stLong = useSuperTrend and stDirection < 0 and stDirection[1] > 0
+stShort = useSuperTrend and stDirection > 0 and stDirection[1] < 0
+
+// Combined signal (any signal in trend direction)
+longSignal = emaCrossLong or breakoutLong or stLong
+shortSignal = emaCrossShort or breakoutShort or stShort
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              ENTRY CONDITIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+var int lastEntryBar = -1000
+
+// Filters
+htfFilter = not useHTFFilter
+momentumFilterLong = not useMomentumFilter or rsi < rsiOverbought
+momentumFilterShort = not useMomentumFilter or rsi > rsiOversold
+
+if useHTFFilter
+    htfFilter := (allowLong and htfBullish) or (allowShort and htfBearish)
+
+canEnter = bar_index - lastEntryBar >= minBarsBetween
+
+// Long Conditions - Multiple confirmation
+longCondition = canEnter and allowLong and isBullTrend and longSignal and momentumFilterLong
+longCondition := longCondition and (not useHTFFilter or htfBullish)
+
+// Short Conditions
+shortCondition = canEnter and allowShort and isBearTrend and shortSignal and momentumFilterShort
+shortCondition := shortCondition and (not useHTFFilter or htfBearish)
+
+// Pyramid Conditions - Add to winning positions
+currentProfit = strategy.position_size > 0 ? (close - strategy.position_avg_price) / strategy.position_avg_price * 100 : strategy.position_size < 0 ? (strategy.position_avg_price - close) / strategy.position_avg_price * 100 : 0
+
+canPyramid = strategy.opentrades < maxPyramiding and currentProfit >= pyramidThreshold and canEnter
+
+pyramidLong = strategy.position_size > 0 and canPyramid and isBullTrend and (breakoutLong or stLong)
+pyramidShort = strategy.position_size < 0 and canPyramid and isBearTrend and (breakoutShort or stShort)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXECUTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+qty = positionSize
+
+// Long Entry
+if longCondition and strategy.position_size <= 0
+    strategy.close("Short", comment="CS")
+    strategy.entry("Long", strategy.long, qty=qty, comment="L")
+    lastEntryBar := bar_index
+
+// Pyramid Long
+if pyramidLong
+    strategy.entry("Long", strategy.long, qty=qty/2, comment="PL")
+    lastEntryBar := bar_index
+
+// Short Entry
+if shortCondition and strategy.position_size >= 0
+    strategy.close("Long", comment="CL")
+    strategy.entry("Short", strategy.short, qty=qty, comment="S")
+    lastEntryBar := bar_index
+
+// Pyramid Short
+if pyramidShort
+    strategy.entry("Short", strategy.short, qty=qty/2, comment="PS")
+    lastEntryBar := bar_index
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXIT MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Calculate dynamic stops
+longStopPrice = strategy.position_avg_price * (1 - stopLossPercent / 100)
+shortStopPrice = strategy.position_avg_price * (1 + stopLossPercent / 100)
+
+// Trailing stop activation
+trailActive = currentProfit >= trailActivation
+
+// Long exits
+if strategy.position_size > 0
+    if useStopLoss and not trailActive
+        strategy.exit("LSL", "Long", stop=longStopPrice)
+    if useTrailingStop and trailActive
+        trailPrice = close * (1 - trailPercent / 100)
+        strategy.exit("LTR", "Long", stop=trailPrice)
+
+// Short exits
+if strategy.position_size < 0
+    if useStopLoss and not trailActive
+        strategy.exit("SSL", "Short", stop=shortStopPrice)
+    if useTrailingStop and trailActive
+        trailPrice = close * (1 + trailPercent / 100)
+        strategy.exit("STR", "Short", stop=trailPrice)
+
+// Trend reversal exit - Close when major trend changes
+if strategy.position_size > 0 and isBearTrend and bearScore >= 5
+    strategy.close("Long", comment="TR")
+if strategy.position_size < 0 and isBullTrend and bullScore >= 5
+    strategy.close("Short", comment="TR")
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              VISUALS (Optimized for chart following)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// EMAs - Simple plots that always follow chart
+plot(showEMAs ? emaFast : na, "Fast EMA", color=color.new(color.blue, 20), linewidth=2)
+plot(showEMAs ? emaSlow : na, "Slow EMA", color=color.new(color.orange, 20), linewidth=2)
+plot(showEMAs ? emaTrend : na, "Trend EMA", color=color.new(color.gray, 40), linewidth=1)
+
+// SuperTrend line
+plot(useSuperTrend ? superTrend : na, "SuperTrend", color=stDirection < 0 ? color.new(color.green, 50) : color.new(color.red, 50), linewidth=2, style=plot.style_linebr)
+
+// Trend Background - Simple fill
+bgcolor(showBackground ? (isBullTrend ? color.new(color.green, 95) : isBearTrend ? color.new(color.red, 95) : na) : na, title="Trend BG")
+
+// Entry Signals - Using plotshape (properly follows candles)
+plotshape(showSignals and longCondition, title="Long Entry", location=location.belowbar, style=shape.triangleup, size=size.normal, color=color.green, text="L")
+plotshape(showSignals and shortCondition, title="Short Entry", location=location.abovebar, style=shape.triangledown, size=size.normal, color=color.red, text="S")
+plotshape(showSignals and pyramidLong, title="Pyramid Long", location=location.belowbar, style=shape.triangleup, size=size.tiny, color=color.lime, text="+")
+plotshape(showSignals and pyramidShort, title="Pyramid Short", location=location.abovebar, style=shape.triangledown, size=size.tiny, color=color.maroon, text="+")
+
+// SuperTrend direction change markers
+plotshape(showSignals and stLong, title="ST Bull", location=location.belowbar, style=shape.diamond, size=size.tiny, color=color.aqua)
+plotshape(showSignals and stShort, title="ST Bear", location=location.abovebar, style=shape.diamond, size=size.tiny, color=color.fuchsia)
+
+// Breakout markers
+plotshape(showSignals and breakoutLong, title="Breakout Up", location=location.belowbar, style=shape.arrowup, size=size.tiny, color=color.teal)
+plotshape(showSignals and breakoutShort, title="Breakout Down", location=location.abovebar, style=shape.arrowdown, size=size.tiny, color=color.orange)
+
+// ═══════════════════════════════════════════════════════════════════════════
+// END OF STRATEGY v5 - Optimized Visual & Profitability Edition
+// ═══════════════════════════════════════════════════════════════════════════
