@@ -1,0 +1,192 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © Efloud Price Action Trading System v6.0 - SIMPLE & WORKING EDITION
+// Guaranteed trades with simple, proven logic
+
+//@version=6
+strategy("EPA Strategy v6", shorttitle="EPA-v6", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=10,
+         initial_capital=10000, commission_type=strategy.commission.percent,
+         commission_value=0.1, slippage=2, pyramiding=3, calc_on_every_tick=false,
+         process_orders_on_close=true)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              INPUTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+grpTrend = "Trend Settings"
+fastLen = input.int(10, "Fast EMA", minval=5, maxval=30, group=grpTrend)
+slowLen = input.int(30, "Slow EMA", minval=20, maxval=100, group=grpTrend)
+trendLen = input.int(100, "Trend EMA", minval=50, maxval=200, group=grpTrend)
+
+grpRisk = "Risk Management"
+stopLossPct = input.float(5.0, "Stop Loss %", minval=1.0, maxval=15.0, step=0.5, group=grpRisk)
+takeProfitPct = input.float(10.0, "Take Profit %", minval=2.0, maxval=30.0, step=1.0, group=grpRisk)
+useTrailing = input.bool(true, "Use Trailing Stop", group=grpRisk)
+trailPct = input.float(3.0, "Trailing %", minval=1.0, maxval=10.0, step=0.5, group=grpRisk)
+
+grpSignal = "Signal Settings"
+useEMACross = input.bool(true, "EMA Cross Signals", group=grpSignal)
+useBreakout = input.bool(true, "Breakout Signals", group=grpSignal)
+breakoutLen = input.int(20, "Breakout Length", minval=10, maxval=50, group=grpSignal)
+usePullback = input.bool(true, "Pullback Signals", group=grpSignal)
+
+grpFilter = "Filters"
+useRSI = input.bool(false, "RSI Filter", group=grpFilter)
+rsiLen = input.int(14, "RSI Length", group=grpFilter)
+useHTF = input.bool(false, "Weekly Trend Filter", group=grpFilter)
+
+grpTrade = "Trade Settings"
+allowLong = input.bool(true, "Allow Long", group=grpTrade)
+allowShort = input.bool(true, "Allow Short", group=grpTrade)
+minBars = input.int(5, "Min Bars Between", minval=1, maxval=20, group=grpTrade)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              CALCULATIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// EMAs
+emaFast = ta.ema(close, fastLen)
+emaSlow = ta.ema(close, slowLen)
+emaTrend = ta.ema(close, trendLen)
+
+// RSI
+rsi = ta.rsi(close, rsiLen)
+
+// ATR
+atr = ta.atr(14)
+
+// Breakout levels
+highestHigh = ta.highest(high, breakoutLen)[1]
+lowestLow = ta.lowest(low, breakoutLen)[1]
+
+// HTF
+htfEma = request.security(syminfo.tickerid, "W", ta.ema(close, 21), lookahead=barmerge.lookahead_off)
+htfClose = request.security(syminfo.tickerid, "W", close, lookahead=barmerge.lookahead_off)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              TREND
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Simple trend: Fast EMA above/below Slow EMA
+upTrend = emaFast > emaSlow
+downTrend = emaFast < emaSlow
+
+// Strong trend: Also above/below Trend EMA
+strongUp = upTrend and close > emaTrend
+strongDown = downTrend and close < emaTrend
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              SIGNALS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// EMA Cross
+emaCrossUp = useEMACross and ta.crossover(emaFast, emaSlow)
+emaCrossDown = useEMACross and ta.crossunder(emaFast, emaSlow)
+
+// Breakout
+breakoutUp = useBreakout and close > highestHigh and close[1] <= highestHigh
+breakoutDown = useBreakout and close < lowestLow and close[1] >= lowestLow
+
+// Pullback to EMA in trend
+pullbackUp = usePullback and upTrend and low <= emaFast and close > emaFast and close > open
+pullbackDown = usePullback and downTrend and high >= emaFast and close < emaFast and close < open
+
+// Combined
+longSignal = emaCrossUp or breakoutUp or pullbackUp
+shortSignal = emaCrossDown or breakoutDown or pullbackDown
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              FILTERS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// RSI filter (optional)
+rsiOK_Long = not useRSI or (rsi > 30 and rsi < 70)
+rsiOK_Short = not useRSI or (rsi > 30 and rsi < 70)
+
+// HTF filter (optional)
+htfOK_Long = not useHTF or htfClose > htfEma
+htfOK_Short = not useHTF or htfClose < htfEma
+
+// Bar spacing
+var int lastBar = 0
+canTrade = bar_index - lastBar >= minBars
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              ENTRY CONDITIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Long: Signal + Uptrend + Filters
+longCond = allowLong and canTrade and longSignal and upTrend and rsiOK_Long and htfOK_Long
+
+// Short: Signal + Downtrend + Filters
+shortCond = allowShort and canTrade and shortSignal and downTrend and rsiOK_Short and htfOK_Short
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXECUTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Long entry
+if longCond and strategy.position_size <= 0
+    strategy.close("Short")
+    strategy.entry("Long", strategy.long)
+    lastBar := bar_index
+
+// Short entry
+if shortCond and strategy.position_size >= 0
+    strategy.close("Long")
+    strategy.entry("Short", strategy.short)
+    lastBar := bar_index
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXITS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Calculate levels
+if strategy.position_size > 0
+    stopPrice = strategy.position_avg_price * (1 - stopLossPct / 100)
+    tpPrice = strategy.position_avg_price * (1 + takeProfitPct / 100)
+    if useTrailing
+        strategy.exit("Long Exit", "Long", stop=stopPrice, limit=tpPrice, trail_points=close * trailPct / 100 / syminfo.mintick, trail_offset=close * trailPct / 100 / syminfo.mintick)
+    else
+        strategy.exit("Long Exit", "Long", stop=stopPrice, limit=tpPrice)
+
+if strategy.position_size < 0
+    stopPrice = strategy.position_avg_price * (1 + stopLossPct / 100)
+    tpPrice = strategy.position_avg_price * (1 - takeProfitPct / 100)
+    if useTrailing
+        strategy.exit("Short Exit", "Short", stop=stopPrice, limit=tpPrice, trail_points=close * trailPct / 100 / syminfo.mintick, trail_offset=close * trailPct / 100 / syminfo.mintick)
+    else
+        strategy.exit("Short Exit", "Short", stop=stopPrice, limit=tpPrice)
+
+// Trend reversal exit
+if strategy.position_size > 0 and ta.crossunder(emaFast, emaSlow)
+    strategy.close("Long", comment="Trend Rev")
+
+if strategy.position_size < 0 and ta.crossover(emaFast, emaSlow)
+    strategy.close("Short", comment="Trend Rev")
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              VISUALS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// EMAs - These follow candles correctly
+plot(emaFast, "Fast EMA", color=color.blue, linewidth=2)
+plot(emaSlow, "Slow EMA", color=color.orange, linewidth=2)
+plot(emaTrend, "Trend EMA", color=color.gray, linewidth=1)
+
+// Trend background
+bgcolor(upTrend ? color.new(color.green, 95) : downTrend ? color.new(color.red, 95) : na)
+
+// Entry signals - plotshape follows candles properly
+plotshape(longCond, "Long", location.belowbar, shape.triangleup, size.normal, color.green)
+plotshape(shortCond, "Short", location.abovebar, shape.triangledown, size.normal, color.red)
+
+// Signal type markers
+plotshape(emaCrossUp, "EMA Cross Up", location.belowbar, shape.circle, size.tiny, color.lime)
+plotshape(emaCrossDown, "EMA Cross Down", location.abovebar, shape.circle, size.tiny, color.maroon)
+plotshape(breakoutUp, "Breakout Up", location.belowbar, shape.diamond, size.tiny, color.teal)
+plotshape(breakoutDown, "Breakout Down", location.abovebar, shape.diamond, size.tiny, color.purple)
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EPA v6 - Simple & Working
+// ═══════════════════════════════════════════════════════════════════════════
