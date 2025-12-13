@@ -1,6 +1,16 @@
 // This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
-// © Efloud Price Action Trading System v6.0 - SIMPLE & WORKING EDITION
-// Guaranteed trades with simple, proven logic
+// ═══════════════════════════════════════════════════════════════════════════
+// EPA Strategy v6.0 - SIMPLE & WORKING EDITION
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Developed by: EMRE ULUDAŞDEMIR
+// Role: Financial Markets Researcher & Algorithm Designer
+//
+// This buy-sell algorithm is designed for optimal trading performance
+// across all cryptocurrency and financial exchange platforms.
+//
+// Research Focus: Price Action, Market Structure, Liquidity Analysis
+// ═══════════════════════════════════════════════════════════════════════════
 
 //@version=6
 strategy("EPA Strategy v6", shorttitle="EPA-v6", overlay=true,
