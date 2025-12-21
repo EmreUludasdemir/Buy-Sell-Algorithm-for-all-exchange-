@@ -1,11 +1,11 @@
 {
-    "max_open_trades": 3,
+    "max_open_trades": 5,
     "stake_currency": "USDT",
-    "stake_amount": 50,
+    "stake_amount": 100,
     "tradable_balance_ratio": 0.99,
     "fiat_display_currency": "USD",
     "dry_run": true,
-    "dry_run_wallet": 1000,
+    "dry_run_wallet": 2000,
     "cancel_open_orders_on_exit": false,
     "trading_mode": "spot",
     "margin_mode": "",
@@ -43,9 +43,7 @@
             "XRP/USDT",
             "BNB/USDT"
         ],
-        "pair_blacklist": [
-            "BNB/.*"
-        ]
+        "pair_blacklist": []
     },
     "pairlists": [
         {
