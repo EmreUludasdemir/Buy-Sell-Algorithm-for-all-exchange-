@@ -455,3 +455,394 @@ ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 
 2025-12-21 10:42:01,006 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
 2025-12-21 10:43:01,007 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
 2025-12-21 10:44:01,008 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:45:06,000 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:46:06,000 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:47:06,003 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:48:06,007 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:49:06,008 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:50:11,007 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:51:16,007 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:52:21,002 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 10:53:25,999 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:07:23,367 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for ETH/USDT, 15m
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,431 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for ETH/USDT, 1h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,435 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for ETH/USDT, 4h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,442 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for XRP/USDT, 15m
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,451 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for XRP/USDT, 1h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,455 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for XRP/USDT, 4h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,461 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for SOL/USDT, 15m
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,466 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for SOL/USDT, 1h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,470 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for SOL/USDT, 4h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,480 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for BTC/USDT, 15m
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,498 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for BTC/USDT, 1h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,503 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for BTC/USDT, 4h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:07:23,546 - freqtrade.exchange.exchange_ws - INFO - ETH/USDT, 15m, spot - Task finished - done
+2025-12-21 21:07:23,575 - freqtrade.exchange.exchange_ws - INFO - ETH/USDT, 1h, spot - Task finished - done
+2025-12-21 21:07:23,597 - freqtrade.exchange.exchange_ws - INFO - ETH/USDT, 4h, spot - Task finished - done
+2025-12-21 21:07:23,608 - freqtrade.exchange.exchange_ws - INFO - XRP/USDT, 15m, spot - Task finished - done
+2025-12-21 21:07:23,618 - freqtrade.exchange.exchange_ws - INFO - XRP/USDT, 1h, spot - Task finished - done
+2025-12-21 21:07:23,623 - freqtrade.exchange.exchange_ws - INFO - XRP/USDT, 4h, spot - Task finished - done
+2025-12-21 21:07:23,628 - freqtrade.exchange.exchange_ws - INFO - SOL/USDT, 15m, spot - Task finished - done
+2025-12-21 21:07:23,634 - freqtrade.exchange.exchange_ws - INFO - SOL/USDT, 1h, spot - Task finished - done
+2025-12-21 21:07:23,640 - freqtrade.exchange.exchange_ws - INFO - SOL/USDT, 4h, spot - Task finished - done
+2025-12-21 21:07:23,642 - freqtrade.exchange.exchange_ws - INFO - BTC/USDT, 15m, spot - Task finished - done
+2025-12-21 21:07:23,647 - freqtrade.exchange.exchange_ws - INFO - BTC/USDT, 1h, spot - Task finished - done
+2025-12-21 21:07:23,650 - freqtrade.exchange.exchange_ws - INFO - BTC/USDT, 4h, spot - Task finished - done
+2025-12-21 21:07:24,285 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:20:36,226 - freqtrade.plugins.pairlistmanager - WARNING - Pair BNB/USDT in your blacklist. Removing it from whitelist...
+2025-12-21 21:20:36,227 - freqtrade.plugins.pairlistmanager - INFO - Whitelist with 4 pairs: ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT']
+2025-12-21 21:20:36,229 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for XRP/USDT, 15m, falling back to REST api. False, 1766351700000, 0, 2025-12-21T21:15:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,232 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for ETH/USDT, 1h, falling back to REST api. False, 1766350800000, 0, 2025-12-21T21:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,236 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for SOL/USDT, 1h, falling back to REST api. False, 1766350800000, 0, 2025-12-21T21:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,239 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for BTC/USDT, 1h, falling back to REST api. False, 1766350800000, 0, 2025-12-21T21:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,241 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for ETH/USDT, 4h, falling back to REST api. False, 1766347200000, 0, 2025-12-21T20:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,244 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for SOL/USDT, 4h, falling back to REST api. False, 1766347200000, 0, 2025-12-21T20:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,246 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for XRP/USDT, 1h, falling back to REST api. False, 1766350800000, 0, 2025-12-21T21:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,251 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for SOL/USDT, 15m, falling back to REST api. False, 1766351700000, 0, 2025-12-21T21:15:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,254 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for BTC/USDT, 15m, falling back to REST api. False, 1766351700000, 0, 2025-12-21T21:15:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,256 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for BTC/USDT, 4h, falling back to REST api. False, 1766347200000, 0, 2025-12-21T20:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,257 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for XRP/USDT, 4h, falling back to REST api. False, 1766347200000, 0, 2025-12-21T20:00:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,260 - freqtrade.exchange.exchange - INFO - Couldn't reuse watch for ETH/USDT, 15m, falling back to REST api. False, 1766351700000, 0, 2025-12-21T21:15:00, 1970-01-01T00:00:00 
+2025-12-21 21:20:36,572 - freqtrade.exchange.exchange_ws - ERROR - Exception in continuously_async_watch_ohlcv for BTC/USDT, 4h
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 176, in _continuously_async_watch_ohlcv
+    data = await self._ccxt_object.watch_ohlcv(pair, timeframe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1366, in watch_ohlcv
+    result = await self.watch_ohlcv_for_symbols([[symbol, timeframe]], since, limit, params)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1425, in watch_ohlcv_for_symbols
+    res = await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.UnsubscribeError: binance ohlcv::BTC/USDT::4h
+2025-12-21 21:20:36,578 - freqtrade.exchange.exchange_ws - INFO - BTC/USDT, 4h, spot - Task finished - done
+2025-12-21 21:20:44,666 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:21:44,668 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:22:44,673 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:23:44,674 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:24:44,675 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:25:44,677 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:26:49,676 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:27:35,169 - freqtrade.commands.trade_commands - INFO - worker found ... calling exit
+2025-12-21 21:27:35,172 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': status, 'status': 'process died'}
+2025-12-21 21:27:35,174 - freqtrade.freqtradebot - INFO - Cleaning up modules ...
+2025-12-21 21:27:35,178 - freqtrade.rpc.rpc_manager - INFO - Cleaning up rpc modules ...
+2025-12-21 21:27:35,180 - freqtrade.rpc.rpc_manager - INFO - Cleaning up rpc.apiserver ...
+2025-12-21 21:27:35,182 - freqtrade.rpc.api_server.webserver - INFO - Stopping API Server
+2025-12-21 21:27:35,264 - uvicorn.error - INFO - Shutting down
+2025-12-21 21:27:35,367 - uvicorn.error - INFO - Waiting for application shutdown.
+2025-12-21 21:27:35,369 - uvicorn.error - INFO - Application shutdown complete.
+2025-12-21 21:27:35,370 - uvicorn.error - INFO - Finished server process [1]
+2025-12-21 21:27:35,372 - freqtrade.exchange.exchange_ws - INFO - Resetting WS connections.
+2025-12-21 21:27:35,375 - freqtrade.exchange.exchange_ws - INFO - XRP/USDT, 1h, spot - Task finished - cancelled
+2025-12-21 21:27:35,376 - freqtrade.exchange.exchange_ws - INFO - SOL/USDT, 4h, spot - Task finished - cancelled
+2025-12-21 21:27:35,377 - freqtrade.exchange.exchange_ws - INFO - BTC/USDT, 15m, spot - Task finished - cancelled
+2025-12-21 21:27:35,378 - freqtrade.exchange.exchange_ws - INFO - XRP/USDT, 15m, spot - Task finished - cancelled
+2025-12-21 21:27:35,379 - freqtrade.exchange.exchange_ws - INFO - SOL/USDT, 1h, spot - Task finished - cancelled
+2025-12-21 21:27:35,381 - freqtrade.exchange.exchange_ws - INFO - SOL/USDT, 15m, spot - Task finished - cancelled
+2025-12-21 21:27:35,382 - freqtrade.exchange.exchange_ws - INFO - ETH/USDT, 15m, spot - Task finished - cancelled
+2025-12-21 21:27:35,383 - freqtrade.exchange.exchange_ws - INFO - ETH/USDT, 4h, spot - Task finished - cancelled
+2025-12-21 21:27:35,384 - freqtrade.exchange.exchange_ws - INFO - XRP/USDT, 4h, spot - Task finished - cancelled
+2025-12-21 21:27:35,385 - freqtrade.exchange.exchange_ws - INFO - BTC/USDT, 1h, spot - Task finished - cancelled
+2025-12-21 21:27:35,386 - freqtrade.exchange.exchange_ws - INFO - ETH/USDT, 1h, spot - Task finished - cancelled
+2025-12-21 21:27:35,389 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,393 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,395 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,397 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,399 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,402 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,404 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,406 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,409 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,411 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:35,413 - freqtrade.exchange.exchange_ws - ERROR - Exception in _unwatch_ohlcv
+Traceback (most recent call last):
+  File "/freqtrade/freqtrade/exchange/exchange_ws.py", line 144, in _unwatch_ohlcv
+    await self._ccxt_object.un_watch_ohlcv_for_symbols([[pair, timeframe]])
+  File "/home/ftuser/.local/lib/python3.13/site-packages/ccxt/pro/binance.py", line 1494, in un_watch_ohlcv_for_symbols
+    return await self.watch_multiple(url, messageHashes, self.extend(request, params), messageHashes, subscribe)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ccxt.base.errors.NetworkError: Connection closed by remote server, closing code 1006
+2025-12-21 21:27:50,894 - freqtrade.loggers - INFO - Enabling colorized output.
+2025-12-21 21:27:50,895 - freqtrade.loggers - INFO - Logfile configured
+2025-12-21 21:27:50,897 - freqtrade.loggers - INFO - Verbosity set to 0
+2025-12-21 21:27:50,898 - freqtrade.configuration.configuration - INFO - Runmode set to dry_run.
+2025-12-21 21:27:50,899 - freqtrade.configuration.configuration - INFO - Parameter --db-url detected ...
+2025-12-21 21:27:50,900 - freqtrade.configuration.configuration - INFO - Dry run is enabled
+2025-12-21 21:27:50,901 - freqtrade.configuration.configuration - INFO - Using DB: "sqlite:////freqtrade/user_data/tradesv3.sqlite"
+2025-12-21 21:27:50,903 - freqtrade.configuration.configuration - INFO - Using max_open_trades: 5 ...
+2025-12-21 21:27:51,079 - freqtrade.configuration.configuration - INFO - Using user-data directory: /freqtrade/user_data ...
+2025-12-21 21:27:51,084 - freqtrade.configuration.configuration - INFO - Using data directory: /freqtrade/user_data/data/binance ...
+2025-12-21 21:27:51,086 - freqtrade.exchange.check_exchange - INFO - Checking exchange...
+2025-12-21 21:27:51,104 - freqtrade.exchange.check_exchange - INFO - Exchange "binance" is officially supported by the Freqtrade development team.
+2025-12-21 21:27:51,105 - freqtrade.configuration.configuration - INFO - Using pairlist from configuration.
+2025-12-21 21:27:51,107 - freqtrade.exchange.exchange - INFO - Instance is running with dry_run enabled
+2025-12-21 21:27:51,108 - freqtrade.exchange.exchange - INFO - Using CCXT 4.5.27
+2025-12-21 21:27:51,158 - freqtrade.exchange.exchange - INFO - Using Exchange "Binance"
+2025-12-21 21:27:53,504 - freqtrade.resolvers.exchange_resolver - INFO - Using resolved exchange 'Binance'...
+2025-12-21 21:27:53,688 - smc_indicators - WARNING - smartmoneyconcepts not installed. Run: pip install smartmoneyconcepts
+2025-12-21 21:27:53,710 - freqtrade.resolvers.iresolver - INFO - Using resolved strategy SMCStrategy from '/freqtrade/user_data/strategies/SMCStrategy.py'...
+2025-12-21 21:27:53,714 - freqtrade.strategy.hyper - INFO - Found no parameter file.
+2025-12-21 21:27:53,716 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_currency' with value from the configuration: USDT.
+2025-12-21 21:27:53,719 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_amount' with value from the configuration: 100.
+2025-12-21 21:27:53,721 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'unfilledtimeout' with value from the configuration: {'entry': 10, 'exit': 10, 'exit_timeout_count': 0, 'unit': 'minutes'}.
+2025-12-21 21:27:53,723 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'max_open_trades' with value from the configuration: 5.
+2025-12-21 21:27:53,724 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using minimal_roi: {'0': 0.05, '30': 0.03, '60': 0.02, '120': 0.01}
+2025-12-21 21:27:53,725 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using timeframe: 15m
+2025-12-21 21:27:53,725 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stoploss: -0.03
+2025-12-21 21:27:53,726 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop: True
+2025-12-21 21:27:53,727 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop_positive: 0.01
+2025-12-21 21:27:53,728 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop_positive_offset: 0.015
+2025-12-21 21:27:53,729 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_only_offset_is_reached: True
+2025-12-21 21:27:53,730 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_custom_stoploss: False
+2025-12-21 21:27:53,731 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using process_only_new_candles: True
+2025-12-21 21:27:53,732 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_types: {'entry': 'limit', 'exit': 'limit', 'stoploss': 'limit', 'stoploss_on_exchange': False, 'stoploss_on_exchange_interval': 60}
+2025-12-21 21:27:53,733 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_time_in_force: {'entry': 'GTC', 'exit': 'GTC'}
+2025-12-21 21:27:53,734 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_currency: USDT
+2025-12-21 21:27:53,734 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_amount: 100
+2025-12-21 21:27:53,735 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using startup_candle_count: 100
+2025-12-21 21:27:53,737 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using unfilledtimeout: {'entry': 10, 'exit': 10, 'exit_timeout_count': 0, 'unit': 'minutes'}
+2025-12-21 21:27:53,737 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_exit_signal: True
+2025-12-21 21:27:53,738 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_only: False
+2025-12-21 21:27:53,739 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_roi_if_entry_signal: False
+2025-12-21 21:27:53,740 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_offset: 0.0
+2025-12-21 21:27:53,741 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using disable_dataframe_checks: False
+2025-12-21 21:27:53,742 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_buying_expired_candle_after: 0
+2025-12-21 21:27:53,743 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using position_adjustment_enable: False
+2025-12-21 21:27:53,744 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_entry_position_adjustment: -1
+2025-12-21 21:27:53,745 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_open_trades: 5
+2025-12-21 21:27:53,746 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+2025-12-21 21:27:53,917 - freqtrade.wallets - INFO - Wallets synced.
+2025-12-21 21:27:54,542 - freqtrade.rpc.rpc_manager - INFO - Enabling rpc.api_server
+2025-12-21 21:27:54,915 - freqtrade.rpc.api_server.webserver - INFO - Starting HTTP Server at 0.0.0.0:8080
+2025-12-21 21:27:54,917 - freqtrade.rpc.api_server.webserver - INFO - Starting Local Rest Server.
+2025-12-21 21:27:55,013 - uvicorn.error - INFO - Started server process [1]
+2025-12-21 21:27:55,015 - uvicorn.error - INFO - Waiting for application startup.
+2025-12-21 21:27:55,018 - uvicorn.error - INFO - Application startup complete.
+2025-12-21 21:27:55,021 - uvicorn.error - INFO - Uvicorn running on http://0.0.0.0:8080 (Press CTRL+C to quit)
+2025-12-21 21:27:55,027 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist StaticPairList from '/freqtrade/freqtrade/plugins/pairlist/StaticPairList.py'...
+2025-12-21 21:27:55,029 - freqtrade.freqtradebot - INFO - Starting initial pairlist refresh
+2025-12-21 21:27:55,086 - freqtrade.plugins.pairlistmanager - INFO - Whitelist with 5 pairs: ['BTC/USDT', 'ETH/USDT', 'SOL/USDT', 'XRP/USDT', 'BNB/USDT']
+2025-12-21 21:27:55,088 - freqtrade.freqtradebot - INFO - Initial Pairlist refresh took 0.06s
+2025-12-21 21:27:55,090 - freqtrade.strategy.hyper - INFO - No params for buy found, using default values.
+2025-12-21 21:27:55,092 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): fvg_min_size = 0.003
+2025-12-21 21:27:55,093 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): ob_lookback = 50
+2025-12-21 21:27:55,095 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): ob_threshold = 0.5
+2025-12-21 21:27:55,096 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): swing_length = 10
+2025-12-21 21:27:55,097 - freqtrade.strategy.hyper - INFO - No params for sell found, using default values.
+2025-12-21 21:27:55,098 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): risk_reward = 1.5
+2025-12-21 21:27:55,100 - freqtrade.plugins.protectionmanager - INFO - No protection Handlers defined.
+2025-12-21 21:27:55,101 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': status, 'status': 'running'}
+2025-12-21 21:27:55,102 - freqtrade.worker - INFO - Changing state to: RUNNING
+2025-12-21 21:27:55,126 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': warning, 'status': 'Dry run is enabled. All trades are simulated.'}
+2025-12-21 21:27:55,128 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': startup, 'status': "*Exchange:* `binance`\n*Stake per trade:* `100 USDT`\n*Minimum ROI:* `{'0': 0.05, '30': 0.03, '60': 0.02, '120': 0.01}`\n*Trailing Stoploss:* `-0.03`\n*Position adjustment:* `Off`\n*Timeframe:* `15m`\n*Strategy:* `SMCStrategy`"}
+2025-12-21 21:27:55,129 - freqtrade.rpc.rpc_manager - INFO - Sending rpc message: {'type': startup, 'status': "Searching for USDT pairs to buy and sell based on [{'StaticPairList': 'StaticPairList'}]"}
+2025-12-21 21:28:03,986 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:29:03,986 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:30:07,840 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:31:07,843 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:32:07,845 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:33:07,848 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
+2025-12-21 21:34:07,852 - freqtrade.worker - INFO - Bot heartbeat. PID=1, version='2025.11.2', state='RUNNING'
