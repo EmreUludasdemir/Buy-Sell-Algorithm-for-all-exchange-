@@ -371,3 +371,154 @@ def get_entry_zones(
     )
     
     return zones
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+#                    NEW: MARKET REGIME FUNCTIONS (v7)
+# ═══════════════════════════════════════════════════════════════════════════
+
+def calculate_choppiness(dataframe: pd.DataFrame, period: int = 14) -> pd.Series:
+    """
+    Calculate Choppiness Index.
+    
+    Values > 60: Ranging/Choppy market
+    Values < 40: Trending market
+    Values 40-60: Normal market
+    """
+    import talib.abstract as ta
+    
+    atr_sum = ta.ATR(dataframe, timeperiod=1).rolling(period).sum()
+    high_low_range = (
+        dataframe['high'].rolling(period).max() - 
+        dataframe['low'].rolling(period).min()
+    )
+    
+    # Avoid division by zero
+    high_low_range = high_low_range.replace(0, np.nan)
+    
+    choppiness = 100 * np.log10(atr_sum / high_low_range) / np.log10(period)
+    return choppiness.fillna(50)
+
+
+def calculate_market_regime(
+    dataframe: pd.DataFrame,
+    adx_period: int = 14,
+    adx_threshold: float = 30,
+    chop_period: int = 14,
+    chop_threshold: float = 60
+) -> pd.DataFrame:
+    """
+    Calculate market regime based on ADX and Choppiness Index.
+    
+    Returns DataFrame with:
+    - adx: ADX value
+    - choppiness: Choppiness Index value
+    - regime: 'TRENDING_UP', 'TRENDING_DOWN', 'RANGING', or 'NORMAL'
+    """
+    import talib.abstract as ta
+    
+    result = pd.DataFrame(index=dataframe.index)
+    
+    # ADX calculation
+    result['adx'] = ta.ADX(dataframe, timeperiod=adx_period)
+    result['plus_di'] = ta.PLUS_DI(dataframe, timeperiod=adx_period)
+    result['minus_di'] = ta.MINUS_DI(dataframe, timeperiod=adx_period)
+    
+    # Choppiness Index
+    result['choppiness'] = calculate_choppiness(dataframe, chop_period)
+    
+    # Regime classification
+    is_trending = result['adx'] > adx_threshold
+    is_choppy = result['choppiness'] > chop_threshold
+    is_bullish = result['plus_di'] > result['minus_di']
+    
+    conditions = [
+        is_trending & ~is_choppy & is_bullish,
+        is_trending & ~is_choppy & ~is_bullish,
+        is_choppy & ~is_trending,
+    ]
+    choices = ['TRENDING_UP', 'TRENDING_DOWN', 'RANGING']
+    
+    result['regime'] = np.select(conditions, choices, default='NORMAL')
+    
+    return result
+
+
+def calculate_sfp_confirmed(
+    dataframe: pd.DataFrame,
+    lookback: int = 20,
+    volume_threshold: float = 1.0
+) -> pd.DataFrame:
+    """
+    Calculate Swing Failure Pattern (SFP) with close confirmation and volume.
+    
+    SFP occurs when price sweeps a swing high/low but closes back inside,
+    indicating a potential reversal.
+    
+    Returns DataFrame with:
+    - sfp_bullish: 1 when bullish SFP detected
+    - sfp_bearish: 1 when bearish SFP detected
+    - sfp_strength: Volume ratio at SFP (higher = stronger signal)
+    """
+    result = pd.DataFrame(index=dataframe.index)
+    
+    # Previous highs and lows
+    prev_high = dataframe['high'].rolling(lookback).max().shift(1)
+    prev_low = dataframe['low'].rolling(lookback).min().shift(1)
+    
+    # Volume ratio
+    volume_sma = dataframe['volume'].rolling(20).mean()
+    volume_ratio = dataframe['volume'] / volume_sma
+    
+    # Bullish SFP: Price sweeps low but closes back inside with bullish candle
+    result['sfp_bullish'] = (
+        (dataframe['low'] < prev_low) &
+        (dataframe['close'] > prev_low) &
+        (dataframe['close'] > dataframe['open']) &
+        (volume_ratio > volume_threshold)
+    ).astype(int)
+    
+    # Bearish SFP: Price sweeps high but closes back inside with bearish candle
+    result['sfp_bearish'] = (
+        (dataframe['high'] > prev_high) &
+        (dataframe['close'] < prev_high) &
+        (dataframe['close'] < dataframe['open']) &
+        (volume_ratio > volume_threshold)
+    ).astype(int)
+    
+    # SFP strength (volume ratio at signal)
+    result['sfp_strength'] = np.where(
+        (result['sfp_bullish'] == 1) | (result['sfp_bearish'] == 1),
+        volume_ratio,
+        np.nan
+    )
+    
+    return result
+
+
+def calculate_chandelier_exit(
+    dataframe: pd.DataFrame,
+    period: int = 22,
+    atr_period: int = 14,
+    multiplier: float = 2.5
+) -> pd.DataFrame:
+    """
+    Calculate Chandelier Exit (ATR-based trailing stop).
+    
+    Returns DataFrame with:
+    - chandelier_long: Stop level for long positions
+    - chandelier_short: Stop level for short positions
+    """
+    import talib.abstract as ta
+    
+    result = pd.DataFrame(index=dataframe.index)
+    
+    atr = ta.ATR(dataframe, timeperiod=atr_period)
+    highest_high = dataframe['high'].rolling(period).max()
+    lowest_low = dataframe['low'].rolling(period).min()
+    
+    result['chandelier_long'] = highest_high - (atr * multiplier)
+    result['chandelier_short'] = lowest_low + (atr * multiplier)
+    
+    return result
+
