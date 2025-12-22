@@ -1,0 +1,36 @@
+{
+  "strategy_name": "EPA_Production",
+  "params": {
+    "roi": {
+      "0": 100
+    },
+    "stoploss": {
+      "stoploss": -0.99
+    },
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 5
+    },
+    "buy": {
+      "adx_period": 15,
+      "adx_threshold": 29,
+      "st_multiplier": 3.821,
+      "st_period": 9,
+      "tema_period": 29,
+      "vol_mult": 1.791
+    },
+    "sell": {
+      "atr_buffer": 0.689,
+      "breakeven_pct": 0.028,
+      "tp_1r_mult": 1.43,
+      "tp_2r_mult": 2.629
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2025-12-22 10:50:24.655686+00:00"
+}
