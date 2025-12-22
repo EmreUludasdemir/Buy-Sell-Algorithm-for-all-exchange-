@@ -8,7 +8,7 @@ services:
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
-      - "8080:8080"
+      - "127.0.0.1:8080:8080"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: >
@@ -16,4 +16,4 @@ services:
       --logfile /freqtrade/user_data/logs/freqtrade.log
       --db-url sqlite:////freqtrade/user_data/tradesv3.sqlite
       --config /freqtrade/user_data/config.json
-      --strategy SMCStrategy
+      --strategy EPAStrategyV2

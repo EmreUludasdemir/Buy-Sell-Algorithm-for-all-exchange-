@@ -1,0 +1,26 @@
+{
+    "date": "2025-12-22",
+    "timestamp": "2025-12-22T15:22:00",
+    "strategy": "EPAStrategyV2",
+    "timeframe": "15m",
+    "pairs": [
+        "BTC/USDT",
+        "BNB/USDT"
+    ],
+    "total_trades": 0,
+    "trades_today": 0,
+    "open_trades": 0,
+    "wins": 0,
+    "draws": 0,
+    "losses": 0,
+    "win_rate": 0,
+    "total_pnl_usdt": 0.0,
+    "cumulative_pnl_usdt": 0.0,
+    "cumulative_pnl_pct": 0.0,
+    "max_drawdown": 0.0,
+    "protections_triggered": {
+        "CooldownPeriod": 0,
+        "StoplossGuard": 0,
+        "MaxDrawdown": 0
+    }
+}

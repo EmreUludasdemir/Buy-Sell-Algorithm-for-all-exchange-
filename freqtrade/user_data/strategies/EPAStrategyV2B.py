@@ -1,4 +1,4 @@
-"""
+﻿"""
 EPA Strategy V2 - Efloud Price Action with Advanced Filters
 ============================================================
 Upgraded from Pine Script v6 with:
@@ -7,7 +7,7 @@ Upgraded from Pine Script v6 with:
 - SFP Volume Confirmation
 - ML-Ready Feature Extraction
 
-Author: Emre Uludaşdemir
+Author: Emre UludaÅŸdemir
 Version: 2.0.0
 """
 
@@ -27,7 +27,7 @@ from freqtrade.persistence import Trade
 logger = logging.getLogger(__name__)
 
 
-class EPAStrategyV2(IStrategy):
+class EPAStrategyV2B(IStrategy):
     """
     EPA Strategy V2 - Enhanced Price Action with Smart Money Concepts
     

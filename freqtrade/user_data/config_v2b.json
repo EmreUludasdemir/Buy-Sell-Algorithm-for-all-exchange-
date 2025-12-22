@@ -64,7 +64,7 @@
         "username": "freqtrade",
         "password": "EPAv2$Secure#2024!Trade"
     },
-    "bot_name": "EPA_Trader",
+    "bot_name": "EPA_Trader_V2B",
     "initial_state": "running",
     "force_entry_enable": false,
     "internals": {
