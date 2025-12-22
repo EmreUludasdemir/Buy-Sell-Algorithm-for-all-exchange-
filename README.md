@@ -1,139 +1,194 @@
-# Efloud Price Action Trading System
+# 🚀 EPA Trading Bot - Algorithmic Crypto Trading
 
-TradingView platformu icin gelistirilmis, @EfloudTheSurfer'in metodolojisine dayali kapsamli bir price action gostergesi.
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Freqtrade](https://img.shields.io/badge/Freqtrade-2025.11-green.svg)](https://www.freqtrade.io/)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
+[![Trading](https://img.shields.io/badge/Trading-Spot-orange.svg)](https://www.binance.com/)
 
-## Ozellikler
+**High-performance algorithmic trading bot** based on Efloud Price Action methodology with Smart Money Concepts. Built for Freqtrade with optimized parameters for BTC/USDT and BNB/USDT pairs.
 
-### 1. Range Structure Engine (RH/RL/EQ)
-- **Range High (RH)**: Belirlenen fiyat araliginin ust siniri - Direnç seviyesi
-- **Range Low (RL)**: Belirlenen fiyat araliginin alt siniri - Destek seviyesi
-- **Equilibrium (EQ)**: Orta nokta `(RH + RL) / 2` - Kritik karar bolgesi
+---
 
-### 2. Supply/Demand Zone Kutulari
-- **Yesil Kutu (Demand Zone)**: Destek bolgesi - Long giris alani
-- **Kirmizi Kutu (Supply Zone)**: Direnç bolgesi - Short giris alani
-- **Mavi Kutu (EQ Zone)**: Denge bolgesi - Trend degisim sinyali
+## 📊 Performance Metrics (2-Year Backtest)
 
-### 3. Giris Onay Paternleri
+| Metric            | Value   |
+| ----------------- | ------- |
+| **Total Profit**  | +90.05% |
+| **CAGR**          | 38.73%  |
+| **Profit Factor** | 1.65    |
+| **Win Rate**      | 49.1%   |
+| **Max Drawdown**  | 24.04%  |
+| **Sharpe Ratio**  | 0.54    |
+| **Calmar Ratio**  | 10.00   |
 
-#### Swing Failure Pattern (SFP)
-Fiyat bir swing high/low'un otesine fitil atar ancak onceki aralik icerisinde kapanir. Bu, breakout trader'lari yakalar ve donusum sinyali verir.
+_Backtest period: Jan 2023 - Dec 2024 | Pairs: BTC/USDT, BNB/USDT | Timeframe: 1h_
 
-#### Breaker Block
-Gecerli bir order block basarisiz oldugunda ve daha sonra karsi taraftan yeniden test edildiginde olusur. Piyasa yapisi degisimini gosterir.
+---
 
-#### Mitigation Block
-Fiyat yeni bir yuksek (bearish) veya dusuk (bullish) olusturamadigi, sonra yapiyi degistirdigi bir donusum paterni.
+## ✨ Features
 
-### 4. Equal Highs/Lows (EQH/EQL) Likidite Haritalama
-- **EQH (Esit Zirveler)**: Ayni seviyede birden fazla zirve - Bearish bias (stop hunt potansiyeli)
-- **EQL (Esit Dipler)**: Ayni seviyede birden fazla dip - Bullish bias (stop hunt potansiyeli)
-- ATR tabanli esitlik esigi
-- Yapilandiriilabilir bar sonrasi otomatik silme
+- 🎯 **Smart Money Concepts** - ADX regime filtering, Choppiness Index
+- 📈 **Price Action Signals** - EMA crossovers, breakouts, SFP patterns
+- 🛡️ **Risk Management** - ATR-based stops, trailing protection
+- ⚡ **Optimized Parameters** - Hyperopt tuned for maximum Sortino
+- 🔒 **Built-in Protections** - Cooldown, StoplossGuard, MaxDrawdown
 
-### 5. Multi-Timeframe Dashboard
-| Zaman Dilimi | Fonksiyon | Kullanim |
-|--------------|-----------|----------|
-| Gunluk/Haftalik (HTF) | Trend yonu | RSI/OBV analizi; ana S/R tespiti |
-| 4 Saat | Yapi onayi | Short pozisyon olusturma bolgesi |
-| 1 Saat | Giris dogrulamasi | Breaker/Mitigation/SFP onayi |
-| 15 Dakika | Giris rafine etme | LTF bullish/bearish yapi tespiti |
+---
 
-### 6. Opsiyonel Gostergeler (Sadece HTF)
-- **RSI (14)**: 50 ustu = bullish momentum, 50 alti = bearish
-- **OBV**: Hacim trend yonu karsilastirmasi
-- **DMA (50 EMA)**: Trend yonu proxy'si
+## 🚀 Quick Start
 
-### 7. Risk/Odul Hesaplayici
-- Otomatik stop loss yerlesimi (bolge sinirinin otesinde)
-- R:R orani gosterimi (minimum 1:2 onerilen)
-- RH/RL'de kismi kar alma seviyeleri
+### Prerequisites
 
-## Giris Kurallari
+- Docker & Docker Compose
+- Python 3.10+
+- Binance API keys (for live trading)
 
-### Long Giris Kosullari (hepsi uyusmali)
-1. Fiyat yesil/mavi talep bolgesine (destek kutusu) girer
-2. HTF trendi bullish (Gunluk kapanis 50 EMA uzerinde veya RSI > 50)
-3. LTF (1H veya 15M) bullish yapi gosterir (higher low olusumu)
-4. SFP, Breaker retest veya Mitigation block ile onay
-5. OBV yukari trendde (opsiyonel hacim onayi)
+### Installation
 
-### Short Giris Kosullari (hepsi uyusmali)
-1. Fiyat kirmizi arz bolgesine (direnç kutusu) girer
-2. HTF trendi bearish (Gunluk kapanis 50 EMA altinda veya RSI < 50)
-3. LTF (1H veya 15M) bearish yapi gosterir (lower high olusumu)
-4. SFP, Breaker retest veya Mitigation block ile onay
-5. OBV asagi trendde (opsiyonel hacim onayi)
+```bash
+# Clone repository
+git clone https://github.com/EmreUludasdemir/Buy-Sell-Algorithm-for-all-exchange-.git
+cd Buy-Sell-Algorithm-for-all-exchange-/freqtrade
 
-### Cikis Protokolu
-- Ilk hedef: Long icin RH, Short icin RL (kismi: %75)
-- Ilk hedeften sonra stop'u giriste tasi
-- Son hedef: Sonraki ana yapi seviyesi veya kalan %25'i takip et
+# Start bot (paper trading)
+docker compose up -d
 
-## Alarm Kosullari
+# Check logs
+docker compose logs -f
+```
 
-Gosterge asagidaki alarm kosullarini destekler:
-- Fiyat talep bolgesine girer
-- Fiyat arz bolgesine girer
-- SFP olusumu tespit edildi
-- EQ seviyesi kirildigi (bullish/bearish)
-- Breaker block retesti
-- EQH/EQL olusumu
-- Long/Short giris confluence sinyalleri
+### Web UI Access
 
-## Kurulum
+```
+URL: http://127.0.0.1:8080
+Username: freqtrade
+Password: (see config.json)
+```
 
-1. TradingView'i acin
-2. Pine Editor'e gidin
-3. `EfloudPriceAction.pine` dosyasinin icerigini yapistirin
-4. "Add to Chart" butonuna tiklayin
-5. Gosterge ayarlarindan tercihleri yapilandirin
+---
 
-## Ayarlar
+## 📁 Project Structure
 
-### Yapi Ayarlari
-- Pivot Lookback Period: Swing high/low tespiti icin geriye bakis bar sayisi
-- Pivot Lookforward Period: Swing onayi icin ileriye bakis bar sayisi
-- Zone Extension: Bolgerin kac bar boyunca uzatilacagi
+```
+├── freqtrade/
+│   ├── user_data/
+│   │   ├── strategies/
+│   │   │   ├── EPAStrategyV2.py      # Main strategy
+│   │   │   ├── EPAStrategyV2.json    # Optimized params
+│   │   │   └── smc_indicators.py     # Shared indicators
+│   │   └── config.json               # Bot configuration
+│   ├── scripts/
+│   │   ├── daily_report.py           # Daily performance
+│   │   └── weekly_summary.py         # Weekly summary
+│   └── docker-compose.yml
+├── EfloudPriceAction_Strategy_v7.pine  # TradingView indicator
+└── README.md
+```
 
-### Zone Gorunumu
-- Demand/Supply/EQ zone renkleri
-- Cerceve kalinligi
-- Etiket boyutu
+---
 
-### Pattern Tespiti
-- SFP fitil/govde orani
-- Breaker/Mitigation block gosterimi
+## ⚙️ Strategy Configuration
 
-### EQH/EQL Ayarlari
-- Esitlik esigi (%)
-- Suresi dolmus seviyelerin silinme suresi
+### EPAStrategyV2 Parameters
 
-### Dashboard
-- Konum secimi
-- HTF/LTF zaman dilimleri
-- Gosterge durumu (RSI, OBV, DMA)
+| Parameter      | Value  | Description           |
+| -------------- | ------ | --------------------- |
+| Timeframe      | 15m    | Trading timeframe     |
+| Stoploss       | -20%   | Base stop loss        |
+| Trailing Stop  | +31.4% | Activate after profit |
+| ADX Threshold  | 32     | Trend strength filter |
+| Chop Threshold | 45     | Choppy market filter  |
 
-## Risk Yonetimi Felsefesi
+### Trading Pairs
 
-Efloud'un temel uyarisi: *"ASLA tum paranizla girmeyin. Tuzak olabilir, proje basarisiz olabilir, BTC dusebilir, ani FUD olusabilir."*
+- ✅ BTC/USDT (+66.71%)
+- ✅ BNB/USDT (+23.34%)
+- ❌ ETH/USDT (removed - underperformed)
 
-**Portfoy Yapi Kurallari:**
-- Ayri **Futures** ve **Spot** hesap bakiyeleri tutun
-- Futures karlarini 2-3 yillik yatirimlar icin spot "kumbara"ya aktarin
-- Futures'ta asiri buyume seanslarini onleyin
-- "Evvuru" denemeler yerine tutarli kucuk yuzde kazanclarina odaklanin
-- Portfoyde minimum **4+ coin**; maksimum = etkili sekilde izleyebildiginiz kadar
+---
 
-**Pozisyon Yonetimi:**
-- RH hedeflerinde **kismi cikislar** (ornek: RH'da %42 kar realize edildi, %25 pozisyon acik kaldi)
-- **Stop-to-entry** takibi: ilk hedeften sonra stop'u giris fiyatina tasiyin
-- Kanaat yuksekse kazanan islemlerde minimum **%10 pozisyon** veya kar tutarin
+## 🛡️ Risk Management
 
-## Lisans
+### Built-in Protections
+
+```python
+protections = [
+    {"method": "CooldownPeriod", "stop_duration_candles": 12},
+    {"method": "StoplossGuard", "trade_limit": 2, "stop_duration_candles": 24},
+    {"method": "MaxDrawdown", "max_allowed_drawdown": 0.12}
+]
+```
+
+### Risk Philosophy
+
+> _"NEVER go all in. It could be a trap, project could fail, BTC could dump."_
+> — @EfloudTheSurfer
+
+---
+
+## 📈 Backtesting
+
+```bash
+# Run backtest
+docker compose run --rm freqtrade backtesting \
+    --strategy EPAStrategyV2 \
+    --config user_data/config.json \
+    --timerange 20230101-20241222 \
+    --timeframe 1h
+
+# Hyperopt optimization
+docker compose run --rm freqtrade hyperopt \
+    --strategy EPAStrategyV2 \
+    --config user_data/config.json \
+    --hyperopt-loss SortinoHyperOptLoss \
+    --epochs 150
+```
+
+---
+
+## 🔧 Development
+
+### Daily Report Generation
+
+```bash
+python scripts/daily_report.py
+# Output: reports/YYYY-MM-DD.json
+```
+
+### Weekly Summary
+
+```bash
+python scripts/weekly_summary.py
+# Output: reports/summary.md
+```
+
+---
+
+## ⚠️ Disclaimer
+
+**This software is for educational purposes only.**
+
+- Past performance does not guarantee future results
+- Cryptocurrency trading involves substantial risk of loss
+- Never trade with money you cannot afford to lose
+- The authors are not responsible for any financial losses
+
+---
+
+## 📜 License
 
 Mozilla Public License 2.0
 
-## Referans
+---
 
-@EfloudTheSurfer'in price action metodolojisi ve ICT Smart Money Concepts'e dayanmaktadir.
+## 🙏 Credits
+
+- **Methodology**: [@EfloudTheSurfer](https://twitter.com/EfloudTheSurfer)
+- **Framework**: [Freqtrade](https://www.freqtrade.io/)
+- **Concepts**: ICT Smart Money Concepts
+
+---
+
+<p align="center">
+  <b>⭐ Star this repo if you find it useful! ⭐</b>
+</p>
