@@ -50,20 +50,20 @@ class EPAStrategyV2(IStrategy):
     
     # ROI table - more conservative due to regime filtering
     minimal_roi = {
-        "0": 0.08,      # 8% initial target
-        "30": 0.05,     # 5% after 30 mins
-        "60": 0.03,     # 3% after 60 mins
-        "120": 0.02,    # 2% after 120 mins
-        "240": 0.01,    # 1% after 240 mins
+        "0": 0.06,      # 6% initial target (more realistic)
+        "60": 0.04,     # 4% after 60 mins
+        "120": 0.025,   # 2.5% after 120 mins
+        "240": 0.015,   # 1.5% after 240 mins
+        "480": 0.01,    # 1% after 480 mins
     }
     
-    # Base stoploss (overridden by custom_stoploss)
+    # Base stoploss (custom_stoploss uses ATR-based chandelier exit)
     stoploss = -0.05
     
     # Trailing configuration
     trailing_stop = True
-    trailing_stop_positive = 0.015
-    trailing_stop_positive_offset = 0.025
+    trailing_stop_positive = 0.02       # Trail at 2% (wider to avoid early exits)
+    trailing_stop_positive_offset = 0.035  # Only trail after 3.5% profit
     trailing_only_offset_is_reached = True
     
     # Process only new candles for efficiency
@@ -85,13 +85,13 @@ class EPAStrategyV2(IStrategy):
     
     # Market Regime Filters
     adx_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
-    adx_threshold = IntParameter(20, 40, default=30, space='buy', optimize=True)
+    adx_threshold = IntParameter(25, 45, default=35, space='buy', optimize=True)  # Higher threshold for stronger trends
     chop_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
-    chop_threshold = IntParameter(50, 70, default=60, space='buy', optimize=True)
+    chop_threshold = IntParameter(45, 65, default=55, space='buy', optimize=True)  # Lower threshold for less choppy filter
     
     # Risk Settings
-    atr_multiplier = DecimalParameter(1.5, 4.0, default=2.5, space='sell', optimize=True)
-    risk_per_trade = DecimalParameter(0.005, 0.02, default=0.01, space='sell', optimize=False)
+    atr_multiplier = DecimalParameter(2.0, 5.0, default=3.0, space='sell', optimize=True)  # Wider stops
+    risk_per_trade = DecimalParameter(0.005, 0.02, default=0.015, space='sell', optimize=False)  # Slightly more risk
     
     # Signal Filters
     use_volume_filter = BooleanParameter(default=True, space='buy', optimize=True)
