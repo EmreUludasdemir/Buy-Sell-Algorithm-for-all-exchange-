@@ -415,6 +415,7 @@ class EPAStrategyV2(IStrategy):
         Dynamic position sizing based on risk per trade.
         
         Formula: Position = (WalletBalance * RiskPct) / StopDistance
+        Limited to max 25% of wallet to prevent over-concentration.
         """
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         
@@ -424,7 +425,7 @@ class EPAStrategyV2(IStrategy):
         last_candle = dataframe.iloc[-1]
         atr = last_candle['atr']
         
-        # Risk amount (1% of wallet by default)
+        # Risk amount (1.5% of wallet by default)
         wallet = self.wallets.get_total_stake_amount()
         risk_amount = wallet * self.risk_per_trade.value
         
@@ -436,6 +437,10 @@ class EPAStrategyV2(IStrategy):
         
         # Calculate position size
         position_size = risk_amount / stop_distance_pct
+        
+        # Limit to max 25% of wallet to prevent over-concentration
+        max_position = wallet * 0.25
+        position_size = min(position_size, max_position)
         
         # Clamp to min/max
         if min_stake is not None:
