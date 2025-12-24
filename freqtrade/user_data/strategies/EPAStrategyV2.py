@@ -76,27 +76,27 @@ class EPAStrategyV2(IStrategy):
     # Startup candle requirement
     startup_candle_count: int = 100
     
-    # Protections - prevent consecutive losses and limit drawdown
+    # Protections - optimized for 15m timeframe
     @property
     def protections(self):
         return [
             {
                 "method": "CooldownPeriod",
-                "stop_duration_candles": 12
+                "stop_duration_candles": 8  # 2h cooldown
             },
             {
                 "method": "StoplossGuard",
-                "lookback_period_candles": 48,
+                "lookback_period_candles": 32,  # 8h lookback
                 "trade_limit": 2,
-                "stop_duration_candles": 24,
+                "stop_duration_candles": 16,  # 4h stop
                 "only_per_pair": False
             },
             {
                 "method": "MaxDrawdown",
-                "lookback_period_candles": 96,
-                "trade_limit": 4,
-                "stop_duration_candles": 48,
-                "max_allowed_drawdown": 0.12
+                "lookback_period_candles": 64,  # 16h lookback
+                "trade_limit": 3,
+                "stop_duration_candles": 32,  # 8h stop
+                "max_allowed_drawdown": 0.10  # 10% max DD
             }
         ]
     
@@ -249,6 +249,34 @@ class EPAStrategyV2(IStrategy):
         
         dataframe['ml_adx_at_signal'] = dataframe['adx']
         
+        # ==================== MOMENTUM INDICATORS (Research-based) ====================
+        
+        # RSI for momentum confirmation (RSI > 40 = bullish, < 60 = not overbought)
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        
+        # Stochastic RSI for oversold/overbought extremes
+        stoch_rsi = pta.stochrsi(dataframe['close'], length=14, rsi_length=14, k=3, d=3)
+        if stoch_rsi is not None and 'STOCHRSIk_14_14_3_3' in stoch_rsi.columns:
+            dataframe['stoch_k'] = stoch_rsi['STOCHRSIk_14_14_3_3']
+            dataframe['stoch_d'] = stoch_rsi['STOCHRSId_14_14_3_3']
+        else:
+            dataframe['stoch_k'] = 50
+            dataframe['stoch_d'] = 50
+        
+        # MACD for trend momentum
+        macd = ta.MACD(dataframe, fastperiod=12, slowperiod=26, signalperiod=9)
+        dataframe['macd'] = macd['macd']
+        dataframe['macd_signal'] = macd['macdsignal']
+        dataframe['macd_hist'] = macd['macdhist']
+        
+        # Momentum filters
+        dataframe['rsi_bullish'] = (dataframe['rsi'] > 40) & (dataframe['rsi'] < 70)
+        dataframe['rsi_bearish'] = (dataframe['rsi'] < 60) & (dataframe['rsi'] > 30)
+        dataframe['stoch_oversold'] = dataframe['stoch_k'] < 25
+        dataframe['stoch_overbought'] = dataframe['stoch_k'] > 75
+        dataframe['macd_bullish'] = dataframe['macd_hist'] > 0
+        dataframe['macd_bearish'] = dataframe['macd_hist'] < 0
+        
         return dataframe
     
     def _calculate_choppiness(self, dataframe: DataFrame, period: int) -> pd.Series:
@@ -281,6 +309,9 @@ class EPAStrategyV2(IStrategy):
             (dataframe['volume_spike'] == 1)
         )
         
+        # Momentum filter (RSI in bullish zone)
+        momentum_ok = dataframe['rsi_bullish']
+        
         # ==================== LONG ENTRIES ====================
         
         # Trend continuation in strong uptrend
@@ -291,16 +322,18 @@ class EPAStrategyV2(IStrategy):
                 (dataframe['breakout_up'] == 1) |
                 (dataframe['pullback_up'] == 1)
             ) &
-            (dataframe['close'] > dataframe['ema_trend'])
+            (dataframe['close'] > dataframe['ema_trend']) &
+            (dataframe['macd_bullish'])  # MACD confirmation
         )
         
-        # Range reversal in choppy market
+        # Range reversal in choppy market (needs oversold condition)
         range_long = (
             (dataframe['is_choppy'] == 1) &
-            (dataframe['sfp_bullish'] == 1)
+            (dataframe['sfp_bullish'] == 1) &
+            (dataframe['stoch_oversold'])  # Stoch RSI oversold
         )
         
-        # Normal market - all signals
+        # Normal market - all signals with RSI filter
         normal_long = (
             (dataframe['is_trending'] == 0) &
             (dataframe['is_choppy'] == 0) &
@@ -314,6 +347,7 @@ class EPAStrategyV2(IStrategy):
         
         dataframe.loc[
             (volume_ok) &
+            (momentum_ok) &  # RSI filter added
             (trend_long | range_long | normal_long) &
             (dataframe['volume'] > 0),
             'enter_long'
