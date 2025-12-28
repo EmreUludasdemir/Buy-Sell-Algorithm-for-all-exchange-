@@ -158,6 +158,15 @@ python scripts/daily_report.py
 # Output: reports/YYYY-MM-DD.json
 ```
 
+### Multi-Scenario Backtest
+
+```bash
+cd freqtrade/scripts
+python run_backtests.py
+# Output: reports/multi_scenario_backtest_<timestamp>.json
+# Tests: Bull (2023-Q4), Bear (2022-H2), Sideways (2024-Q2) markets
+```
+
 ### Weekly Summary
 
 ```bash

@@ -61,6 +61,25 @@ docker compose run --rm freqtrade backtesting \
     --timerange 20230101-
 ```
 
+### 6b. Multi-Scenario Backtest (Bull/Bear/Sideways)
+
+Stratejiyi 3 farklı piyasa rejiminde test etmek için:
+
+```bash
+# Python scripti ile otomatik çalıştır
+cd scripts
+python run_backtests.py
+```
+
+**Senaryolar:**
+| Senaryo | Dönem | Açıklama |
+|---------|-------|----------|
+| 🐂 Bull | 2023-10 → 2024-03 | BTC $25k → $70k rallisi |
+| 🐻 Bear | 2022-05 → 2022-12 | BTC $45k → $16k (FTX crash) |
+| 🦀 Sideways | 2024-04 → 2024-08 | BTC $58k-$72k konsolidasyon |
+
+Çıktı: `reports/multi_scenario_backtest_<timestamp>.json`
+
 ### 7. Paper Trading Başlatma
 
 ```bash
