@@ -128,6 +128,12 @@ class EPAStrategyV2(IStrategy):
     # Breakout Settings
     breakout_period = IntParameter(15, 30, default=20, space='buy', optimize=True)
     
+    # ==================== HTF TREND FILTER (NEW) ====================
+    # Enable/disable daily trend filter
+    use_htf_filter = BooleanParameter(default=True, space='buy', optimize=False)
+    # EMA period for daily trend detection (simple & robust)
+    htf_ema_period = IntParameter(20, 50, default=21, space='buy', optimize=True)
+    
     def informative_pairs(self):
         """Higher timeframes for trend confirmation - 1D for macro trend."""
         pairs = self.dp.current_whitelist()
@@ -158,40 +164,33 @@ class EPAStrategyV2(IStrategy):
         dataframe['vol_multiplier'] = vol_regime['vol_multiplier']
         dataframe['atr_zscore'] = vol_regime['atr_zscore']
         
-        # ==================== HTF TREND FILTER (4H + 1D) ====================
-        # Get 1D data for macro trend alignment
-        if self.dp:
+        # ==================== HTF TREND FILTER (1D) ====================
+        # Simple & robust: Daily close > Daily EMA = uptrend
+        # Config: use_htf_filter (on/off), htf_ema_period (EMA period)
+        if self.dp and self.use_htf_filter.value:
             inf_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe='1d')
             if len(inf_1d) > 0:
-                inf_1d['htf_ema50'] = ta.EMA(inf_1d, timeperiod=50)
-                inf_1d['htf_ema200'] = ta.EMA(inf_1d, timeperiod=200)
-                inf_1d['htf_trend_up'] = (inf_1d['close'] > inf_1d['htf_ema50']).astype(int)
-                inf_1d['htf_trend_strong'] = (inf_1d['htf_ema50'] > inf_1d['htf_ema200']).astype(int)
+                # Simple EMA-based trend (configurable period)
+                inf_1d['htf_ema'] = ta.EMA(inf_1d, timeperiod=self.htf_ema_period.value)
+                inf_1d['htf_trend_up'] = (inf_1d['close'] > inf_1d['htf_ema']).astype(int)
+                inf_1d['htf_trend_down'] = (inf_1d['close'] < inf_1d['htf_ema']).astype(int)
                 
                 # Merge with main dataframe
                 dataframe = merge_informative_pair(
-                    dataframe, inf_1d[['date', 'htf_trend_up', 'htf_trend_strong']],
+                    dataframe, inf_1d[['date', 'htf_trend_up', 'htf_trend_down']],
                     self.timeframe, '1d', ffill=True
                 )
             else:
                 dataframe['htf_trend_up_1d'] = 1
-                dataframe['htf_trend_strong_1d'] = 1
+                dataframe['htf_trend_down_1d'] = 1
         else:
+            # HTF filter disabled - allow all trades
             dataframe['htf_trend_up_1d'] = 1
-            dataframe['htf_trend_strong_1d'] = 1
+            dataframe['htf_trend_down_1d'] = 1
         
-        # 4H internal trend (EMA50 > EMA200 on current TF)
-        dataframe['htf_4h_aligned'] = (dataframe['ema_50'] > dataframe['ema_200']).astype(int)
-        
-        # Combined HTF filter: 4H aligned AND 1D trend up
-        dataframe['htf_bullish'] = (
-            (dataframe['htf_4h_aligned'] == 1) & 
-            (dataframe['htf_trend_up_1d'] == 1)
-        ).astype(int)
-        dataframe['htf_bearish'] = (
-            (dataframe['htf_4h_aligned'] == 0) & 
-            (dataframe['htf_trend_up_1d'] == 0)
-        ).astype(int)
+        # Simplified HTF flags for entry logic
+        dataframe['htf_bullish'] = dataframe['htf_trend_up_1d']
+        dataframe['htf_bearish'] = dataframe['htf_trend_down_1d']
         
         # ==================== MARKET REGIME FILTERS ====================
         
