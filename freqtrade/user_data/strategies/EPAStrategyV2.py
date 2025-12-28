@@ -80,23 +80,19 @@ class EPAStrategyV2(IStrategy):
     # Startup candle requirement
     startup_candle_count: int = 100
     
-    # Protections - parameterized for hyperopt tuning
-    # These reduce tail risk by pausing after losses
-    cooldown_candles = IntParameter(6, 24, default=12, space='protection', optimize=False)
-    stoploss_guard_trades = IntParameter(2, 4, default=2, space='protection', optimize=False)
-    max_drawdown_pct = DecimalParameter(0.10, 0.20, default=0.12, space='protection', optimize=False)
-    
+    # Protections - static values for hyperopt compatibility
+    # Note: Dynamic params removed due to pickle serialization issues
     @property
     def protections(self):
         return [
             {
                 "method": "CooldownPeriod",
-                "stop_duration_candles": self.cooldown_candles.value
+                "stop_duration_candles": 12
             },
             {
                 "method": "StoplossGuard",
                 "lookback_period_candles": 48,
-                "trade_limit": self.stoploss_guard_trades.value,
+                "trade_limit": 2,
                 "stop_duration_candles": 24,
                 "only_per_pair": False
             },
@@ -105,7 +101,7 @@ class EPAStrategyV2(IStrategy):
                 "lookback_period_candles": 96,
                 "trade_limit": 4,
                 "stop_duration_candles": 48,
-                "max_allowed_drawdown": self.max_drawdown_pct.value
+                "max_allowed_drawdown": 0.12
             }
         ]
     

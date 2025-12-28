@@ -1,73 +1,43 @@
 {
-    "strategy_name": "EPAStrategyV2",
-    "description": "Optimized for Sortino ratio with drawdown constraint",
-    "optimization_target": "SortinoHyperOptLoss",
-    "params": {
-        "max_open_trades": {
-            "max_open_trades": 4
-        },
-        "sell": {
-            "risk_per_trade": 0.01,
-            "atr_multiplier": 3.0
-        },
-        "buy": {
-            "adx_period": 14,
-            "adx_threshold": 35,
-            "breakout_period": 20,
-            "chop_period": 14,
-            "chop_threshold": 55,
-            "fast_ema": 10,
-            "slow_ema": 30,
-            "trend_ema": 100,
-            "use_volume_filter": true,
-            "volume_threshold": 1.2,
-            "use_htf_filter": true,
-            "htf_ema_period": 21
-        },
-        "roi": {
-            "0": 0.08,
-            "480": 0.05,
-            "960": 0.03,
-            "1440": 0.02,
-            "2880": 0.01
-        },
-        "stoploss": {
-            "stoploss": -0.05
-        },
-        "trailing": {
-            "trailing_stop": true,
-            "trailing_stop_positive": 0.015,
-            "trailing_stop_positive_offset": 0.025,
-            "trailing_only_offset_is_reached": true
-        }
+  "strategy_name": "EPAStrategyV2",
+  "params": {
+    "stoploss": {
+      "stoploss": -0.05
     },
-    "param_constraints": {
-        "_comment": "Constrained ranges to reduce overfit risk",
-        "fast_ema": {
-            "min": 8,
-            "max": 12
-        },
-        "slow_ema": {
-            "min": 25,
-            "max": 35
-        },
-        "adx_threshold": {
-            "min": 30,
-            "max": 40
-        },
-        "atr_multiplier": {
-            "min": 2.5,
-            "max": 4.0
-        },
-        "htf_ema_period": {
-            "min": 20,
-            "max": 50
-        }
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.015,
+      "trailing_stop_positive_offset": 0.025,
+      "trailing_only_offset_is_reached": true
     },
-    "hyperopt_commands": {
-        "in_sample": "docker compose run --rm freqtrade hyperopt --strategy EPAStrategyV2 --hyperopt-loss SortinoHyperOptLoss --spaces buy sell --epochs 200 --timerange 20230101-20240630",
-        "out_of_sample": "docker compose run --rm freqtrade backtesting --strategy EPAStrategyV2 --timerange 20240701-20241228"
+    "max_open_trades": {
+      "max_open_trades": 5
     },
-    "ft_stratparam_v": 1,
-    "export_time": "2025-12-28 23:55:00.000000+00:00"
+    "buy": {
+      "use_htf_filter": true,
+      "adx_period": 11,
+      "adx_threshold": 37,
+      "breakout_period": 19,
+      "chop_period": 11,
+      "chop_threshold": 55,
+      "fast_ema": 8,
+      "htf_ema_period": 41,
+      "slow_ema": 35,
+      "trend_ema": 93,
+      "use_volume_filter": false,
+      "volume_threshold": 1.59
+    },
+    "sell": {
+      "risk_per_trade": 0.01,
+      "atr_multiplier": 4.936
+    },
+    "roi": {
+      "0": 0.286,
+      "668": 0.133,
+      "2849": 0.08,
+      "4136": 0
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2025-12-28 23:42:44.121192+00:00"
 }
