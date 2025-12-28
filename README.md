@@ -21,7 +21,7 @@
 | **Sharpe Ratio**  | 0.54    |
 | **Calmar Ratio**  | 10.00   |
 
-_Backtest period: Jan 2023 - Dec 2024 | Pairs: BTC/USDT, BNB/USDT | Timeframe: 1h_
+_Backtest period: Jan 2023 - Dec 2024 | Pairs: BTC/USDT, ETH/USDT, SOL/USDT | Timeframe: 4h_
 
 ---
 
@@ -93,7 +93,7 @@ Password: (see config.json)
 
 | Parameter      | Value  | Description           |
 | -------------- | ------ | --------------------- |
-| Timeframe      | 15m    | Trading timeframe     |
+| Timeframe      | 4h     | Trading timeframe     |
 | Stoploss       | -20%   | Base stop loss        |
 | Trailing Stop  | +31.4% | Activate after profit |
 | ADX Threshold  | 32     | Trend strength filter |
@@ -101,9 +101,12 @@ Password: (see config.json)
 
 ### Trading Pairs
 
-- ✅ BTC/USDT (+66.71%)
-- ✅ BNB/USDT (+23.34%)
-- ❌ ETH/USDT (removed - underperformed)
+- ✅ BTC/USDT
+- ✅ ETH/USDT
+- ✅ SOL/USDT
+- ✅ XRP/USDT
+- ✅ BNB/USDT
+- ✅ ADA/USDT
 
 ---
 
@@ -134,7 +137,7 @@ docker compose run --rm freqtrade backtesting \
     --strategy EPAStrategyV2 \
     --config user_data/config.json \
     --timerange 20230101-20241222 \
-    --timeframe 1h
+    --timeframe 4h
 
 # Hyperopt optimization
 docker compose run --rm freqtrade hyperopt \

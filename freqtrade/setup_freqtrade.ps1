@@ -76,10 +76,10 @@ Write-Host "   $FREQTRADE_DIR\user_data\config.json" -ForegroundColor Gray
 Write-Host "   - 'key' ve 'secret' alanlarını doldurun" -ForegroundColor Gray
 Write-Host ""
 Write-Host "3. Tarihsel veri indirin:" -ForegroundColor White
-Write-Host "   docker compose run --rm freqtrade download-data --pairs BTC/USDT ETH/USDT --timeframe 15m 1h --days 90" -ForegroundColor Cyan
+Write-Host "   docker compose run --rm freqtrade download-data --pairs BTC/USDT ETH/USDT SOL/USDT --timeframe 4h 1d --days 365" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "4. Backtest çalıştırın:" -ForegroundColor White
-Write-Host "   docker compose run --rm freqtrade backtesting --strategy SMCStrategy --timeframe 15m" -ForegroundColor Cyan
+Write-Host "   docker compose run --rm freqtrade backtesting --strategy EPAStrategyV2 --timeframe 4h" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "5. Paper trading başlatın:" -ForegroundColor White
 Write-Host "   docker compose up -d" -ForegroundColor Cyan

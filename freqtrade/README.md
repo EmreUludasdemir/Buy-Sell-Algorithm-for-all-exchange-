@@ -47,18 +47,18 @@ cd "C:\Users\Emre\Desktop\Buy-sell Algorithm\Buy-Sell-Algorithm-for-all-exchange
 
 ```bash
 docker compose run --rm freqtrade download-data \
-    --pairs BTC/USDT ETH/USDT SOL/USDT \
-    --timeframe 15m 1h 4h \
-    --days 180
+    --pairs BTC/USDT ETH/USDT SOL/USDT XRP/USDT BNB/USDT ADA/USDT \
+    --timeframe 4h 1d \
+    --days 365
 ```
 
 ### 6. Backtest
 
 ```bash
 docker compose run --rm freqtrade backtesting \
-    --strategy SMCStrategy \
-    --timeframe 15m \
-    --timerange 20240601-
+    --strategy EPAStrategyV2 \
+    --timeframe 4h \
+    --timerange 20230101-
 ```
 
 ### 7. Paper Trading Başlatma
@@ -123,8 +123,8 @@ docker compose run --rm freqtrade list-strategies
 
 # Hyperopt (optimizasyon)
 docker compose run --rm freqtrade hyperopt \
-    --strategy SMCStrategy \
-    --hyperopt-loss SharpeHyperOptLoss \
+    --strategy EPAStrategyV2 \
+    --hyperopt-loss SortinoHyperOptLoss \
     --epochs 100
 
 # Container'ı durdur
