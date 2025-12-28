@@ -64,10 +64,10 @@ class EPAStrategyV2(IStrategy):
     # Base stoploss (custom_stoploss uses ATR-based chandelier exit)
     stoploss = -0.05
     
-    # Trailing configuration
+    # Trailing configuration - tighter for reduced drawdown
     trailing_stop = True
-    trailing_stop_positive = 0.02       # Trail at 2% (wider to avoid early exits)
-    trailing_stop_positive_offset = 0.035  # Only trail after 3.5% profit
+    trailing_stop_positive = 0.015       # Trail at 1.5% (tighter)
+    trailing_stop_positive_offset = 0.025  # Only trail after 2.5% profit
     trailing_only_offset_is_reached = True
     
     # Process only new candles for efficiency
@@ -80,18 +80,23 @@ class EPAStrategyV2(IStrategy):
     # Startup candle requirement
     startup_candle_count: int = 100
     
-    # Protections - prevent consecutive losses and limit drawdown
+    # Protections - parameterized for hyperopt tuning
+    # These reduce tail risk by pausing after losses
+    cooldown_candles = IntParameter(6, 24, default=12, space='protection', optimize=False)
+    stoploss_guard_trades = IntParameter(2, 4, default=2, space='protection', optimize=False)
+    max_drawdown_pct = DecimalParameter(0.10, 0.20, default=0.12, space='protection', optimize=False)
+    
     @property
     def protections(self):
         return [
             {
                 "method": "CooldownPeriod",
-                "stop_duration_candles": 12
+                "stop_duration_candles": self.cooldown_candles.value
             },
             {
                 "method": "StoplossGuard",
                 "lookback_period_candles": 48,
-                "trade_limit": 2,
+                "trade_limit": self.stoploss_guard_trades.value,
                 "stop_duration_candles": 24,
                 "only_per_pair": False
             },
@@ -100,7 +105,7 @@ class EPAStrategyV2(IStrategy):
                 "lookback_period_candles": 96,
                 "trade_limit": 4,
                 "stop_duration_candles": 48,
-                "max_allowed_drawdown": 0.12
+                "max_allowed_drawdown": self.max_drawdown_pct.value
             }
         ]
     
@@ -502,3 +507,30 @@ class EPAStrategyV2(IStrategy):
                  entry_tag: Optional[str], side: str, **kwargs) -> float:
         """Conservative leverage for safety."""
         return 1.0  # No leverage for spot / low leverage for futures
+    
+    def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
+                    current_rate: float, current_profit: float,
+                    **kwargs) -> Optional[str]:
+        """
+        Tiered partial exits to lock in profits and reduce drawdown.
+        
+        Exit tiers:
+        - 6%+ profit: Exit with 'partial_tp_6pct' tag
+        - 4%+ profit: Exit with 'partial_tp_4pct' tag
+        
+        Note: Freqtrade doesn't support partial exits natively,
+        so these are signals to exit the full position at these levels.
+        For true partial exits, use adjust_trade_position().
+        """
+        # Tier 1: Exit at 6%+ profit
+        if current_profit >= 0.06:
+            return 'tiered_tp_6pct'
+        
+        # Tier 2: Exit at 4%+ profit if we've been in trade for >8 candles (32h)
+        if current_profit >= 0.04:
+            trade_duration = (current_time - trade.open_date_utc).total_seconds() / 3600
+            if trade_duration >= 32:  # 8 x 4h candles
+                return 'tiered_tp_4pct_time'
+        
+        return None
+
