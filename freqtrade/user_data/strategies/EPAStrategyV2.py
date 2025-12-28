@@ -21,8 +21,11 @@ import pandas_ta as pta
 import talib.abstract as ta
 from pandas import DataFrame
 
-from freqtrade.strategy import IStrategy, IntParameter, DecimalParameter, BooleanParameter
+from freqtrade.strategy import IStrategy, IntParameter, DecimalParameter, BooleanParameter, merge_informative_pair
 from freqtrade.persistence import Trade
+
+# Import SMC indicators including new volatility regime
+from smc_indicators import calculate_volatility_regime
 
 logger = logging.getLogger(__name__)
 
@@ -42,19 +45,20 @@ class EPAStrategyV2(IStrategy):
     # Strategy version
     INTERFACE_VERSION = 3
     
-    # Optimal timeframe
-    timeframe = '15m'
+    # Optimal timeframe - upgraded to 4H for better trend following
+    timeframe = '4h'
     
     # Disable shorting for spot markets (set True for futures)
     can_short = False
     
-    # ROI table - more conservative due to regime filtering
+    # ROI table - adjusted for 4H timeframe (values in minutes)
+    # 4H bar = 240 minutes
     minimal_roi = {
-        "0": 0.06,      # 6% initial target (more realistic)
-        "60": 0.04,     # 4% after 60 mins
-        "120": 0.025,   # 2.5% after 120 mins
-        "240": 0.015,   # 1.5% after 240 mins
-        "480": 0.01,    # 1% after 480 mins
+        "0": 0.08,       # 8% initial target
+        "480": 0.05,     # 5% after 2 bars (8h)
+        "960": 0.03,     # 3% after 4 bars (16h)
+        "1440": 0.02,    # 2% after 6 bars (24h)
+        "2880": 0.01,    # 1% after 12 bars (48h)
     }
     
     # Base stoploss (custom_stoploss uses ATR-based chandelier exit)
@@ -125,13 +129,12 @@ class EPAStrategyV2(IStrategy):
     breakout_period = IntParameter(15, 30, default=20, space='buy', optimize=True)
     
     def informative_pairs(self):
-        """Higher timeframes for trend confirmation."""
+        """Higher timeframes for trend confirmation - 1D for macro trend."""
         pairs = self.dp.current_whitelist()
         informative_pairs = []
         
         for pair in pairs:
-            informative_pairs.append((pair, '1h'))
-            informative_pairs.append((pair, '4h'))
+            informative_pairs.append((pair, '1d'))  # Daily for macro trend
         
         return informative_pairs
     
@@ -142,10 +145,53 @@ class EPAStrategyV2(IStrategy):
         dataframe['ema_fast'] = ta.EMA(dataframe, timeperiod=self.fast_ema.value)
         dataframe['ema_slow'] = ta.EMA(dataframe, timeperiod=self.slow_ema.value)
         dataframe['ema_trend'] = ta.EMA(dataframe, timeperiod=self.trend_ema.value)
+        dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
+        dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
         
         # ==================== VOLATILITY ====================
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
         dataframe['atr_pct'] = dataframe['atr'] / dataframe['close'] * 100
+        
+        # ==================== VOLATILITY REGIME (NEW) ====================
+        vol_regime = calculate_volatility_regime(dataframe, atr_period=14, lookback=50)
+        dataframe['vol_regime'] = vol_regime['vol_regime']
+        dataframe['vol_multiplier'] = vol_regime['vol_multiplier']
+        dataframe['atr_zscore'] = vol_regime['atr_zscore']
+        
+        # ==================== HTF TREND FILTER (4H + 1D) ====================
+        # Get 1D data for macro trend alignment
+        if self.dp:
+            inf_1d = self.dp.get_pair_dataframe(pair=metadata['pair'], timeframe='1d')
+            if len(inf_1d) > 0:
+                inf_1d['htf_ema50'] = ta.EMA(inf_1d, timeperiod=50)
+                inf_1d['htf_ema200'] = ta.EMA(inf_1d, timeperiod=200)
+                inf_1d['htf_trend_up'] = (inf_1d['close'] > inf_1d['htf_ema50']).astype(int)
+                inf_1d['htf_trend_strong'] = (inf_1d['htf_ema50'] > inf_1d['htf_ema200']).astype(int)
+                
+                # Merge with main dataframe
+                dataframe = merge_informative_pair(
+                    dataframe, inf_1d[['date', 'htf_trend_up', 'htf_trend_strong']],
+                    self.timeframe, '1d', ffill=True
+                )
+            else:
+                dataframe['htf_trend_up_1d'] = 1
+                dataframe['htf_trend_strong_1d'] = 1
+        else:
+            dataframe['htf_trend_up_1d'] = 1
+            dataframe['htf_trend_strong_1d'] = 1
+        
+        # 4H internal trend (EMA50 > EMA200 on current TF)
+        dataframe['htf_4h_aligned'] = (dataframe['ema_50'] > dataframe['ema_200']).astype(int)
+        
+        # Combined HTF filter: 4H aligned AND 1D trend up
+        dataframe['htf_bullish'] = (
+            (dataframe['htf_4h_aligned'] == 1) & 
+            (dataframe['htf_trend_up_1d'] == 1)
+        ).astype(int)
+        dataframe['htf_bearish'] = (
+            (dataframe['htf_4h_aligned'] == 0) & 
+            (dataframe['htf_trend_up_1d'] == 0)
+        ).astype(int)
         
         # ==================== MARKET REGIME FILTERS ====================
         
@@ -175,10 +221,12 @@ class EPAStrategyV2(IStrategy):
         dataframe['highest_high'] = dataframe['high'].rolling(bp).max().shift(1)
         dataframe['lowest_low'] = dataframe['low'].rolling(bp).min().shift(1)
         
-        # ==================== CHANDELIER EXIT ====================
-        atr_mult = self.atr_multiplier.value
-        dataframe['chandelier_long'] = dataframe['high'].rolling(22).max() - (dataframe['atr'] * atr_mult)
-        dataframe['chandelier_short'] = dataframe['low'].rolling(22).min() + (dataframe['atr'] * atr_mult)
+        # ==================== DYNAMIC CHANDELIER EXIT ====================
+        # ATR multiplier adjusted by volatility regime
+        base_mult = self.atr_multiplier.value
+        dataframe['dynamic_atr_mult'] = base_mult * dataframe['vol_multiplier']
+        dataframe['chandelier_long'] = dataframe['high'].rolling(22).max() - (dataframe['atr'] * dataframe['dynamic_atr_mult'])
+        dataframe['chandelier_short'] = dataframe['low'].rolling(22).min() + (dataframe['atr'] * dataframe['dynamic_atr_mult'])
         
         # ==================== SIGNAL DETECTION ====================
         
@@ -283,6 +331,9 @@ class EPAStrategyV2(IStrategy):
         
         # ==================== LONG ENTRIES ====================
         
+        # HTF alignment filter (NEW)
+        htf_ok_long = (dataframe['htf_bullish'] == 1)
+        
         # Trend continuation in strong uptrend
         trend_long = (
             (dataframe['is_trending'] == 1) &
@@ -294,13 +345,14 @@ class EPAStrategyV2(IStrategy):
             (dataframe['close'] > dataframe['ema_trend'])
         )
         
-        # Range reversal in choppy market
+        # Range reversal in choppy market (only if HTF still bullish)
         range_long = (
             (dataframe['is_choppy'] == 1) &
-            (dataframe['sfp_bullish'] == 1)
+            (dataframe['sfp_bullish'] == 1) &
+            htf_ok_long
         )
         
-        # Normal market - all signals
+        # Normal market - all signals with HTF alignment
         normal_long = (
             (dataframe['is_trending'] == 0) &
             (dataframe['is_choppy'] == 0) &
@@ -312,8 +364,10 @@ class EPAStrategyV2(IStrategy):
             )
         )
         
+        # Apply HTF filter to trend and normal entries
         dataframe.loc[
             (volume_ok) &
+            (htf_ok_long | (dataframe['vol_regime'] == 'LOW_VOL')) &  # Allow in low vol even without HTF
             (trend_long | range_long | normal_long) &
             (dataframe['volume'] > 0),
             'enter_long'

@@ -522,3 +522,60 @@ def calculate_chandelier_exit(
     
     return result
 
+
+def calculate_volatility_regime(
+    dataframe: pd.DataFrame,
+    atr_period: int = 14,
+    lookback: int = 50
+) -> pd.DataFrame:
+    """
+    Calculate Volatility Regime based on ATR z-score.
+    
+    Used to adapt position sizing and stop distances:
+    - HIGH_VOL (z > 1.5): Reduce position size, widen stops
+    - LOW_VOL (z < -0.5): Normal position size, tighter stops
+    - NORMAL: Default parameters
+    
+    Returns DataFrame with:
+    - atr: Current ATR value
+    - atr_zscore: Z-score of ATR relative to lookback period
+    - vol_regime: 'HIGH_VOL', 'LOW_VOL', or 'NORMAL'
+    - vol_multiplier: Suggested multiplier for stops (1.0-1.5)
+    """
+    import talib.abstract as ta
+    
+    result = pd.DataFrame(index=dataframe.index)
+    
+    # ATR calculation
+    result['atr'] = ta.ATR(dataframe, timeperiod=atr_period)
+    
+    # Rolling statistics
+    atr_ma = result['atr'].rolling(lookback).mean()
+    atr_std = result['atr'].rolling(lookback).std()
+    
+    # Z-score (avoid division by zero)
+    atr_std = atr_std.replace(0, np.nan)
+    result['atr_zscore'] = (result['atr'] - atr_ma) / atr_std
+    result['atr_zscore'] = result['atr_zscore'].fillna(0)
+    
+    # Regime classification
+    result['vol_regime'] = np.select(
+        [
+            result['atr_zscore'] > 1.5,
+            result['atr_zscore'] < -0.5
+        ],
+        ['HIGH_VOL', 'LOW_VOL'],
+        default='NORMAL'
+    )
+    
+    # Multiplier for stop distance adaptation
+    result['vol_multiplier'] = np.select(
+        [
+            result['atr_zscore'] > 1.5,
+            result['atr_zscore'] < -0.5
+        ],
+        [1.5, 0.8],
+        default=1.0
+    )
+    
+    return result

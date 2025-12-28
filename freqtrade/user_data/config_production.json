@@ -1,17 +1,17 @@
 {
-    "max_open_trades": 3,
+    "max_open_trades": 4,
     "stake_currency": "USDT",
     "stake_amount": "unlimited",
-    "tradable_balance_ratio": 0.99,
+    "tradable_balance_ratio": 0.95,
     "fiat_display_currency": "USD",
     "dry_run": true,
     "dry_run_wallet": 1000,
-    "cancel_open_orders_on_exit": false,
+    "cancel_open_orders_on_exit": true,
     "trading_mode": "spot",
     "margin_mode": "",
     "unfilledtimeout": {
-        "entry": 10,
-        "exit": 10,
+        "entry": 30,
+        "exit": 30,
         "exit_timeout_count": 0,
         "unit": "minutes"
     },
@@ -41,11 +41,10 @@
             "ETH/USDT",
             "SOL/USDT",
             "XRP/USDT",
-            "BNB/USDT"
+            "BNB/USDT",
+            "ADA/USDT"
         ],
-        "pair_blacklist": [
-            "BNB/.*"
-        ]
+        "pair_blacklist": []
     },
     "pairlists": [
         {
@@ -75,18 +74,18 @@
         "listen_ip_address": "0.0.0.0",
         "listen_port": 8080,
         "verbosity": "error",
-        "enable_openapi": false,
+        "enable_openapi": true,
         "jwt_secret_key": "",
         "ws_token": "",
         "CORS_origins": [],
         "username": "freqtrade",
         "password": "freqtrade"
     },
-    "bot_name": "EPA_Production_Bot",
+    "bot_name": "EPA_4H_Production",
     "force_entry_enable": true,
     "initial_state": "running",
     "internals": {
         "process_throttle_secs": 5
     },
-    "strategy": "EPA_Production"
+    "strategy": "EPAStrategyV2"
 }
