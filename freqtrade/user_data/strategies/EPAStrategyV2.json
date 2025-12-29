@@ -11,33 +11,34 @@
       "trailing_only_offset_is_reached": true
     },
     "max_open_trades": {
-      "max_open_trades": 5
+      "max_open_trades": 4
     },
     "buy": {
       "use_htf_filter": true,
-      "adx_period": 11,
-      "adx_threshold": 37,
-      "breakout_period": 19,
-      "chop_period": 11,
-      "chop_threshold": 55,
+      "adx_min_threshold": 21,
+      "adx_period": 20,
+      "adx_threshold": 29,
+      "breakout_period": 25,
+      "chop_period": 19,
+      "chop_threshold": 60,
       "fast_ema": 8,
-      "htf_ema_period": 41,
-      "slow_ema": 35,
+      "htf_ema_period": 35,
+      "slow_ema": 40,
       "trend_ema": 93,
       "use_volume_filter": false,
-      "volume_threshold": 1.59
+      "volume_threshold": 1.798
     },
     "sell": {
       "risk_per_trade": 0.01,
-      "atr_multiplier": 4.936
+      "atr_multiplier": 2.316
     },
     "roi": {
-      "0": 0.286,
-      "668": 0.133,
-      "2849": 0.08,
-      "4136": 0
+      "0": 0.64,
+      "1317": 0.135,
+      "3206": 0.104,
+      "8190": 0
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2025-12-28 23:42:44.121192+00:00"
+  "export_time": "2025-12-29 00:18:19.134604+00:00"
 }

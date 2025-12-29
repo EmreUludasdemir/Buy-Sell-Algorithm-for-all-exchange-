@@ -115,6 +115,7 @@ class EPAStrategyV2(IStrategy):
     # Market Regime Filters
     adx_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
     adx_threshold = IntParameter(25, 45, default=35, space='buy', optimize=True)  # Higher threshold for stronger trends
+    adx_min_threshold = IntParameter(15, 25, default=18, space='buy', optimize=True)  # Minimum ADX to avoid sideways
     chop_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
     chop_threshold = IntParameter(45, 65, default=55, space='buy', optimize=True)  # Lower threshold for less choppy filter
     
@@ -206,6 +207,8 @@ class EPAStrategyV2(IStrategy):
         # Market regime classification
         dataframe['is_trending'] = (dataframe['adx'] > self.adx_threshold.value).astype(int)
         dataframe['is_choppy'] = (dataframe['choppiness'] > self.chop_threshold.value).astype(int)
+        # ADX minimum filter - skip sideways markets entirely
+        dataframe['adx_ok'] = (dataframe['adx'] > self.adx_min_threshold.value).astype(int)
         
         # Trend direction
         dataframe['trend_bullish'] = (dataframe['plus_di'] > dataframe['minus_di']).astype(int)
@@ -329,6 +332,9 @@ class EPAStrategyV2(IStrategy):
             (dataframe['volume_spike'] == 1)
         )
         
+        # ADX minimum filter - skip sideways/range-bound markets
+        adx_filter_ok = (dataframe['adx_ok'] == 1)
+        
         # ==================== LONG ENTRIES ====================
         
         # HTF alignment filter (NEW)
@@ -364,9 +370,10 @@ class EPAStrategyV2(IStrategy):
             )
         )
         
-        # Apply HTF filter to trend and normal entries
+        # Apply HTF filter and ADX minimum to trend and normal entries
         dataframe.loc[
             (volume_ok) &
+            (adx_filter_ok) &  # Skip sideways markets (ADX > min_threshold)
             (htf_ok_long | (dataframe['vol_regime'] == 'LOW_VOL')) &  # Allow in low vol even without HTF
             (trend_long | range_long | normal_long) &
             (dataframe['volume'] > 0),
