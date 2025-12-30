@@ -152,6 +152,10 @@ class EPAUltimateV3(IStrategy):
     atr_multiplier = DecimalParameter(2.0, 4.0, default=3.0, space='sell', optimize=True)
     risk_per_trade = DecimalParameter(0.01, 0.02, default=0.015, space='sell', optimize=False)
     
+    # Volatility regime position size multipliers
+    high_vol_size_mult = DecimalParameter(0.3, 0.7, default=0.5, space='buy', optimize=False)
+    low_vol_size_mult = DecimalParameter(1.0, 1.5, default=1.2, space='buy', optimize=False)
+    
     # Signal Filters
     use_volume_filter = BooleanParameter(default=True, space='buy', optimize=True)
     volume_threshold = DecimalParameter(1.0, 2.0, default=1.2, space='buy', optimize=True)
@@ -454,9 +458,9 @@ class EPAUltimateV3(IStrategy):
         
         # Adjust for volatility regime
         if last_candle['vol_regime'] == 'HIGH_VOL':
-            risk_amount *= 0.5  # 50% size in high volatility
+            risk_amount *= self.high_vol_size_mult.value  # Reduce size in high volatility
         elif last_candle['vol_regime'] == 'LOW_VOL':
-            risk_amount *= 1.2  # 120% size in low volatility
+            risk_amount *= self.low_vol_size_mult.value  # Increase size in low volatility
         
         # Stop distance
         stop_distance_pct = (atr * self.atr_multiplier.value * vol_multiplier) / current_rate

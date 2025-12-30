@@ -24,7 +24,7 @@ echo ""
 STRATEGY="EPAUltimateV3"
 CONFIG="user_data/strategies/config_btc_backtest.json"
 TIMEFRAME="4h"
-TIMERANGE="20230101-20251230"
+TIMERANGE="20230101-20241231"
 PAIRS="BTC/USDT"
 
 echo "Strategy: $STRATEGY"

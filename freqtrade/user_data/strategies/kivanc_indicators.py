@@ -55,6 +55,8 @@ def supertrend(
     direction = pd.Series(1, index=dataframe.index)
     
     # Calculate final bands
+    # Note: Loop-based approach for compatibility with Supertrend logic
+    # Could be vectorized for better performance on very large datasets
     for i in range(period, len(dataframe)):
         # Upper band
         if basic_ub.iloc[i] < final_ub.iloc[i-1] or close.iloc[i-1] > final_ub.iloc[i-1]:
@@ -131,6 +133,9 @@ def halftrend(
     atrHigh = pd.Series(0.0, index=dataframe.index)
     atrLow = pd.Series(0.0, index=dataframe.index)
     
+    # Calculate trend
+    # Note: Loop-based for clarity and correctness with state transitions
+    # Performance is acceptable for typical Freqtrade usage (< 5000 candles)
     for i in range(amplitude, len(dataframe)):
         # Calculate deviation bands
         atrHigh.iloc[i] = high.iloc[i] - atr.iloc[i] * channel_deviation
@@ -220,6 +225,8 @@ def qqe(
     trend = pd.Series(1, index=dataframe.index)
     qqe_line = pd.Series(50.0, index=dataframe.index)
     
+    # Calculate QQE bands and trend
+    # Note: Stateful calculation requires loop for correctness
     for i in range(sf, len(dataframe)):
         # Calculate bands
         dv = dar.iloc[i]
