@@ -73,13 +73,18 @@ Password: (see config.json)
 ├── freqtrade/
 │   ├── user_data/
 │   │   ├── strategies/
-│   │   │   ├── EPAStrategyV2.py      # Main strategy
+│   │   │   ├── EPAStrategyV2.py      # EPA Strategy V2
 │   │   │   ├── EPAStrategyV2.json    # Optimized params
-│   │   │   └── smc_indicators.py     # Shared indicators
+│   │   │   ├── EPAUltimateV3.py      # 🆕 Ultimate V3 (EPA + Kıvanç)
+│   │   │   ├── kivanc_indicators.py  # 🆕 Kıvanç Özbilgiç indicators
+│   │   │   ├── smc_indicators.py     # Smart Money Concepts
+│   │   │   └── config_btc_backtest.json  # 🆕 BTC backtest config
 │   │   └── config.json               # Bot configuration
 │   ├── scripts/
 │   │   ├── daily_report.py           # Daily performance
-│   │   └── weekly_summary.py         # Weekly summary
+│   │   ├── weekly_summary.py         # Weekly summary
+│   │   ├── backtest_btc.sh           # 🆕 BTC backtest script
+│   │   └── hyperopt_btc.sh           # 🆕 Hyperopt script
 │   └── docker-compose.yml
 ├── EfloudPriceAction_Strategy_v7.pine  # TradingView indicator
 └── README.md
@@ -88,6 +93,74 @@ Password: (see config.json)
 ---
 
 ## ⚙️ Strategy Configuration
+
+### 🆕 EPAUltimateV3 - Maximum Confluence Strategy
+
+**The latest and most advanced strategy combining EPA methodology with Kıvanç Özbilgiç's proven indicators.**
+
+#### Key Features
+
+- **📊 EPA Base Filters**: ADX regime, Choppiness Index, EMA system, Volume confirmation
+- **🎯 Kıvanç Indicators**: Supertrend, Half Trend, QQE, Waddah Attar Explosion
+- **🔄 Multi-Indicator Confluence**: Requires agreement from multiple indicators
+- **⚡ Dynamic Risk Management**: Position sizing based on volatility regime
+- **🌐 HTF Trend Filter**: 1D timeframe for macro trend alignment
+- **🛡️ Advanced Exits**: Multiple reversal signals + Chandelier Exit stops
+
+#### Trading Logic
+
+**Entry Requirements (ALL must be true):**
+1. ✅ Trending market (ADX > 30, Choppiness < 50)
+2. ✅ EMA alignment (Fast > Slow > Trend EMA)
+3. ✅ At least 3 Kıvanç indicators bullish (Supertrend, HalfTrend, QQE)
+4. ✅ Waddah Attar shows momentum explosion
+5. ✅ Volume confirmation
+6. ✅ Daily trend aligned
+
+**Exit Signals:**
+- Supertrend or QQE reversal
+- EMA cross reversal
+- ROI targets (10% → 6% → 4% → 2.5%)
+- ATR-based Chandelier Exit stop
+
+#### Performance Targets
+
+| Metric             | Target  |
+| ------------------ | ------- |
+| Sharpe Ratio       | > 1.0   |
+| Win Rate           | > 45%   |
+| Max Drawdown       | < 20%   |
+| Profit Factor      | > 1.5   |
+
+#### Usage
+
+```bash
+# Backtest on BTC/USDT (2023-2025)
+cd freqtrade/scripts
+./backtest_btc.sh
+
+# Hyperopt parameter optimization
+./hyperopt_btc.sh
+
+# Live trading (after backtesting)
+docker compose up -d
+# Edit config.json to use EPAUltimateV3 strategy
+```
+
+#### Hyperopt Parameters
+
+The strategy includes optimizable parameters:
+
+- **EMA**: Fast (8-15), Slow (25-40), Trend (80-120)
+- **Regime Filters**: ADX threshold (25-45), Chop threshold (45-65)
+- **Supertrend**: Period (7-15), Multiplier (2.0-4.0)
+- **Half Trend**: Amplitude (1-4), Deviation (1.5-3.0)
+- **QQE**: RSI period (10-20), Factor (3.0-5.0)
+- **Risk**: ATR multiplier (2.0-4.0)
+
+---
+
+## ⚙️ EPAStrategyV2 Configuration
 
 ### EPAStrategyV2 Parameters
 
@@ -126,6 +199,46 @@ protections = [
 
 > _"NEVER go all in. It could be a trap, project could fail, BTC could dump."_
 > — @EfloudTheSurfer
+
+---
+
+---
+
+## 🎯 Kıvanç Özbilgiç Indicators
+
+The EPAUltimateV3 strategy integrates popular TradingView indicators by **Kıvanç Özbilgiç**, a renowned technical analyst and indicator developer.
+
+### Supertrend
+- **Purpose**: Primary trend direction identification
+- **Method**: ATR-based dynamic bands
+- **Signal**: 1 = Bullish trend, -1 = Bearish trend
+- **Parameters**: Period (10), Multiplier (3.0)
+
+### Half Trend
+- **Purpose**: Smooth trend detection with reduced whipsaw
+- **Method**: ATR channels with amplitude filtering
+- **Signal**: Clear trend direction with support/resistance levels
+- **Parameters**: Amplitude (2), Channel Deviation (2.0)
+
+### QQE (Quantitative Qualitative Estimation)
+- **Purpose**: RSI-based momentum confirmation
+- **Method**: Smoothed RSI with dynamic bands
+- **Signal**: Excellent for trend confirmation
+- **Parameters**: RSI Period (14), Smoothing (5), QQ Factor (4.238)
+
+### Waddah Attar Explosion
+- **Purpose**: Volatility and momentum timing
+- **Method**: MACD + Bollinger Bands analysis
+- **Signal**: Shows "explosion" (high momentum) vs "dead zone" (low momentum)
+- **Usage**: Enter during explosions, avoid dead zones
+- **Parameters**: Sensitivity (150), Fast (20), Slow (40)
+
+### Why These Indicators?
+
+1. **Proven Track Record**: Used by thousands of traders on TradingView
+2. **Complementary Signals**: Each indicator measures different market aspects
+3. **Reduced False Signals**: Multi-indicator confluence filters out noise
+4. **Adaptable**: Work well across different market conditions
 
 ---
 
