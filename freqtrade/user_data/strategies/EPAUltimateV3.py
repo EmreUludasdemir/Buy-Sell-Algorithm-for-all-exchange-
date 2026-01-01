@@ -205,7 +205,7 @@ class EPAUltimateV3(IStrategy):
     ema200_slope_min = DecimalParameter(0.0, 0.001, default=0.0001, space='buy', optimize=False)
     
     # Filter 2: ADX Minimum - only enter in strong trends
-    use_adx_min_filter = BooleanParameter(default=True, space='buy', optimize=False)
+    use_adx_min_filter = BooleanParameter(default=False, space='buy', optimize=False)
     adx_entry_min = IntParameter(15, 30, default=20, space='buy', optimize=False)
     
     # Confluence Settings
