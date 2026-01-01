@@ -106,22 +106,25 @@ class EPAUltimateV4(IStrategy):
     # Disable shorting for spot (enable for futures)
     can_short = False
     
-    # ROI table - patient exits for quality setups
+    # ROI table - optimized for 4H timeframe with patient exits
     minimal_roi = {
         "0": 0.12,        # 12% initial target
-        "480": 0.08,      # 8% after 8h
-        "960": 0.05,      # 5% after 16h  
+        "360": 0.08,      # 8% after 6h
+        "720": 0.05,      # 5% after 12h  
         "1440": 0.03,     # 3% after 24h
         "2880": 0.02,     # 2% after 48h
     }
     
-    # Base stoploss (Chandelier Exit overrides)
-    stoploss = -0.06
+    # Base stoploss - widened to -8% to reduce stop-outs
+    stoploss = -0.08
     
-    # Trailing configuration
+    # Enable ATR-based dynamic stoploss
+    use_custom_stoploss = True
+    
+    # Trailing configuration - adjusted for wider stops
     trailing_stop = True
-    trailing_stop_positive = 0.025        # Trail at 2.5%
-    trailing_stop_positive_offset = 0.04  # Only trail after 4% profit
+    trailing_stop_positive = 0.03         # Trail at 3%
+    trailing_stop_positive_offset = 0.05  # Only trail after 5% profit
     trailing_only_offset_is_reached = True
     
     # Process only new candles
@@ -554,20 +557,39 @@ class EPAUltimateV4(IStrategy):
     def custom_stoploss(self, pair: str, trade: Trade, current_time: datetime,
                         current_rate: float, current_profit: float,
                         after_fill: bool, **kwargs) -> Optional[float]:
-        """Dynamic Chandelier Exit stoploss."""
+        """
+        Dynamic stop loss using ATR-based calculation.
+        Returns the WIDER of: fixed -8% or 3 ATR stop.
+        This prevents premature stop-outs in volatile conditions.
+        """
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         
         if len(dataframe) == 0:
-            return None
+            return self.stoploss
         
         last_candle = dataframe.iloc[-1]
+        atr = last_candle.get('atr', 0)
         
+        if atr <= 0:
+            return self.stoploss
+        
+        # Calculate 3 ATR stop as percentage
+        atr_stop = -3.0 * atr / current_rate
+        
+        # Use Chandelier Exit if available, otherwise ATR stop
         if trade.is_short:
-            stop_price = last_candle['chandelier_short']
-            return (stop_price / current_rate) - 1
+            chandelier = last_candle.get('chandelier_short', 0)
+            if chandelier > 0:
+                chandelier_stop = (chandelier / current_rate) - 1
+                atr_stop = min(atr_stop, chandelier_stop)  # More negative = wider
         else:
-            stop_price = last_candle['chandelier_long']
-            return (stop_price / current_rate) - 1
+            chandelier = last_candle.get('chandelier_long', 0)
+            if chandelier > 0:
+                chandelier_stop = (chandelier / current_rate) - 1
+                atr_stop = min(atr_stop, chandelier_stop)  # More negative = wider
+        
+        # Return wider of: fixed stoploss (-8%) or ATR-based stop
+        return max(self.stoploss, atr_stop)
     
     def custom_stake_amount(self, pair: str, current_time: datetime,
                             current_rate: float, proposed_stake: float,
