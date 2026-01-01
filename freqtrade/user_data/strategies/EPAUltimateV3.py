@@ -85,13 +85,14 @@ class EPAUltimateV3(IStrategy):
     # Base stoploss - widened from -5% to -8% to reduce stop-outs
     stoploss = -0.08
     
-    # Enable ATR-based dynamic stoploss
-    use_custom_stoploss = True
+    # Fixed stoploss only - ablation study Variant D winner configuration
+    # Disabled both mechanisms for clean exit behavior (see reports/stop_mechanism_ablation.md)
+    use_custom_stoploss = False
     
-    # Trailing configuration - adjusted for wider stops
-    trailing_stop = True
-    trailing_stop_positive = 0.03        # Trail at 3% (was 2%)
-    trailing_stop_positive_offset = 0.05  # Only trail after 5% profit (was 3%)
+    # Trailing stop disabled - rely on ROI table and exit signals
+    trailing_stop = False
+    trailing_stop_positive = 0.03        # Not used when trailing_stop=False
+    trailing_stop_positive_offset = 0.05  # Not used when trailing_stop=False
     trailing_only_offset_is_reached = True
     
     # Process only new candles
@@ -431,35 +432,48 @@ class EPAUltimateV3(IStrategy):
         """
         Exit signals based on trend reversal.
         
-        Exit when multiple indicators flip:
-        - Supertrend reversal
-        - QQE reversal
-        - EMA cross reversal
+        Exit when 2-of-3 indicators confirm reversal (prevents single-indicator whipsaws):
+        - Supertrend reversal (supertrend_direction == -1)
+        - QQE reversal (qqe_trend == -1)
+        - EMA cross reversal (ema_fast < ema_slow)
+        
+        IMPROVEMENT: Changed from "1 indicator OR another + EMA" to "2-of-3 consensus"
+        Rationale: Baseline showed 11 exit_signal trades, all losses (-392.96 USDT, 0% win rate)
+        Analysis: Single indicator flips too aggressive, need stronger confirmation
         """
         
-        # Long exit: Multiple reversals
+        # Long exit: 2-of-3 consensus (reduces false exits)
+        supertrend_bearish = (dataframe['supertrend_direction'] == -1).astype(int)
+        qqe_bearish = (dataframe['qqe_trend'] == -1).astype(int)
+        ema_bearish = (dataframe['ema_fast'] < dataframe['ema_slow']).astype(int)
+        
+        bearish_count = supertrend_bearish + qqe_bearish + ema_bearish
+        
         dataframe.loc[
-            (
-                (dataframe['supertrend_direction'] == -1) |
-                (dataframe['qqe_trend'] == -1)
-            ) &
-            (dataframe['ema_fast'] < dataframe['ema_slow']),
+            (bearish_count >= 2),  # At least 2 of 3 must be bearish
             'exit_long'
         ] = 1
         
-        # Short exit
+        # Short exit: 2-of-3 consensus
         if self.can_short:
+            supertrend_bullish = (dataframe['supertrend_direction'] == 1).astype(int)
+            qqe_bullish = (dataframe['qqe_trend'] == 1).astype(int)
+            ema_bullish = (dataframe['ema_fast'] > dataframe['ema_slow']).astype(int)
+            
+            bullish_count = supertrend_bullish + qqe_bullish + ema_bullish
+            
             dataframe.loc[
-                (
-                    (dataframe['supertrend_direction'] == 1) |
-                    (dataframe['qqe_trend'] == 1)
-                ) &
-                (dataframe['ema_fast'] > dataframe['ema_slow']),
+                (bullish_count >= 2),  # At least 2 of 3 must be bullish
                 'exit_short'
             ] = 1
         
         return dataframe
     
+    # Note:
+    # `use_custom_stoploss` is currently set to False for this strategy, so this
+    # method is not invoked at runtime. It is intentionally kept here to allow
+    # easy future activation and for experimentation/backtesting with an
+    # ATR-based dynamic stoploss, without having to re-implement the logic.
     def custom_stoploss(self, pair: str, trade: Trade, current_time: datetime,
                         current_rate: float, current_profit: float,
                         after_fill: bool, **kwargs) -> Optional[float]:
