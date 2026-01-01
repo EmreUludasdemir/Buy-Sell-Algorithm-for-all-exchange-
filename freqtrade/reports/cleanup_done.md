@@ -107,14 +107,15 @@ git status --short
 
 ### ✅ Git History Check
 ```bash
-git log --oneline -4
-49157a3 (HEAD -> chore/repo-cleanup) chore(tools): add generate_ablation_report utility
+git log --oneline -5
+749df61 (HEAD -> chore/repo-cleanup) docs(cleanup): add cleanup summary documentation
+49157a3 chore(tools): add generate_ablation_report utility
 114f446 docs(cleanup): prune obsolete debug report
 21454b3 chore(cleanup): remove old backtest artifacts and caches
 3ff9ca3 chore(git): ignore generated artifacts and caches
 ```
 
-**Result**: 4 clean, atomic commits with descriptive messages. Ready for PR/merge.
+**Result**: 5 clean, atomic commits with descriptive messages. Ready for PR/merge.
 
 ---
 
@@ -274,19 +275,21 @@ All verification commands passed successfully. ✅
 Repository cleanup completed successfully with **ZERO issues**:
 - ✅ 8 obsolete files removed (3 backtest pairs + 1 debug doc + caches)
 - ✅ 1 useful utility added and tracked
-- ✅ .gitignore enhanced with 26+ patterns
+- ✅ .gitignore enhanced with 26+ patterns (scoped to freqtrade/)
 - ✅ All Python files compile without errors
 - ✅ No strategy or config files modified
 - ✅ All critical data preserved
-- ✅ 4 clean, atomic, reversible commits
+- ✅ 5 clean, atomic, reversible commits
 - ✅ ~2-5 MB space freed
 
 **Status**: Ready for merge or PR. Repository is cleaner, leaner, and better protected against future artifact commits.
+
+**Note**: Ignore patterns are scoped to `freqtrade/` artifacts; verified critical files are not ignored.
 
 ---
 
 **Report Generated**: 2026-01-02  
 **Branch**: chore/repo-cleanup  
-**Commits**: 4 (3ff9ca3, 21454b3, 114f446, 49157a3)  
-**Files Changed**: 8 deleted, 1 added, 1 modified  
+**Commits**: 5 (3ff9ca3, 21454b3, 114f446, 49157a3, 749df61)  
+**Files Changed**: 8 deleted, 1 added, 2 modified  
 **Verification**: All checks passed ✅
