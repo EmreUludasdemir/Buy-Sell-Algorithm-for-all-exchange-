@@ -71,6 +71,9 @@ from smc_indicators import (
 # Import Kıvanç Özbilgiç indicators
 from kivanc_indicators import add_kivanc_indicators
 
+# Import Efloud-style range structure
+from price_action_ranges import add_range_levels, get_range_boost
+
 logger = logging.getLogger(__name__)
 
 
@@ -118,11 +121,11 @@ class EPAUltimateV4(IStrategy):
     # Base stoploss - widened to -8% to reduce stop-outs
     stoploss = -0.08
     
-    # Enable ATR-based dynamic stoploss
-    use_custom_stoploss = True
+    # DISABLED per Variant D ablation study (keep fixed stoploss only)
+    use_custom_stoploss = False
     
-    # Trailing configuration - adjusted for wider stops
-    trailing_stop = True
+    # DISABLED per Variant D ablation study (keep fixed stoploss only)
+    trailing_stop = False
     trailing_stop_positive = 0.03         # Trail at 3%
     trailing_stop_positive_offset = 0.05  # Only trail after 5% profit
     trailing_only_offset_is_reached = True
@@ -198,6 +201,22 @@ class EPAUltimateV4(IStrategy):
     # SMC Position Sizing (reduced boost)
     smc_boost_per_point = DecimalParameter(0.02, 0.06, default=0.03, space='buy', optimize=True)  # Was 0.05
     smc_max_boost = DecimalParameter(1.2, 1.5, default=1.3, space='buy', optimize=False)  # Was 1.5
+    
+    # === Efloud Range Structure (Optional Soft Boost) ===
+    # Ablation study showed ZERO impact - keep disabled by default
+    use_range_boost = BooleanParameter(default=False, space='buy', optimize=False)
+    range_lookback = IntParameter(30, 70, default=50, space='buy', optimize=True)
+    range_atr_mult = DecimalParameter(0.5, 1.5, default=1.0, space='buy', optimize=True)
+    range_boost_demand = DecimalParameter(0.05, 0.15, default=0.10, space='buy', optimize=True)
+    range_boost_eq_reclaim = DecimalParameter(0.03, 0.10, default=0.05, space='buy', optimize=True)
+    
+    # === HTF Bias (Daily RSI/OBV/DMA Optional Soft Boost) ===
+    # Ablation study showed ZERO impact - keep disabled by default
+    use_htf_bias_boost = BooleanParameter(default=False, space='buy', optimize=False)
+    htf_rsi_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
+    htf_obv_lookback = IntParameter(5, 15, default=9, space='buy', optimize=True)
+    htf_ema_slope_period = IntParameter(40, 60, default=50, space='buy', optimize=True)
+    htf_bias_boost = DecimalParameter(0.05, 0.15, default=0.10, space='buy', optimize=True)
     liq_grab_bonus = DecimalParameter(0.03, 0.10, default=0.05, space='buy', optimize=True)  # Was 0.10
     
     # === Risk Settings ===
@@ -265,16 +284,63 @@ class EPAUltimateV4(IStrategy):
                 inf_1d['htf_trend_up'] = (inf_1d['close'] > inf_1d['htf_ema']).astype(int)
                 inf_1d['htf_trend_down'] = (inf_1d['close'] < inf_1d['htf_ema']).astype(int)
                 
-                dataframe = merge_informative_pair(
-                    dataframe, inf_1d[['date', 'htf_trend_up', 'htf_trend_down']],
-                    self.timeframe, '1d', ffill=True
-                )
+                # ==================== HTF BIAS (Efloud-style) ====================
+                if self.use_htf_bias_boost.value:
+                    # RSI on 1d
+                    inf_1d['htf_rsi'] = ta.RSI(inf_1d, timeperiod=self.htf_rsi_period.value)
+                    inf_1d['htf_rsi_bull'] = (inf_1d['htf_rsi'] > 50).astype(int)
+                    inf_1d['htf_rsi_bear'] = (inf_1d['htf_rsi'] < 50).astype(int)
+                    
+                    # OBV slope (rising/falling)
+                    inf_1d['htf_obv'] = ta.OBV(inf_1d)
+                    inf_1d['htf_obv_shifted'] = inf_1d['htf_obv'].shift(self.htf_obv_lookback.value)
+                    inf_1d['htf_obv_rising'] = (inf_1d['htf_obv'] > inf_1d['htf_obv_shifted']).astype(int)
+                    inf_1d['htf_obv_falling'] = (inf_1d['htf_obv'] < inf_1d['htf_obv_shifted']).astype(int)
+                    
+                    # DMA proxy: EMA(50) slope
+                    inf_1d['htf_ema50'] = ta.EMA(inf_1d, timeperiod=self.htf_ema_slope_period.value)
+                    inf_1d['htf_ema50_shifted'] = inf_1d['htf_ema50'].shift(1)
+                    inf_1d['htf_ema50_rising'] = (inf_1d['htf_ema50'] > inf_1d['htf_ema50_shifted']).astype(int)
+                    inf_1d['htf_ema50_falling'] = (inf_1d['htf_ema50'] < inf_1d['htf_ema50_shifted']).astype(int)
+                    
+                    # Combined HTF bias (all 3 must align)
+                    inf_1d['htf_bias_bull'] = (
+                        inf_1d['htf_rsi_bull'] & 
+                        inf_1d['htf_obv_rising'] & 
+                        inf_1d['htf_ema50_rising']
+                    ).astype(int)
+                    
+                    inf_1d['htf_bias_bear'] = (
+                        inf_1d['htf_rsi_bear'] & 
+                        inf_1d['htf_obv_falling'] & 
+                        inf_1d['htf_ema50_falling']
+                    ).astype(int)
+                    
+                    dataframe = merge_informative_pair(
+                        dataframe, 
+                        inf_1d[[
+                            'date', 'htf_trend_up', 'htf_trend_down',
+                            'htf_bias_bull', 'htf_bias_bear'
+                        ]],
+                        self.timeframe, '1d', ffill=True
+                    )
+                else:
+                    dataframe = merge_informative_pair(
+                        dataframe, inf_1d[['date', 'htf_trend_up', 'htf_trend_down']],
+                        self.timeframe, '1d', ffill=True
+                    )
+                    dataframe['htf_bias_bull_1d'] = 0
+                    dataframe['htf_bias_bear_1d'] = 0
             else:
                 dataframe['htf_trend_up_1d'] = 1
                 dataframe['htf_trend_down_1d'] = 1
+                dataframe['htf_bias_bull_1d'] = 0
+                dataframe['htf_bias_bear_1d'] = 0
         else:
             dataframe['htf_trend_up_1d'] = 1
             dataframe['htf_trend_down_1d'] = 1
+            dataframe['htf_bias_bull_1d'] = 0
+            dataframe['htf_bias_bear_1d'] = 0
         
         dataframe['htf_bullish'] = dataframe['htf_trend_up_1d']
         dataframe['htf_bearish'] = dataframe['htf_trend_down_1d']
@@ -358,6 +424,22 @@ class EPAUltimateV4(IStrategy):
                        'bos_bull', 'bos_bear', 'choch_bull', 'choch_bear',
                        'smc_bull_score', 'smc_bear_score', 
                        'smc_bull_confluence', 'smc_bear_confluence']:
+                dataframe[col] = 0
+        
+        # ==================== EFLOUD RANGE STRUCTURE (Optional) ====================
+        
+        if self.use_range_boost.value:
+            dataframe = add_range_levels(
+                dataframe,
+                lookback=self.range_lookback.value,
+                atr_period=14,
+                zone_atr_mult=self.range_atr_mult.value
+            )
+        else:
+            # Placeholder columns
+            for col in ['range_high', 'range_low', 'range_eq', 
+                       'in_demand_zone', 'in_supply_zone', 
+                       'above_eq', 'reclaim_eq']:
                 dataframe[col] = 0
         
         # ==================== EMA CROSS SIGNALS ====================
@@ -643,6 +725,25 @@ class EPAUltimateV4(IStrategy):
             risk_amount *= (1.0 + self.liq_grab_bonus.value)
         elif side == 'short' and last_candle.get('liq_grab_bear', 0) == 1:
             risk_amount *= (1.0 + self.liq_grab_bonus.value)
+        
+        # ==================== EFLOUD RANGE BOOST (Optional) ====================
+        if self.use_range_boost.value:
+            range_boost = 1.0
+            if side == 'long':
+                if last_candle.get('in_demand_zone', 0) == 1:
+                    range_boost += self.range_boost_demand.value
+                if last_candle.get('reclaim_eq', 0) == 1:
+                    range_boost += self.range_boost_eq_reclaim.value
+            # Cap range boost to 1.25
+            range_boost = min(range_boost, 1.25)
+            risk_amount *= range_boost
+        
+        # ==================== HTF BIAS BOOST (Optional) ====================
+        if self.use_htf_bias_boost.value:
+            if side == 'long' and last_candle.get('htf_bias_bull_1d', 0) == 1:
+                risk_amount *= (1.0 + self.htf_bias_boost.value)
+            elif side == 'short' and last_candle.get('htf_bias_bear_1d', 0) == 1:
+                risk_amount *= (1.0 + self.htf_bias_boost.value)
         
         # ==================== FINAL CALCULATION ====================
         stop_distance_pct = (atr * self.atr_multiplier.value * vol_multiplier) / current_rate
