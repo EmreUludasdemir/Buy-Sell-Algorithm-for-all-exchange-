@@ -177,6 +177,17 @@ class EPAUltimateV3(IStrategy):
     use_htf_filter = BooleanParameter(default=True, space='buy', optimize=True)
     htf_ema_period = IntParameter(20, 50, default=21, space='buy', optimize=True)
     
+    # Exit Signal Loss Reduction (see reports/exit_signal_loss_profile.md)
+    # Feature flag: Minimum hold period prevents premature exit_signal triggers
+    # Analysis showed 100% of exit_signal trades went green then exited red
+    # NOTE: Testing shows median exit_signal duration is 56h (already > 12h)
+    #       This suggests the issue is not early exit but poor exit timing
+    #       Keeping flag disabled (default=False) - alternative approach needed
+    use_min_hold_exit_protection = BooleanParameter(default=False, space='sell', optimize=False)
+    min_hold_exit_signal_hours = DecimalParameter(8.0, 24.0, default=12.0, space='sell', optimize=False)
+    mfe_protection_threshold = DecimalParameter(1.5, 3.0, default=2.0, space='sell', optimize=False)
+    mfe_extended_hold_hours = DecimalParameter(16.0, 36.0, default=24.0, space='sell', optimize=False)
+    
     # Confluence Settings
     min_kivanc_signals = IntParameter(2, 3, default=3, space='buy', optimize=True)
     
@@ -617,3 +628,77 @@ class EPAUltimateV3(IStrategy):
                 return 'tiered_tp_5pct_time'
         
         return None
+    
+    def confirm_trade_exit(self, pair: str, trade: Trade, order_type: str,
+                           amount: float, rate: float, time_in_force: str,
+                           exit_reason: str, current_time: datetime,
+                           **kwargs) -> bool:
+        """
+        Minimum hold period protection for exit_signal.
+        
+        Feature: Prevents premature exit_signal triggers (see exit_signal_loss_profile.md)
+        
+        Analysis showed 100% of exit_signal trades went green but exited red.
+        Root cause: 2-of-3 exit consensus triggers too early before trades mature.
+        
+        Protection logic:
+        1. If exit_reason != 'exit_signal': allow immediately (ROI, stoploss, custom_exit)
+        2. If feature disabled: allow immediately
+        3. Calculate trade duration in hours
+        4. Get trade's maximum favorable excursion (MFE) - best profit reached
+        5. Block exit_signal if:
+           - Trade duration < min_hold (default 12h), OR
+           - Trade showed promise (MFE > threshold, default 2%) AND duration < extended hold (24h)
+        
+        This allows:
+        - All non-exit_signal exits (ROI, stoploss) to work normally
+        - Early exit_signal for truly bad trades that never went green
+        - Extended hold for promising trades that reached profit
+        """
+        # Allow all non-exit_signal exits immediately
+        if exit_reason != 'exit_signal':
+            return True
+        
+        # Feature flag check
+        if not self.use_min_hold_exit_protection.value:
+            return True
+        
+        # Calculate trade duration
+        trade_duration_hours = (current_time - trade.open_date_utc).total_seconds() / 3600
+        
+        # Get trade's MFE (maximum favorable excursion)
+        # Calculate from profit history if available, else use current rate
+        mfe = 0.0
+        try:
+            # Try to get max_rate from trade object (may not be available in all versions)
+            if hasattr(trade, 'max_rate') and trade.max_rate is not None:
+                if trade.is_short:
+                    mfe = ((trade.open_rate - trade.max_rate) / trade.open_rate) * 100
+                else:
+                    mfe = ((trade.max_rate - trade.open_rate) / trade.open_rate) * 100
+            else:
+                # Fallback: calculate from current_profit if available
+                # This is less accurate but better than nothing
+                current_profit_pct = trade.calc_profit_ratio(rate) * 100
+                # Assume MFE is at least the current profit (conservative estimate)
+                mfe = max(0, current_profit_pct)
+        except Exception:
+            # If all fails, allow the exit (don't block on errors)
+            return True
+        
+        # Minimum hold period protection
+        min_hold = self.min_hold_exit_signal_hours.value
+        if trade_duration_hours < min_hold:
+            # Block exit_signal - trade hasn't had time to develop
+            return False
+        
+        # Extended hold for trades that showed promise (MFE protection)
+        if mfe >= self.mfe_protection_threshold.value:
+            extended_hold = self.mfe_extended_hold_hours.value
+            if trade_duration_hours < extended_hold:
+                # Block exit_signal - this trade went green, give it more time
+                return False
+        
+        # All checks passed - allow exit_signal
+        return True
+
