@@ -4,40 +4,41 @@ EPAUltimateV4 - Hybrid SMC + Technical Analysis Strategy
 The ultimate combination of EPA methodology, Kıvanç Özbilgiç indicators,
 and Smart Money Concepts for institutional-grade trading.
 
-Version: 4.0.0
+Version: 4.1.0 - Trade frequency fix
 Author: Emre Uludaşdemir
 Created: January 2026
 
 Key Features:
 -------------
-1. EPA Regime Filtering (ADX + Choppiness for market state)
-2. Kıvanç Indicators (Supertrend + HalfTrend + QQE confluence)
-3. Full SMC Toolkit (Order Blocks, FVG, Liquidity Grabs, BOS, CHoCH)
-4. Multi-Layer Entry Confluence (4 layers must align)
+1. EPA Regime Filtering (relaxed - OR logic)
+2. Kıvanç Indicators (1-2/3 sufficient in normal conditions)
+3. Full SMC Toolkit (for position sizing boost only)
+4. Multi-Layer Entry Confluence (3 layers, SMC optional)
 5. SMC Score-Based Position Sizing (higher confluence = larger size)
 6. CHoCH-Aware Exits (early exit on trend reversal signals)
 
-Entry Logic (ALL layers must confirm):
---------------------------------------
-Layer 1 - Regime: Trending market, not choppy
+Entry Logic (3 layers):
+-----------------------
+Layer 1 - Regime: Trending OR not choppy (relaxed)
 Layer 2 - Direction: EMA alignment + DI confirmation  
-Layer 3 - Kıvanç: 2-3 indicators agree (dynamic based on volatility)
-Layer 4 - SMC: Score >= 2 (Order Block, FVG, LiqGrab, BOS)
+Layer 3 - Kıvanç: 1-2/3 indicators (dynamic)
+SMC: Optional boost for position sizing only
 
 Position Sizing:
 ----------------
 Base × Volatility Mult × WAE Mult × SMC Score Mult
-Maximum boost: ~2.0x in ideal conditions
+Maximum boost: ~1.5x in ideal conditions
 
 Expected Performance:
 --------------------
-- Win Rate: 58-65%
-- Profit Factor: 1.6-2.0
-- Max Drawdown: <18%
-- Trades/Month: 6-10 (quality over quantity)
+- Win Rate: 45-55%
+- Profit Factor: 1.3-1.6
+- Max Drawdown: <20%
+- Trades/Month: 8-15
 
 Changelog:
 ----------
+v4.1.0 - Loosened entry conditions for more trades
 v4.0.0 - Initial release combining V2/V3 with full SMC toolkit
 """
 
@@ -160,19 +161,20 @@ class EPAUltimateV4(IStrategy):
     
     # ==================== HYPEROPT PARAMETERS ====================
     
-    # === Layer 1: Regime Filter ===
+    # === Layer 1: Regime Filter (RELAXED) ===
     adx_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
-    adx_threshold = IntParameter(25, 45, default=30, space='buy', optimize=True)
-    adx_min_threshold = IntParameter(15, 25, default=20, space='buy', optimize=True)
+    adx_threshold = IntParameter(20, 35, default=25, space='buy', optimize=True)  # Was 30
+    adx_min_threshold = IntParameter(12, 22, default=15, space='buy', optimize=True)  # Was 20
     chop_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
-    chop_threshold = IntParameter(40, 60, default=50, space='buy', optimize=True)
+    chop_threshold = IntParameter(45, 65, default=55, space='buy', optimize=True)  # Was 50
+    use_or_regime = BooleanParameter(default=True, space='buy', optimize=False)  # NEW: OR logic
     
     # === Layer 2: Trend Direction ===
     fast_ema = IntParameter(8, 15, default=10, space='buy', optimize=True)
     slow_ema = IntParameter(25, 40, default=30, space='buy', optimize=True)
     trend_ema = IntParameter(80, 120, default=100, space='buy', optimize=True)
     
-    # === Layer 3: Kıvanç Confluence ===
+    # === Layer 3: Kıvanç Confluence (RELAXED) ===
     supertrend_period = IntParameter(7, 15, default=10, space='buy', optimize=True)
     supertrend_multiplier = DecimalParameter(2.0, 4.0, default=3.0, space='buy', optimize=True)
     halftrend_amplitude = IntParameter(1, 4, default=2, space='buy', optimize=True)
@@ -181,19 +183,19 @@ class EPAUltimateV4(IStrategy):
     qqe_factor = DecimalParameter(3.0, 5.0, default=4.238, space='buy', optimize=True)
     wae_sensitivity = IntParameter(100, 200, default=150, space='buy', optimize=True)
     
-    # Dynamic Kıvanç minimum (based on volatility)
-    min_kivanc_high_vol = IntParameter(2, 3, default=3, space='buy', optimize=True)
-    min_kivanc_normal = IntParameter(1, 3, default=2, space='buy', optimize=True)
+    # Dynamic Kıvanç minimum (RELAXED - 1/3 OK in normal conditions)
+    min_kivanc_high_vol = IntParameter(1, 3, default=2, space='buy', optimize=True)  # Was 3
+    min_kivanc_normal = IntParameter(1, 2, default=1, space='buy', optimize=True)  # Was 2
     
-    # === Layer 4: SMC Confluence ===
+    # === SMC (Sizing boost only, NOT required for entry) ===
     use_smc = BooleanParameter(default=True, space='buy', optimize=False)
     min_smc_score = IntParameter(1, 4, default=2, space='buy', optimize=True)
-    require_smc_confluence = BooleanParameter(default=True, space='buy', optimize=True)
+    require_smc_confluence = BooleanParameter(default=False, space='buy', optimize=False)  # DISABLED
     
-    # SMC Position Sizing
-    smc_boost_per_point = DecimalParameter(0.03, 0.08, default=0.05, space='buy', optimize=True)
-    smc_max_boost = DecimalParameter(1.3, 1.8, default=1.5, space='buy', optimize=False)
-    liq_grab_bonus = DecimalParameter(0.05, 0.15, default=0.10, space='buy', optimize=True)
+    # SMC Position Sizing (reduced boost)
+    smc_boost_per_point = DecimalParameter(0.02, 0.06, default=0.03, space='buy', optimize=True)  # Was 0.05
+    smc_max_boost = DecimalParameter(1.2, 1.5, default=1.3, space='buy', optimize=False)  # Was 1.5
+    liq_grab_bonus = DecimalParameter(0.03, 0.10, default=0.05, space='buy', optimize=True)  # Was 0.10
     
     # === Risk Settings ===
     atr_multiplier = DecimalParameter(2.0, 4.0, default=3.0, space='sell', optimize=True)
@@ -206,10 +208,10 @@ class EPAUltimateV4(IStrategy):
     # WAE boost
     wae_size_boost = DecimalParameter(1.0, 1.4, default=1.2, space='buy', optimize=True)
     
-    # === Volume & HTF Filters ===
-    use_volume_filter = BooleanParameter(default=True, space='buy', optimize=True)
+    # === Volume & HTF Filters (DISABLED by default for more trades) ===
+    use_volume_filter = BooleanParameter(default=False, space='buy', optimize=True)  # Was True
     volume_threshold = DecimalParameter(1.0, 2.0, default=1.2, space='buy', optimize=True)
-    use_htf_filter = BooleanParameter(default=True, space='buy', optimize=True)
+    use_htf_filter = BooleanParameter(default=False, space='buy', optimize=True)  # Was True
     htf_ema_period = IntParameter(20, 50, default=21, space='buy', optimize=True)
     
     # === Exit Settings ===
@@ -383,64 +385,70 @@ class EPAUltimateV4(IStrategy):
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        Multi-Layer Confluence Entry (V4).
+        Multi-Layer Confluence Entry (V4.1 - RELAXED).
         
-        All 4 layers must confirm:
-        Layer 1: Regime (trending + not choppy)
-        Layer 2: Direction (EMA + DI alignment)
-        Layer 3: Kıvanç (dynamic confluence)
-        Layer 4: SMC (score >= min_smc_score)
+        3 layers (SMC optional for sizing only):
+        Layer 1: Regime (trending OR not choppy)
+        Layer 2: Direction (EMA alignment)
+        Layer 3: Kıvanç (1-2/3 sufficient)
+        SMC: Optional - only affects position sizing
         """
         
-        # ==================== LAYER 1: REGIME FILTER ====================
-        regime_ok_long = (
-            (dataframe['is_trending'] == 1) &
-            (dataframe['is_choppy'] == 0) &
-            (dataframe['adx_ok'] == 1)
-        )
+        # ==================== LAYER 1: REGIME FILTER (RELAXED) ====================
+        # OR logic: Either trending OR not choppy (was AND - too strict)
+        if self.use_or_regime.value:
+            regime_ok_long = (
+                ((dataframe['is_trending'] == 1) | (dataframe['is_choppy'] == 0)) &
+                (dataframe['adx_ok'] == 1)
+            )
+        else:
+            # Original AND logic (stricter)
+            regime_ok_long = (
+                (dataframe['is_trending'] == 1) &
+                (dataframe['is_choppy'] == 0) &
+                (dataframe['adx_ok'] == 1)
+            )
         
-        # ==================== LAYER 2: TREND DIRECTION ====================
-        direction_ok_long = (
-            (dataframe['trend_bullish'] == 1) &
-            (dataframe['ema_fast'] > dataframe['ema_slow'])
-        )
+        # ==================== LAYER 2: TREND DIRECTION (SIMPLIFIED) ====================
+        # Only require EMA alignment - removed DI requirement for more signals
+        direction_ok_long = (dataframe['ema_fast'] > dataframe['ema_slow'])
         
-        # ==================== LAYER 3: KΙVANÇ CONFLUENCE ====================
-        # Dynamic minimum based on volatility
+        # ==================== LAYER 3: KΙVANÇ CONFLUENCE (RELAXED) ====================
+        # Dynamic minimum: 2/3 in HIGH_VOL, 1/3 in normal conditions
         min_signals_required = np.where(
             dataframe['vol_regime'] == 'HIGH_VOL',
-            self.min_kivanc_high_vol.value,
-            self.min_kivanc_normal.value
+            self.min_kivanc_high_vol.value,  # 2 in high vol
+            self.min_kivanc_normal.value     # 1 in normal (relaxed!)
         )
         
         kivanc_ok_long = (dataframe['kivanc_bull_count'] >= min_signals_required)
         
-        # ==================== LAYER 4: SMC CONFLUENCE ====================
-        if self.require_smc_confluence.value:
-            smc_ok_long = (dataframe['smc_bull_score'] >= self.min_smc_score.value)
-        else:
-            smc_ok_long = True  # SMC optional
+        # ==================== SMC: OPTIONAL (for sizing boost only) ====================
+        # SMC is NO LONGER required for entry! Only affects position sizing.
+        smc_ok_long = True  # Always pass - SMC used for sizing only
         
         # ==================== ADDITIONAL FILTERS ====================
         
-        # Volume filter
+        # Volume filter (disabled by default)
         volume_ok = (
             (~self.use_volume_filter.value) |
             (dataframe['volume_spike'] == 1)
         )
         
-        # HTF alignment
-        htf_ok_long = (dataframe['htf_bullish'] == 1)
+        # HTF alignment (disabled by default - always pass when disabled)
+        if self.use_htf_filter.value:
+            htf_ok_long = (dataframe['htf_bullish'] == 1)
+        else:
+            htf_ok_long = True  # Always pass when HTF disabled
         
-        # ==================== COMBINED ENTRY ====================
+        # ==================== COMBINED ENTRY (3 LAYERS ONLY) ====================
         
         dataframe.loc[
-            (regime_ok_long) &      # Layer 1
-            (direction_ok_long) &   # Layer 2
-            (kivanc_ok_long) &      # Layer 3
-            (smc_ok_long) &         # Layer 4
-            (volume_ok) &
-            (htf_ok_long) &
+            (regime_ok_long) &      # Layer 1 (relaxed OR logic)
+            (direction_ok_long) &   # Layer 2 (EMA only, no DI)
+            (kivanc_ok_long) &      # Layer 3 (1-2/3 sufficient)
+            (volume_ok) &           # Usually disabled
+            (htf_ok_long) &         # Usually disabled
             (dataframe['volume'] > 0),
             'enter_long'
         ] = 1

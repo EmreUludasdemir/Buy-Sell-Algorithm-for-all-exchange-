@@ -209,15 +209,15 @@ def qqe(
     # Calculate RSI
     rsi = ta.RSI(dataframe, timeperiod=rsi_period)
     
-    # Smooth RSI with EMA
-    rsi_ma = ta.EMA(rsi, timeperiod=sf)
+    # Smooth RSI with EMA (convert to Series for shift compatibility)
+    rsi_ma = pd.Series(ta.EMA(rsi, timeperiod=sf), index=dataframe.index)
     
     # Calculate ATR equivalent for RSI (Wilders smoothing)
     atr_rsi = abs(rsi_ma - rsi_ma.shift(1))
-    ma_atr_rsi = ta.EMA(atr_rsi, timeperiod=2*rsi_period - 1)
+    ma_atr_rsi = pd.Series(ta.EMA(atr_rsi, timeperiod=2*rsi_period - 1), index=dataframe.index)
     
     # Calculate QQE bands
-    dar = ta.EMA(ma_atr_rsi, timeperiod=2*rsi_period - 1) * qq_factor
+    dar = pd.Series(ta.EMA(ma_atr_rsi, timeperiod=2*rsi_period - 1), index=dataframe.index) * qq_factor
     
     # Initialize QQE line and trend
     long_band = pd.Series(0.0, index=dataframe.index)
@@ -291,15 +291,18 @@ def waddah_attar_explosion(
     """
     close = dataframe['close']
     
-    # MACD calculation
-    fast_ma = ta.EMA(close, timeperiod=fast_length)
-    slow_ma = ta.EMA(close, timeperiod=slow_length)
+    # MACD calculation (convert to Series for shift compatibility)
+    fast_ma = pd.Series(ta.EMA(close, timeperiod=fast_length), index=dataframe.index)
+    slow_ma = pd.Series(ta.EMA(close, timeperiod=slow_length), index=dataframe.index)
     macd = fast_ma - slow_ma
     
     # Bollinger Bands
-    bb_upper, bb_middle, bb_lower = ta.BBANDS(
+    bb_result = ta.BBANDS(
         close, timeperiod=bb_length, nbdevup=bb_mult, nbdevdn=bb_mult
     )
+    bb_upper = pd.Series(bb_result[0], index=dataframe.index)
+    bb_middle = pd.Series(bb_result[1], index=dataframe.index)
+    bb_lower = pd.Series(bb_result[2], index=dataframe.index)
     
     # Dead zone (BB width normalized)
     bb_range = bb_upper - bb_lower

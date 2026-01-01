@@ -38,7 +38,10 @@
         "ccxt_sync_config": {},
         "pair_whitelist": [
             "BTC/USDT",
-            "BNB/USDT"
+            "BNB/USDT",
+            "ETH/USDT",
+            "SOL/USDT",
+            "XRP/USDT"
         ],
         "pair_blacklist": []
     },
