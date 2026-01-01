@@ -177,16 +177,27 @@ class EPAUltimateV3(IStrategy):
     use_htf_filter = BooleanParameter(default=True, space='buy', optimize=True)
     htf_ema_period = IntParameter(20, 50, default=21, space='buy', optimize=True)
     
-    # Exit Signal Loss Reduction (see reports/exit_signal_loss_profile.md)
-    # Feature flag: Minimum hold period prevents premature exit_signal triggers
-    # Analysis showed 100% of exit_signal trades went green then exited red
-    # NOTE: Testing shows median exit_signal duration is 56h (already > 12h)
-    #       This suggests the issue is not early exit but poor exit timing
-    #       Keeping flag disabled (default=False) - alternative approach needed
-    use_min_hold_exit_protection = BooleanParameter(default=False, space='sell', optimize=False)
-    min_hold_exit_signal_hours = DecimalParameter(8.0, 24.0, default=12.0, space='sell', optimize=False)
-    mfe_protection_threshold = DecimalParameter(1.5, 3.0, default=2.0, space='sell', optimize=False)
-    mfe_extended_hold_hours = DecimalParameter(16.0, 36.0, default=24.0, space='sell', optimize=False)
+    # Exit Signal Loss Reduction (see reports/exit_signal_chop_damping_ablation.md)
+    # Fix A: Choppiness Gate - block exit_signal during choppy consolidation when profitable
+    # Fix B: Profit-Dependent Damping - require 3-of-3 consensus when trade is green
+    
+    # Fix A: Choppiness Gate
+    use_exit_chop_gate = BooleanParameter(default=False, space='sell', optimize=False)
+    exit_chop_threshold = DecimalParameter(50.0, 70.0, default=61.8, space='sell', optimize=False)
+    
+    # Fix B: Profit-Dependent Consensus Damping
+    use_profit_damping_exit = BooleanParameter(default=False, space='sell', optimize=False)
+    profit_damping_threshold = DecimalParameter(0.005, 0.02, default=0.01, space='sell', optimize=False)
+    
+    # Exit Confidence Scoring (see reports/exit_confidence_ablation.md)
+    # Gates exit_signal based on multi-factor confidence score to reduce false exits
+    use_exit_confidence_scoring = BooleanParameter(default=False, space='sell', optimize=False)
+    exit_confidence_threshold = IntParameter(1, 5, default=3, space='sell', optimize=False)
+    exit_adx_min = IntParameter(15, 35, default=20, space='sell', optimize=False)
+    exit_vol_mult = DecimalParameter(1.0, 2.5, default=1.2, space='sell', optimize=False)
+    exit_rsi_low = IntParameter(30, 45, default=35, space='sell', optimize=False)
+    exit_rsi_high = IntParameter(55, 75, default=65, space='sell', optimize=False)
+    exit_ema_dist_min = DecimalParameter(0.0, 0.05, default=0.01, space='sell', optimize=False)
     
     # Confluence Settings
     min_kivanc_signals = IntParameter(2, 3, default=3, space='buy', optimize=True)
@@ -221,6 +232,25 @@ class EPAUltimateV3(IStrategy):
         # Volatility
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
         dataframe['atr_pct'] = dataframe['atr'] / dataframe['close'] * 100
+        
+        # RSI for exit confidence scoring
+        dataframe['rsi'] = ta.RSI(dataframe, timeperiod=14)
+        
+        # EMA 100 for exit confidence scoring
+        dataframe['ema_100'] = ta.EMA(dataframe, timeperiod=100)
+        
+        # Volume mean for exit confidence scoring
+        dataframe['vol_mean_20'] = dataframe['volume'].rolling(window=20).mean()
+        
+        # Strong bearish candle detection for exit confidence scoring
+        dataframe['body_size'] = abs(dataframe['open'] - dataframe['close'])
+        dataframe['candle_range'] = dataframe['high'] - dataframe['low']
+        dataframe['close_to_low'] = (dataframe['close'] - dataframe['low']) / (dataframe['candle_range'] + 1e-9)
+        dataframe['bear_candle_strong'] = (
+            (dataframe['close'] < dataframe['open']) &
+            (dataframe['body_size'] > 0.5 * dataframe['atr']) &
+            (dataframe['close_to_low'] < 0.25)
+        ).astype(int)
         
         # Volatility Regime
         vol_regime = calculate_volatility_regime(dataframe, atr_period=14, lookback=50)
@@ -443,23 +473,31 @@ class EPAUltimateV3(IStrategy):
         """
         Exit signals based on trend reversal.
         
-        Exit when 2-of-3 indicators confirm reversal (prevents single-indicator whipsaws):
+        Base logic: 2-of-3 consensus (prevents single-indicator whipsaws)
         - Supertrend reversal (supertrend_direction == -1)
         - QQE reversal (qqe_trend == -1)
         - EMA cross reversal (ema_fast < ema_slow)
         
-        IMPROVEMENT: Changed from "1 indicator OR another + EMA" to "2-of-3 consensus"
-        Rationale: Baseline showed 11 exit_signal trades, all losses (-392.96 USDT, 0% win rate)
-        Analysis: Single indicator flips too aggressive, need stronger confirmation
+        Enhancement (Fix B): Profit-Dependent Damping
+        - When enabled and trade is profitable, require 3-of-3 consensus
+        - Prevents single noisy indicator from triggering exit on winners
+        - Note: This is applied in confirm_trade_exit(), not here
+        
+        This function generates the raw exit signal which is then gated by
+        confirm_trade_exit() for choppiness and profit-dependent damping.
         """
         
-        # Long exit: 2-of-3 consensus (reduces false exits)
+        # Long exit: Calculate bearish consensus
         supertrend_bearish = (dataframe['supertrend_direction'] == -1).astype(int)
         qqe_bearish = (dataframe['qqe_trend'] == -1).astype(int)
         ema_bearish = (dataframe['ema_fast'] < dataframe['ema_slow']).astype(int)
         
         bearish_count = supertrend_bearish + qqe_bearish + ema_bearish
         
+        # Store bearish_count for use in confirm_trade_exit (Fix B)
+        dataframe['exit_bearish_count'] = bearish_count
+        
+        # Apply 2-of-3 consensus (will be tightened to 3-of-3 by Fix B if enabled)
         dataframe.loc[
             (bearish_count >= 2),  # At least 2 of 3 must be bearish
             'exit_long'
@@ -613,90 +651,154 @@ class EPAUltimateV3(IStrategy):
                     current_rate: float, current_profit: float,
                     **kwargs) -> Optional[str]:
         """
-        Tiered partial exits.
-        
-        Exit tiers:
+        Custom exit logic - tiered profit targets:
         - 8%+ profit: Full exit
         - 5%+ profit after 16h: Full exit
         """
+        # Calculate trade duration
+        trade_duration = (current_time - trade.open_date_utc).total_seconds() / 3600
+        
+        # Tiered profit targets
         if current_profit >= 0.08:
             return 'tiered_tp_8pct'
         
         if current_profit >= 0.05:
-            trade_duration = (current_time - trade.open_date_utc).total_seconds() / 3600
             if trade_duration >= 16:  # 4 x 4h candles
                 return 'tiered_tp_5pct_time'
         
         return None
+    
+    def _exit_confidence_score(self, row: pd.Series) -> int:
+        """
+        Calculate exit confidence score (0-5) based on multiple factors.
+        
+        Higher score = more confident this is a genuine reversal, not noise.
+        
+        F1: ADX reversal strength (ADX >= min AND minus_di > plus_di)
+        F2: Volume confirmation (volume >= mean * multiplier)
+        F3: RSI not in extreme zone (neutral = more reliable exit)
+        F4: Strong bearish candle (body > 0.5*ATR, close near low)
+        F5: Meaningful break from EMA100 (not just noise)
+        
+        Returns: integer 0-5
+        """
+        score = 0
+        
+        # Factor 1: ADX reversal strength
+        try:
+            if (row.get('adx', 0) >= self.exit_adx_min.value and 
+                row.get('minus_di', 0) > row.get('plus_di', 0)):
+                score += 1
+        except (KeyError, TypeError, AttributeError):
+            pass
+        
+        # Factor 2: Volume confirmation
+        try:
+            vol_mean = row.get('vol_mean_20', row.get('volume', 0))
+            if row.get('volume', 0) >= vol_mean * self.exit_vol_mult.value:
+                score += 1
+        except (KeyError, TypeError, AttributeError):
+            pass
+        
+        # Factor 3: RSI not in extreme zone (extremes = less confident)
+        try:
+            rsi = row.get('rsi', 50)
+            if self.exit_rsi_low.value <= rsi <= self.exit_rsi_high.value:
+                score += 1
+        except (KeyError, TypeError, AttributeError):
+            pass
+        
+        # Factor 4: Strong bearish candle
+        try:
+            if row.get('bear_candle_strong', 0) == 1:
+                score += 1
+        except (KeyError, TypeError, AttributeError):
+            pass
+        
+        # Factor 5: Meaningful break from EMA100
+        try:
+            close = row.get('close', 0)
+            ema_100 = row.get('ema_100', close)
+            if close > 0 and ema_100 > 0:
+                if close < ema_100 and abs(close - ema_100) / ema_100 >= self.exit_ema_dist_min.value:
+                    score += 1
+        except (KeyError, TypeError, AttributeError, ZeroDivisionError):
+            pass
+        
+        return score
     
     def confirm_trade_exit(self, pair: str, trade: Trade, order_type: str,
                            amount: float, rate: float, time_in_force: str,
                            exit_reason: str, current_time: datetime,
                            **kwargs) -> bool:
         """
-        Minimum hold period protection for exit_signal.
+        Exit signal gating with three optional protection mechanisms:
         
-        Feature: Prevents premature exit_signal triggers (see exit_signal_loss_profile.md)
+        Fix A: Choppiness Gate
+        - Block exit_signal during choppy consolidation when trade is profitable
+        - Rationale: 46% of exit_signal losses were "choppy" pattern
+        - Logic: If CHOP > threshold AND profit > 0, block exit_signal
         
-        Analysis showed 100% of exit_signal trades went green but exited red.
-        Root cause: 2-of-3 exit consensus triggers too early before trades mature.
+        Fix B: Profit-Dependent Consensus Damping  
+        - Require 3-of-3 consensus (not 2-of-3) when trade is profitable
+        - Rationale: Prevents single noisy indicator from exiting winners
+        - Logic: If profit >= threshold, need all 3 bearish (Supertrend + QQE + EMA)
         
-        Protection logic:
-        1. If exit_reason != 'exit_signal': allow immediately (ROI, stoploss, custom_exit)
-        2. If feature disabled: allow immediately
-        3. Calculate trade duration in hours
-        4. Get trade's maximum favorable excursion (MFE) - best profit reached
-        5. Block exit_signal if:
-           - Trade duration < min_hold (default 12h), OR
-           - Trade showed promise (MFE > threshold, default 2%) AND duration < extended hold (24h)
+        Fix C: Exit Confidence Scoring (NEW)
+        - Score exit quality on 5 factors: ADX, volume, RSI, candle, EMA distance
+        - Only allow exit_signal when score >= threshold (default 3/5)
+        - Rationale: Filter false exits that occur during minor pullbacks
         
-        This allows:
-        - All non-exit_signal exits (ROI, stoploss) to work normally
-        - Early exit_signal for truly bad trades that never went green
-        - Extended hold for promising trades that reached profit
+        Critical: NEVER block stoploss, ROI, or custom_exit - only gate exit_signal
         """
-        # Allow all non-exit_signal exits immediately
+        # Allow all non-exit_signal exits immediately (stoploss, ROI, custom_exit, force_exit)
         if exit_reason != 'exit_signal':
             return True
         
-        # Feature flag check
-        if not self.use_min_hold_exit_protection.value:
-            return True
+        # Get current profit ratio
+        current_profit = trade.calc_profit_ratio(rate)
         
-        # Calculate trade duration
-        trade_duration_hours = (current_time - trade.open_date_utc).total_seconds() / 3600
+        # Get dataframe once for all checks
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if len(dataframe) == 0:
+            return True  # No data, allow exit
         
-        # Get trade's MFE (maximum favorable excursion)
-        # Calculate from profit history if available, else use current rate
-        mfe = 0.0
-        try:
-            # Try to get max_rate from trade object (may not be available in all versions)
-            if hasattr(trade, 'max_rate') and trade.max_rate is not None:
-                if trade.is_short:
-                    mfe = ((trade.open_rate - trade.max_rate) / trade.open_rate) * 100
-                else:
-                    mfe = ((trade.max_rate - trade.open_rate) / trade.open_rate) * 100
-            else:
-                # Fallback: calculate from current_profit if available
-                # This is less accurate but better than nothing
-                current_profit_pct = trade.calc_profit_ratio(rate) * 100
-                # Assume MFE is at least the current profit (conservative estimate)
-                mfe = max(0, current_profit_pct)
-        except Exception:
-            # If all fails, allow the exit (don't block on errors)
-            return True
+        last_candle = dataframe.iloc[-1]
         
-        # Minimum hold period protection
-        min_hold = self.min_hold_exit_signal_hours.value
-        if trade_duration_hours < min_hold:
-            # Block exit_signal - trade hasn't had time to develop
-            return False
+        # === FIX A: CHOPPINESS GATE ===
+        if self.use_exit_chop_gate.value:
+            chop = last_candle.get('choppiness', 0)
+            
+            # Block exit_signal if choppy AND profitable
+            if chop > self.exit_chop_threshold.value and current_profit > 0:
+                # Choppy consolidation - don't give back gains
+                logger.info(f"🚫 CHOP GATE: Blocked exit_signal for {pair} (CHOP={chop:.1f} > {self.exit_chop_threshold.value}, profit={current_profit*100:.2f}%)")
+                return False
         
-        # Extended hold for trades that showed promise (MFE protection)
-        if mfe >= self.mfe_protection_threshold.value:
-            extended_hold = self.mfe_extended_hold_hours.value
-            if trade_duration_hours < extended_hold:
-                # Block exit_signal - this trade went green, give it more time
+        # === FIX B: PROFIT-DEPENDENT CONSENSUS DAMPING ===
+        if self.use_profit_damping_exit.value:
+            # Only apply damping when trade is profitable
+            if current_profit >= self.profit_damping_threshold.value:
+                # Require 3-of-3 consensus (stricter than default 2-of-3)
+                bearish_count = last_candle.get('exit_bearish_count', 0)
+                
+                if bearish_count < 3:
+                    # Less than 3-of-3 consensus - block exit_signal
+                    logger.info(f"🚫 PROFIT DAMPING: Blocked exit_signal for {pair} (bearish_count={bearish_count}/3, profit={current_profit*100:.2f}%)")
+                    return False
+        
+        # === FIX C: EXIT CONFIDENCE SCORING ===
+        if self.use_exit_confidence_scoring.value:
+            score = self._exit_confidence_score(last_candle)
+            
+            if score < self.exit_confidence_threshold.value:
+                # Low confidence exit - block it
+                logger.debug(
+                    f"EXIT CONFIDENCE BLOCK: score={score}<thr={self.exit_confidence_threshold.value} "
+                    f"pair={pair} profit={current_profit*100:.2f}% "
+                    f"adx={last_candle.get('adx', 0):.1f} rsi={last_candle.get('rsi', 0):.1f} "
+                    f"vol={last_candle.get('volume', 0):.0f} emaDist={abs(last_candle.get('close', 0) - last_candle.get('ema_100', 0)) / last_candle.get('ema_100', 1) * 100:.2f}%"
+                )
                 return False
         
         # All checks passed - allow exit_signal
