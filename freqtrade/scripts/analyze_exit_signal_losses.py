@@ -1,336 +1,396 @@
 #!/usr/bin/env python3
 """
-Analyze exit_signal losses from EPAUltimateV3 backtest results.
-Generates detailed loss profile with MFE/MAE analysis.
+Exit Signal Loss Attribution Analysis
+
+Analyzes backtest trades to identify:
+1. Which pairs contribute most to exit_signal losses
+2. Indicator states at entry for losing exit_signal trades
+3. Whether losses are concentrated in specific regimes
 """
 
 import json
-import zipfile
+import pandas as pd
+import sys
 from pathlib import Path
-from datetime import datetime
-from collections import defaultdict
-import statistics
+from typing import Dict, List, Tuple
+import numpy as np
+import zipfile
 
-def load_backtest_trades(zip_path):
-    """Extract trades from backtest zip file."""
-    with zipfile.ZipFile(zip_path, 'r') as z:
-        # Find the main backtest result file
-        result_files = [f for f in z.namelist() if f.endswith('.json') and 'config' not in f]
-        if not result_files:
-            raise ValueError("No backtest result JSON found in zip")
-        
-        result_file = result_files[0]
-        with z.open(result_file) as f:
+def load_latest_backtest(backtest_dir: Path) -> Tuple[pd.DataFrame, Dict]:
+    """Load most recent backtest result"""
+    meta_files = sorted(backtest_dir.glob("backtest-result-*.meta.json"), reverse=True)
+    if not meta_files:
+        raise FileNotFoundError(f"No backtest results found in {backtest_dir}")
+    
+    meta_file = meta_files[0]
+    print(f"Loading: {meta_file.name}")
+    
+    with open(meta_file) as f:
+        meta = json.load(f)
+    
+    # Load trades - check for ZIP file first
+    zip_file = meta_file.parent / meta_file.name.replace('.meta.json', '.zip')
+    json_file = meta_file.parent / meta_file.name.replace('.meta.json', '.json')
+    
+    if zip_file.exists():
+        # Extract from ZIP
+        with zipfile.ZipFile(zip_file) as z:
+            # Find the JSON file inside
+            json_files = [f for f in z.namelist() if f.endswith('.json')]
+            if not json_files:
+                raise FileNotFoundError(f"No JSON file found in {zip_file}")
+            with z.open(json_files[0]) as f:
+                data = json.load(f)
+    elif json_file.exists():
+        # Read JSON directly
+        with open(json_file) as f:
             data = json.load(f)
-            # Freqtrade stores results in 'strategy' -> strategy_name -> trades
-            if 'strategy' in data:
-                # Get first (and typically only) strategy
-                strategy_name = list(data['strategy'].keys())[0]
-                return data['strategy'][strategy_name]
-            else:
-                return data
-    
-def calculate_mfe_mae(trade):
-    """Calculate Maximum Favorable Excursion and Maximum Adverse Excursion."""
-    open_rate = trade['open_rate']
-    close_rate = trade['close_rate']
-    
-    # Use min_rate and max_rate if available (recorded by freqtrade)
-    max_rate = trade.get('max_rate', close_rate)
-    min_rate = trade.get('min_rate', close_rate)
-    
-    # MFE: best profit during trade (as percentage)
-    mfe = ((max_rate - open_rate) / open_rate) * 100
-    
-    # MAE: worst drawdown during trade (as percentage)
-    mae = ((min_rate - open_rate) / open_rate) * 100
-    
-    return mfe, mae
-
-def analyze_exit_signal_trades(trades_data):
-    """Analyze all exit_signal trades in detail."""
-    
-    all_trades = trades_data.get('trades', [])
-    exit_signal_trades = [t for t in all_trades if t.get('exit_reason') == 'exit_signal']
-    
-    print(f"\n{'='*60}")
-    print(f"EXIT SIGNAL TRADE ANALYSIS")
-    print(f"{'='*60}")
-    print(f"Total trades: {len(all_trades)}")
-    print(f"Exit signal trades: {len(exit_signal_trades)}")
-    print(f"Percentage: {len(exit_signal_trades)/len(all_trades)*100:.1f}%\n")
-    
-    # Analyze each exit_signal trade
-    analysis = []
-    for trade in exit_signal_trades:
-        mfe, mae = calculate_mfe_mae(trade)
-        
-        profit_pct = trade['profit_ratio'] * 100
-        duration_mins = trade.get('trade_duration', 0)
-        
-        # Check if ROI was ever hit (first tier is typically 12%)
-        roi_hit = mfe >= 12.0
-        
-        # Classify the trade
-        went_green = mfe > 0.5  # At least 0.5% profit at some point
-        exited_red = profit_pct < 0
-        
-        analysis.append({
-            'pair': trade['pair'],
-            'entry_time': trade['open_date'],
-            'exit_time': trade['close_date'],
-            'duration_hours': duration_mins / 60,
-            'entry_tag': trade.get('enter_tag', 'unknown'),
-            'open_rate': trade['open_rate'],
-            'close_rate': trade['close_rate'],
-            'profit_pct': profit_pct,
-            'profit_abs': trade['profit_abs'],
-            'mfe': mfe,
-            'mae': mae,
-            'roi_hit': roi_hit,
-            'went_green': went_green,
-            'exited_red': exited_red,
-            'pattern': classify_pattern(mfe, mae, profit_pct)
-        })
-    
-    return analysis, exit_signal_trades
-
-def classify_pattern(mfe, mae, profit_pct):
-    """Classify the trade pattern."""
-    if mfe > 3.0 and profit_pct < 0:
-        return "early_exit"  # Had good profit, exited negative
-    elif mfe < 1.0 and mae < -2.0:
-        return "bad_entry"  # Never went positive, deep drawdown
-    elif mfe > 1.0 and mae < -1.0 and abs(mfe + mae) < 3.0:
-        return "choppy"  # Oscillated between positive and negative
-    elif profit_pct < 0:
-        return "small_loss"  # Just a regular small loss
     else:
-        return "small_win"  # Small winner
+        raise FileNotFoundError(f"Neither {zip_file} nor {json_file} found")
+    
+    # Handle nested strategy structure
+    if 'strategy' in data:
+        # Get first strategy
+        strategy_name = list(data['strategy'].keys())[0]
+        trades_df = pd.DataFrame(data['strategy'][strategy_name]['trades'])
+    elif 'trades' in data:
+        trades_df = pd.DataFrame(data['trades'])
+    else:
+        raise KeyError(f"Cannot find trades in data. Keys: {list(data.keys())}")
+    
+    return trades_df, meta
 
-def generate_report(analysis, output_path):
-    """Generate markdown report."""
-    
-    # Sort by profit to get worst losses
-    sorted_by_loss = sorted(analysis, key=lambda x: x['profit_pct'])
-    
-    # Calculate statistics
-    total_trades = len(analysis)
-    losing_trades = [t for t in analysis if t['profit_pct'] < 0]
-    winning_trades = [t for t in analysis if t['profit_pct'] >= 0]
-    
-    went_green_exited_red = [t for t in analysis if t['went_green'] and t['exited_red']]
-    early_exits = [t for t in analysis if t['pattern'] == 'early_exit']
-    
-    # Group by pair
-    by_pair = defaultdict(list)
-    for t in analysis:
-        by_pair[t['pair']].append(t)
-    
-    # Group by pattern
-    by_pattern = defaultdict(list)
-    for t in analysis:
-        by_pattern[t['pattern']].append(t)
-    
-    # Group by entry tag
-    by_entry = defaultdict(list)
-    for t in analysis:
-        by_entry[t['entry_tag']].append(t)
-    
-    # Generate report
-    report = f"""# Exit Signal Loss Profile Report
 
-**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  
+def analyze_exit_signal_losses(trades_df: pd.DataFrame) -> pd.DataFrame:
+    """Filter and analyze exit_signal losses"""
+    exit_sig = trades_df[trades_df['exit_reason'] == 'exit_signal'].copy()
+    
+    # Calculate profit in USDT
+    exit_sig['profit_usdt'] = exit_sig['profit_abs']
+    
+    # Add helpful columns
+    exit_sig['duration_hours'] = (pd.to_datetime(exit_sig['close_date']) - 
+                                   pd.to_datetime(exit_sig['open_date'])).dt.total_seconds() / 3600
+    
+    return exit_sig
+
+
+def pair_attribution(exit_sig: pd.DataFrame) -> pd.DataFrame:
+    """Rank pairs by exit_signal losses"""
+    pair_stats = exit_sig.groupby('pair').agg({
+        'profit_usdt': ['sum', 'mean', 'count'],
+        'profit_ratio': 'mean'
+    }).round(3)
+    
+    pair_stats.columns = ['total_loss_usdt', 'avg_loss_usdt', 'trade_count', 'avg_loss_pct']
+    pair_stats = pair_stats.sort_values('total_loss_usdt')
+    return pair_stats
+
+
+def analyze_entry_indicators(exit_sig: pd.DataFrame) -> Dict:
+    """
+    Analyze indicator states at entry for losing exit_signal trades.
+    Note: This requires the trades CSV has indicator columns.
+    """
+    results = {}
+    
+    # Check which indicator columns are available
+    indicator_cols = [col for col in exit_sig.columns if col.startswith('enter_')]
+    
+    if not indicator_cols:
+        results['warning'] = "No entry indicator columns found in trades export"
+        return results
+    
+    # For each indicator column, show distribution
+    for col in indicator_cols:
+        if exit_sig[col].dtype in ['int64', 'float64']:
+            results[col] = {
+                'mean': float(exit_sig[col].mean()),
+                'median': float(exit_sig[col].median()),
+                'min': float(exit_sig[col].min()),
+                'max': float(exit_sig[col].max())
+            }
+        elif exit_sig[col].dtype == 'bool':
+            results[col] = {
+                'true_count': int(exit_sig[col].sum()),
+                'false_count': int((~exit_sig[col]).sum()),
+                'true_pct': float(exit_sig[col].mean() * 100)
+            }
+    
+    return results
+
+
+def regime_analysis(exit_sig: pd.DataFrame) -> Dict:
+    """
+    Identify if losses are concentrated in specific regimes.
+    Uses available columns to infer regime characteristics.
+    """
+    results = {}
+    
+    # Check for ADX
+    if 'enter_adx' in exit_sig.columns:
+        low_adx = exit_sig[exit_sig['enter_adx'] < 20]
+        high_adx = exit_sig[exit_sig['enter_adx'] >= 20]
+        
+        results['adx_regime'] = {
+            'low_adx_lt20': {
+                'count': len(low_adx),
+                'total_loss': float(low_adx['profit_usdt'].sum()),
+                'avg_loss': float(low_adx['profit_usdt'].mean())
+            },
+            'high_adx_gte20': {
+                'count': len(high_adx),
+                'total_loss': float(high_adx['profit_usdt'].sum()),
+                'avg_loss': float(high_adx['profit_usdt'].mean())
+            }
+        }
+    
+    # Check for volume regime
+    if 'enter_volume' in exit_sig.columns and 'enter_volume_mean_30' in exit_sig.columns:
+        low_vol = exit_sig[exit_sig['enter_volume'] < exit_sig['enter_volume_mean_30']]
+        high_vol = exit_sig[exit_sig['enter_volume'] >= exit_sig['enter_volume_mean_30']]
+        
+        results['volume_regime'] = {
+            'low_volume': {
+                'count': len(low_vol),
+                'total_loss': float(low_vol['profit_usdt'].sum()),
+                'avg_loss': float(low_vol['profit_usdt'].mean())
+            },
+            'high_volume': {
+                'count': len(high_vol),
+                'total_loss': float(high_vol['profit_usdt'].sum()),
+                'avg_loss': float(high_vol['profit_usdt'].mean())
+            }
+        }
+    
+    # Check for trend regime (EMA slope)
+    if 'enter_ema200_slope' in exit_sig.columns:
+        down_trend = exit_sig[exit_sig['enter_ema200_slope'] < 0]
+        up_trend = exit_sig[exit_sig['enter_ema200_slope'] >= 0]
+        
+        results['trend_regime'] = {
+            'ema200_slope_down': {
+                'count': len(down_trend),
+                'total_loss': float(down_trend['profit_usdt'].sum()),
+                'avg_loss': float(down_trend['profit_usdt'].mean())
+            },
+            'ema200_slope_up': {
+                'count': len(up_trend),
+                'total_loss': float(up_trend['profit_usdt'].sum()),
+                'avg_loss': float(up_trend['profit_usdt'].mean())
+            }
+        }
+    
+    return results
+
+
+def generate_markdown_report(pair_stats: pd.DataFrame, 
+                             indicator_analysis: Dict,
+                             regime_analysis: Dict,
+                             total_exit_sig_loss: float,
+                             output_path: Path):
+    """Generate comprehensive markdown report"""
+    
+    report = f"""# Exit Signal Loss Attribution Analysis
+**Generated:** {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}  
 **Strategy:** EPAUltimateV3  
 **Timerange:** 2024-06-01 to 2024-12-31  
 
+---
+
 ## Executive Summary
 
-- **Total Exit Signal Trades:** {total_trades}
-- **Winners:** {len(winning_trades)} ({len(winning_trades)/total_trades*100:.1f}%)
-- **Losers:** {len(losing_trades)} ({len(losing_trades)/total_trades*100:.1f}%)
-- **Total P&L:** {sum(t['profit_pct'] for t in analysis):.2f}%
-- **Avg Profit per Trade:** {statistics.mean([t['profit_pct'] for t in analysis]):.2f}%
-- **Median Duration:** {statistics.median([t['duration_hours'] for t in analysis]):.1f} hours
+**Total exit_signal losses:** {total_exit_sig_loss:.2f} USDT across {len(pair_stats)} pairs
 
-## Critical Pattern: Early Exit Problem
+**Key Finding:** This report identifies which pairs, indicator states, and market regimes contribute most to exit_signal losses, enabling targeted entry/regime filters.
 
-**Trades that went green but exited red:** {len(went_green_exited_red)} ({len(went_green_exited_red)/total_trades*100:.1f}%)
+---
 
-This is the PRIMARY loss driver. These trades had favorable movement (MFE > 0.5%) but exit_signal triggered before securing profit.
+## 1. Pair Attribution
 
-**"Early Exit" pattern (MFE > 3%, exited negative):** {len(early_exits)} trades  
-**Opportunity Cost:** {abs(sum(t['profit_pct'] for t in early_exits)):.2f}% lost
+Ranked by total loss contribution:
 
-## Top 5 Worst Exit Signal Losses
-
-| Rank | Pair | Entry | Exit | Duration | Profit % | MFE % | MAE % | Pattern |
-|------|------|-------|------|----------|----------|-------|-------|---------|
+| Pair | Trade Count | Total Loss (USDT) | Avg Loss (USDT) | Avg Loss (%) |
+|------|-------------|-------------------|-----------------|--------------|
 """
     
-    for i, trade in enumerate(sorted_by_loss[:5], 1):
-        report += f"| {i} | {trade['pair']} | {trade['entry_time'][:10]} | {trade['exit_time'][:10]} | {trade['duration_hours']:.1f}h | **{trade['profit_pct']:.2f}%** | {trade['mfe']:.2f}% | {trade['mae']:.2f}% | {trade['pattern']} |\n"
+    for pair, row in pair_stats.iterrows():
+        report += f"| {pair} | {int(row['trade_count'])} | {row['total_loss_usdt']:.2f} | {row['avg_loss_usdt']:.2f} | {row['avg_loss_pct']*100:.2f}% |\n"
     
-    report += f"""
-## Pattern Distribution
-
-"""
+    report += "\n**Analysis:**\n"
+    worst_pair = pair_stats.index[0]
+    worst_loss = pair_stats.iloc[0]['total_loss_usdt']
+    worst_pct = (worst_loss / total_exit_sig_loss) * 100
+    report += f"- **{worst_pair}** is the worst contributor: {worst_loss:.2f} USDT ({worst_pct:.1f}% of total)\n"
     
-    for pattern, trades in sorted(by_pattern.items(), key=lambda x: -len(x[1])):
-        avg_profit = statistics.mean([t['profit_pct'] for t in trades])
-        avg_mfe = statistics.mean([t['mfe'] for t in trades])
-        avg_mae = statistics.mean([t['mae'] for t in trades])
+    top_3_loss = pair_stats.head(3)['total_loss_usdt'].sum()
+    top_3_pct = (top_3_loss / total_exit_sig_loss) * 100
+    report += f"- **Top 3 pairs** account for {top_3_loss:.2f} USDT ({top_3_pct:.1f}% of total losses)\n"
+    
+    report += "\n---\n\n## 2. Entry Indicator States\n\n"
+    
+    if 'warning' in indicator_analysis:
+        report += f"⚠️ {indicator_analysis['warning']}\n\n"
+        report += "**Action Required:** Re-run backtest with `--export trades` to capture indicator data:\n"
+        report += "```bash\n"
+        report += "docker compose run --rm freqtrade backtesting \\\n"
+        report += "  --strategy EPAUltimateV3 \\\n"
+        report += "  --timerange 20240601-20241231 \\\n"
+        report += "  --timeframe 4h \\\n"
+        report += "  --export trades\n"
+        report += "```\n"
+    else:
+        report += "Indicator states at entry for losing exit_signal trades:\n\n"
         
-        report += f"""### {pattern.replace('_', ' ').title()} ({len(trades)} trades, {len(trades)/total_trades*100:.1f}%)
-
-- **Avg Profit:** {avg_profit:.2f}%
-- **Avg MFE:** {avg_mfe:.2f}%
-- **Avg MAE:** {avg_mae:.2f}%
-- **Total P&L:** {sum([t['profit_pct'] for t in trades]):.2f}%
-
-"""
-    
-    report += f"""## Distribution by Pair
-
-| Pair | Trades | Winners | Win Rate | Avg Profit % | Avg MFE % | Total P&L % |
-|------|--------|---------|----------|--------------|-----------|-------------|
-"""
-    
-    for pair in sorted(by_pair.keys()):
-        trades = by_pair[pair]
-        winners = len([t for t in trades if t['profit_pct'] >= 0])
-        win_rate = winners / len(trades) * 100
-        avg_profit = statistics.mean([t['profit_pct'] for t in trades])
-        avg_mfe = statistics.mean([t['mfe'] for t in trades])
-        total_pl = sum([t['profit_pct'] for t in trades])
+        # Numeric indicators
+        numeric_indicators = {k: v for k, v in indicator_analysis.items() 
+                            if isinstance(v, dict) and 'mean' in v}
+        if numeric_indicators:
+            report += "### Numeric Indicators\n\n"
+            report += "| Indicator | Mean | Median | Min | Max |\n"
+            report += "|-----------|------|--------|-----|-----|\n"
+            for ind, stats in numeric_indicators.items():
+                report += f"| {ind} | {stats['mean']:.3f} | {stats['median']:.3f} | {stats['min']:.3f} | {stats['max']:.3f} |\n"
+            report += "\n"
         
-        report += f"| {pair} | {len(trades)} | {winners} | {win_rate:.1f}% | {avg_profit:.2f}% | {avg_mfe:.2f}% | {total_pl:.2f}% |\n"
+        # Boolean indicators
+        bool_indicators = {k: v for k, v in indicator_analysis.items() 
+                         if isinstance(v, dict) and 'true_count' in v}
+        if bool_indicators:
+            report += "### Boolean Indicators\n\n"
+            report += "| Indicator | True Count | False Count | True % |\n"
+            report += "|-----------|------------|-------------|--------|\n"
+            for ind, stats in bool_indicators.items():
+                report += f"| {ind} | {stats['true_count']} | {stats['false_count']} | {stats['true_pct']:.1f}% |\n"
+            report += "\n"
     
-    report += f"""
-## Distribution by Entry Tag
-
-| Entry Tag | Trades | Avg Profit % | Avg MFE % | Total P&L % |
-|-----------|--------|--------------|-----------|-------------|
-"""
+    report += "---\n\n## 3. Regime Analysis\n\n"
     
-    for tag in sorted(by_entry.keys(), key=lambda x: -len(by_entry[x])):
-        trades = by_entry[tag]
-        avg_profit = statistics.mean([t['profit_pct'] for t in trades])
-        avg_mfe = statistics.mean([t['mfe'] for t in trades])
-        total_pl = sum([t['profit_pct'] for t in trades])
+    if not regime_analysis:
+        report += "⚠️ No regime columns found in trades data.\n\n"
+    else:
+        if 'adx_regime' in regime_analysis:
+            report += "### ADX Regime\n\n"
+            adx = regime_analysis['adx_regime']
+            low = adx['low_adx_lt20']
+            high = adx['high_adx_gte20']
+            
+            report += "| Regime | Trade Count | Total Loss (USDT) | Avg Loss (USDT) |\n"
+            report += "|--------|-------------|-------------------|------------------|\n"
+            report += f"| ADX < 20 (weak trend) | {low['count']} | {low['total_loss']:.2f} | {low['avg_loss']:.2f} |\n"
+            report += f"| ADX >= 20 (strong trend) | {high['count']} | {high['total_loss']:.2f} | {high['avg_loss']:.2f} |\n"
+            report += "\n"
+            
+            if low['count'] > 0 and high['count'] > 0:
+                low_pct = (low['total_loss'] / total_exit_sig_loss) * 100
+                report += f"**Finding:** Low ADX (weak trend) trades contribute {low_pct:.1f}% of exit_signal losses.\n\n"
         
-        report += f"| {tag} | {len(trades)} | {avg_profit:.2f}% | {avg_mfe:.2f}% | {total_pl:.2f}% |\n"
+        if 'volume_regime' in regime_analysis:
+            report += "### Volume Regime\n\n"
+            vol = regime_analysis['volume_regime']
+            low = vol['low_volume']
+            high = vol['high_volume']
+            
+            report += "| Regime | Trade Count | Total Loss (USDT) | Avg Loss (USDT) |\n"
+            report += "|--------|-------------|-------------------|------------------|\n"
+            report += f"| Below avg volume | {low['count']} | {low['total_loss']:.2f} | {low['avg_loss']:.2f} |\n"
+            report += f"| Above avg volume | {high['count']} | {high['total_loss']:.2f} | {high['avg_loss']:.2f} |\n"
+            report += "\n"
+        
+        if 'trend_regime' in regime_analysis:
+            report += "### EMA200 Trend Regime\n\n"
+            trend = regime_analysis['trend_regime']
+            down = trend['ema200_slope_down']
+            up = trend['ema200_slope_up']
+            
+            report += "| Regime | Trade Count | Total Loss (USDT) | Avg Loss (USDT) |\n"
+            report += "|--------|-------------|-------------------|------------------|\n"
+            report += f"| EMA200 slope DOWN | {down['count']} | {down['total_loss']:.2f} | {down['avg_loss']:.2f} |\n"
+            report += f"| EMA200 slope UP | {up['count']} | {up['total_loss']:.2f} | {up['avg_loss']:.2f} |\n"
+            report += "\n"
+            
+            if down['count'] > 0 and up['count'] > 0:
+                down_pct = (down['total_loss'] / total_exit_sig_loss) * 100
+                report += f"**Finding:** Entries during EMA200 downtrend contribute {down_pct:.1f}% of exit_signal losses.\n\n"
     
-    report += f"""
-## MFE/MAE Statistics
-
-- **Median MFE:** {statistics.median([t['mfe'] for t in analysis]):.2f}%
-- **Median MAE:** {statistics.median([t['mae'] for t in analysis]):.2f}%
-- **Avg MFE:** {statistics.mean([t['mfe'] for t in analysis]):.2f}%
-- **Avg MAE:** {statistics.mean([t['mae'] for t in analysis]):.2f}%
-
-### MFE Distribution
-- **MFE > 5%:** {len([t for t in analysis if t['mfe'] > 5])} trades
-- **MFE 3-5%:** {len([t for t in analysis if 3 <= t['mfe'] <= 5])} trades
-- **MFE 1-3%:** {len([t for t in analysis if 1 <= t['mfe'] < 3])} trades
-- **MFE < 1%:** {len([t for t in analysis if t['mfe'] < 1])} trades
-
-## Hypothesis Validation
-
-### A) "Exit too early" - CONFIRMED ✓
-**Evidence:** {len(went_green_exited_red)} trades ({len(went_green_exited_red)/total_trades*100:.1f}%) went green but exited red.  
-**Impact:** High - this is the dominant pattern.  
-**Root Cause:** 2-of-3 exit consensus triggers before trade matures, especially in volatile but bullish conditions.
-
-### B) "Trend flip noise" - PARTIAL ✓
-**Evidence:** {len(by_pattern['choppy'])} trades ({len(by_pattern['choppy'])/total_trades*100:.1f}%) classified as choppy (oscillating profit/loss).  
-**Impact:** Moderate - contributes to losses but not the primary driver.
-
-### C) "Bad entries" - LOW ✗
-**Evidence:** {len(by_pattern['bad_entry'])} trades ({len(by_pattern['bad_entry'])/total_trades*100:.1f}%) never went positive.  
-**Impact:** Low - most exit_signal trades do achieve positive MFE.  
-**Conclusion:** Entry quality is NOT the problem.
-
-## Recommended Fixes (Priority Order)
-
-### Fix #1: Minimum Hold Period with MFE Protection (RECOMMENDED)
-**Concept:** Block exit_signal for first 12h UNLESS stoploss hit. If MFE > 2%, require 24h hold.
-
-**Rationale:**
-- Prevents premature exits in first few candles
-- Allows trades that show promise (MFE > 2%) more time to develop
-- Doesn't interfere with stoploss protection
-
-**Expected Impact:**
-- Reduce "early exit" pattern by ~60%
-- Convert {len(early_exits)} losing trades to potential winners
-- Estimated profit improvement: +2-3%
-
-**Risk:** Low - stoploss still active, only blocks premature exit_signal
-
-### Fix #2: Exit Confirmation Damping (ALTERNATIVE)
-**Concept:** When in profit, require 3-of-3 exit consensus instead of 2-of-3.
-
-**Rationale:**
-- Tightens exit criteria when trade is working
-- Prevents single noisy indicator from triggering exit
-- Maintains 2-of-3 for losing trades (faster exit)
-
-**Expected Impact:**
-- Reduce went-green-exited-red by ~40%
-- May increase winning trade duration
-- Risk of turning small winners into small losers if trend reverses
-
-**Risk:** Moderate - could miss optimal exits in genuine reversals
-
-## Recommendation
-
-Implement **Fix #1 (Minimum Hold Period with MFE Protection)** because:
-1. Directly addresses the "early exit" problem ({len(early_exits)} trades)
-2. Low risk - stoploss protection unchanged
-3. Simple logic - easy to understand and tune
-4. Doesn't alter exit consensus mechanism (proven to work)
-
-**Implementation:** Add `min_hold_exit_signal_hours` parameter (default=12) and `mfe_protection_threshold` (default=2.0%).
-"""
+    report += "---\n\n## 4. Recommendations\n\n"
+    report += "Based on this attribution analysis, consider implementing:\n\n"
+    
+    report += "### Filter Candidate 1: EMA200 Slope Filter\n"
+    report += "- **Logic:** Only enter long trades when 4h EMA200 slope > 0 (uptrend)\n"
+    report += "- **Rationale:** If EMA200 downtrend trades show disproportionate losses\n"
+    report += "- **Risk:** May reduce trade count significantly\n\n"
+    
+    report += "### Filter Candidate 2: ADX Minimum Threshold\n"
+    report += "- **Logic:** Only enter when ADX >= 20 (strong trend)\n"
+    report += "- **Rationale:** Weak trend entries may be prone to whipsaw\n"
+    report += "- **Risk:** May miss early trend entries\n\n"
+    
+    report += "### Next Steps\n"
+    report += "1. Implement both filters as feature flags (default OFF)\n"
+    report += "2. Run 4-variant ablation:\n"
+    report += "   - Baseline (both OFF)\n"
+    report += "   - Filter1 ON (EMA200 slope)\n"
+    report += "   - Filter2 ON (ADX threshold)\n"
+    report += "   - Both ON\n"
+    report += "3. Compare:\n"
+    report += "   - Total profit (must be >= baseline 10.03%)\n"
+    report += "   - stop_loss count (must be <= 9)\n"
+    report += "   - exit_signal loss reduction\n"
+    report += "   - Trade count impact\n"
+    report += "4. Enable winner if acceptance criteria met\n\n"
+    
+    report += "---\n\n"
+    report += "*Note: This analysis focuses on identifying root causes at entry, not exit tweaks.*\n"
     
     # Write report
+    output_path.parent.mkdir(parents=True, exist_ok=True)
     with open(output_path, 'w', encoding='utf-8') as f:
         f.write(report)
     
-    print(f"\n✅ Report generated: {output_path}")
-    
-    return by_pattern, went_green_exited_red, early_exits
+    print(f"\n✅ Report written to: {output_path}")
+
 
 def main():
-    """Main analysis function."""
-    
     # Paths
-    backtest_dir = Path(__file__).parent.parent / 'user_data' / 'backtest_results'
-    latest_result = backtest_dir / 'backtest-result-2026-01-01_22-11-17.zip'
-    output_dir = Path(__file__).parent.parent / 'reports'
-    output_dir.mkdir(exist_ok=True)
-    output_path = output_dir / 'exit_signal_loss_profile.md'
+    repo_root = Path(__file__).parent.parent
+    backtest_dir = repo_root / 'user_data' / 'backtest_results'
+    output_path = repo_root / 'reports' / 'exit_signal_attribution.md'
     
-    print(f"Loading backtest data from: {latest_result}")
+    print("=" * 60)
+    print("EXIT SIGNAL LOSS ATTRIBUTION ANALYSIS")
+    print("=" * 60)
     
-    # Load trades
-    trades_data = load_backtest_trades(latest_result)
+    # Load data
+    trades_df, meta = load_latest_backtest(backtest_dir)
+    print(f"Loaded {len(trades_df)} total trades")
     
-    # Analyze exit_signal trades
-    analysis, exit_signal_trades = analyze_exit_signal_trades(trades_data)
+    # Filter exit_signal trades
+    exit_sig = analyze_exit_signal_losses(trades_df)
+    print(f"Found {len(exit_sig)} exit_signal trades")
+    
+    total_loss = exit_sig['profit_usdt'].sum()
+    print(f"Total exit_signal loss: {total_loss:.2f} USDT")
+    
+    # Run analyses
+    print("\n1. Analyzing pair attribution...")
+    pair_stats = pair_attribution(exit_sig)
+    
+    print("2. Analyzing entry indicator states...")
+    indicator_analysis = analyze_entry_indicators(exit_sig)
+    
+    print("3. Analyzing regime concentration...")
+    regime_results = regime_analysis(exit_sig)
     
     # Generate report
-    patterns, went_green_red, early_exits = generate_report(analysis, output_path)
+    print("\n4. Generating markdown report...")
+    generate_markdown_report(pair_stats, indicator_analysis, regime_results, 
+                           total_loss, output_path)
     
-    print(f"\n{'='*60}")
-    print("KEY FINDINGS:")
-    print(f"{'='*60}")
-    print(f"✓ Early exit problem confirmed: {len(early_exits)} trades")
-    print(f"✓ Went green → exited red: {len(went_green_red)} trades")
-    print(f"✓ Recommended fix: Minimum hold period with MFE protection")
-    print(f"✓ Expected improvement: +2-3% profit")
-    print(f"{'='*60}\n")
+    print("\n" + "=" * 60)
+    print("ANALYSIS COMPLETE")
+    print("=" * 60)
+
 
 if __name__ == '__main__':
     main()

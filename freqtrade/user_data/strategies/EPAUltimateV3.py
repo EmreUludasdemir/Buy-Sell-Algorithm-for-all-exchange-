@@ -199,6 +199,15 @@ class EPAUltimateV3(IStrategy):
     exit_rsi_high = IntParameter(55, 75, default=65, space='sell', optimize=False)
     exit_ema_dist_min = DecimalParameter(0.0, 0.05, default=0.01, space='sell', optimize=False)
     
+    # Entry Regime Filters (see reports/entry_regime_filters_ablation.md)
+    # Filter 1: EMA200 Slope - only enter when 4h EMA200 in uptrend
+    use_ema200_slope_filter = BooleanParameter(default=False, space='buy', optimize=False)
+    ema200_slope_min = DecimalParameter(0.0, 0.001, default=0.0001, space='buy', optimize=False)
+    
+    # Filter 2: ADX Minimum - only enter in strong trends
+    use_adx_min_filter = BooleanParameter(default=True, space='buy', optimize=False)
+    adx_entry_min = IntParameter(15, 30, default=20, space='buy', optimize=False)
+    
     # Confluence Settings
     min_kivanc_signals = IntParameter(2, 3, default=3, space='buy', optimize=True)
     
@@ -228,6 +237,9 @@ class EPAUltimateV3(IStrategy):
         dataframe['ema_trend'] = ta.EMA(dataframe, timeperiod=self.trend_ema.value)
         dataframe['ema_50'] = ta.EMA(dataframe, timeperiod=50)
         dataframe['ema_200'] = ta.EMA(dataframe, timeperiod=200)
+        
+        # EMA200 slope for regime filter (pct change over 10 candles)
+        dataframe['ema200_slope'] = dataframe['ema_200'].pct_change(periods=10)
         
         # Volatility
         dataframe['atr'] = ta.ATR(dataframe, timeperiod=14)
@@ -395,7 +407,20 @@ class EPAUltimateV3(IStrategy):
         # HTF alignment
         htf_ok_long = (dataframe['htf_bullish'] == 1)
         
-        # ==================== DYNAMIC KΙVANÇ CONFLUENCE ====================
+        # ==================== ENTRY REGIME FILTERS ====================
+        # Filter 1: EMA200 Slope Filter (only in uptrend)
+        ema200_ok = (
+            (~self.use_ema200_slope_filter.value) |
+            (dataframe['ema200_slope'] >= self.ema200_slope_min.value)
+        )
+        
+        # Filter 2: ADX Minimum (only in strong trends)
+        adx_ok = (
+            (~self.use_adx_min_filter.value) |
+            (dataframe['adx'] >= self.adx_entry_min.value)
+        )
+        
+        # ====================  DYNAMIC KΙVANÇ CONFLUENCE ====================
         # HIGH_VOL: Require 3/3 (strict - protect capital)
         # NORMAL/LOW_VOL: Require 2/3 (more trades in stable conditions)
         min_signals_required = np.where(
@@ -436,6 +461,8 @@ class EPAUltimateV3(IStrategy):
             (kivanc_confluence_long) &
             (volume_ok) &
             (htf_ok_long) &
+            (ema200_ok) &    # NEW: Regime filter 1
+            (adx_ok) &       # NEW: Regime filter 2
             (dataframe['volume'] > 0),
             'enter_long'
         ] = 1
