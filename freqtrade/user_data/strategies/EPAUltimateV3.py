@@ -85,8 +85,8 @@ class EPAUltimateV3(IStrategy):
     # Base stoploss - widened from -5% to -8% to reduce stop-outs
     stoploss = -0.08
     
-    # Enable ATR-based dynamic stoploss
-    use_custom_stoploss = True
+    # ABLATION VARIANT A: trailing_stop ON, use_custom_stoploss OFF
+    use_custom_stoploss = False
     
     # Trailing configuration - adjusted for wider stops
     trailing_stop = True
