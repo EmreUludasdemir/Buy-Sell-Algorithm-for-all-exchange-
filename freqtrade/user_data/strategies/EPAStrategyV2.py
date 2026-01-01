@@ -8,7 +8,7 @@ Upgraded from Pine Script v6 with:
 - ML-Ready Feature Extraction
 
 Author: Emre Uludaşdemir
-Version: 2.0.0
+Version: 2.1.0 - Enhanced exit logic with Kıvanç indicators
 """
 
 import logging
@@ -26,6 +26,9 @@ from freqtrade.persistence import Trade
 
 # Import SMC indicators including new volatility regime
 from smc_indicators import calculate_volatility_regime
+
+# Import Kıvanç Özbilgiç indicators for enhanced exits
+from kivanc_indicators import supertrend, qqe
 
 logger = logging.getLogger(__name__)
 
@@ -51,30 +54,30 @@ class EPAStrategyV2(IStrategy):
     # Disable shorting for spot markets (set True for futures)
     can_short = False
     
-    # ROI table - adjusted for 4H timeframe (values in minutes)
+    # ROI table - adjusted for 4H timeframe with more patient exits
     # 4H bar = 240 minutes
     minimal_roi = {
-        "0": 0.08,       # 8% initial target
-        "480": 0.05,     # 5% after 2 bars (8h)
-        "960": 0.03,     # 3% after 4 bars (16h)
-        "1440": 0.02,    # 2% after 6 bars (24h)
-        "2880": 0.01,    # 1% after 12 bars (48h)
+        "0": 0.10,       # 10% initial target
+        "480": 0.06,     # 6% after 2 bars (8h)
+        "960": 0.04,     # 4% after 4 bars (16h)
+        "1440": 0.025,   # 2.5% after 6 bars (24h)
+        "2880": 0.015,   # 1.5% after 12 bars (48h)
     }
     
     # Base stoploss (custom_stoploss uses ATR-based chandelier exit)
     stoploss = -0.05
     
-    # Trailing configuration - tighter for reduced drawdown
+    # Trailing configuration - balanced for V3-style exits
     trailing_stop = True
-    trailing_stop_positive = 0.015       # Trail at 1.5% (tighter)
-    trailing_stop_positive_offset = 0.025  # Only trail after 2.5% profit
+    trailing_stop_positive = 0.02         # Trail at 2%
+    trailing_stop_positive_offset = 0.03  # Only trail after 3% profit
     trailing_only_offset_is_reached = True
     
     # Process only new candles for efficiency
     process_only_new_candles = True
     
-    # Disable exit signals - ROI and trailing stop perform better
-    use_exit_signal = False
+    # Enable exit signals with multi-indicator confirmation
+    use_exit_signal = True
     exit_profit_only = False
     
     # Startup candle requirement
@@ -231,6 +234,18 @@ class EPAStrategyV2(IStrategy):
         dataframe['chandelier_long'] = dataframe['high'].rolling(22).max() - (dataframe['atr'] * dataframe['dynamic_atr_mult'])
         dataframe['chandelier_short'] = dataframe['low'].rolling(22).min() + (dataframe['atr'] * dataframe['dynamic_atr_mult'])
         
+        # ==================== KΙVANÇ INDICATORS FOR EXIT ====================
+        # Supertrend for trend direction (used in exit logic)
+        st_direction, st_line = supertrend(dataframe, period=10, multiplier=3.0)
+        dataframe['supertrend_direction'] = st_direction
+        dataframe['supertrend_line'] = st_line
+        
+        # QQE for momentum confirmation (used in exit logic)
+        qqe_trend, qqe_rsi_ma, qqe_line = qqe(dataframe, rsi_period=14, sf=5, qq_factor=4.238)
+        dataframe['qqe_trend'] = qqe_trend
+        dataframe['qqe_rsi_ma'] = qqe_rsi_ma
+        dataframe['qqe_line'] = qqe_line
+        
         # ==================== SIGNAL DETECTION ====================
         
         # EMA Cross signals
@@ -256,34 +271,36 @@ class EPAStrategyV2(IStrategy):
         ).astype(int)
         
         # Pullback signals (to EMA in trend)
+        # FIXED: Use .shift(1) to avoid repainting - signals based on confirmed (previous) bar
         dataframe['pullback_up'] = (
-            (dataframe['ema_fast'] > dataframe['ema_slow']) &
-            (dataframe['low'] <= dataframe['ema_fast']) &
-            (dataframe['close'] > dataframe['ema_fast']) &
-            (dataframe['close'] > dataframe['open'])
+            (dataframe['ema_fast'].shift(1) > dataframe['ema_slow'].shift(1)) &
+            (dataframe['low'].shift(1) <= dataframe['ema_fast'].shift(1)) &
+            (dataframe['close'].shift(1) > dataframe['ema_fast'].shift(1)) &
+            (dataframe['close'].shift(1) > dataframe['open'].shift(1))
         ).astype(int)
         
         dataframe['pullback_down'] = (
-            (dataframe['ema_fast'] < dataframe['ema_slow']) &
-            (dataframe['high'] >= dataframe['ema_fast']) &
-            (dataframe['close'] < dataframe['ema_fast']) &
-            (dataframe['close'] < dataframe['open'])
+            (dataframe['ema_fast'].shift(1) < dataframe['ema_slow'].shift(1)) &
+            (dataframe['high'].shift(1) >= dataframe['ema_fast'].shift(1)) &
+            (dataframe['close'].shift(1) < dataframe['ema_fast'].shift(1)) &
+            (dataframe['close'].shift(1) < dataframe['open'].shift(1))
         ).astype(int)
         
         # ==================== SFP (Swing Failure Pattern) ====================
         # SFP with close confirmation + volume
+        # FIXED: Use .shift(1) to avoid repainting - signals based on confirmed (previous) bar
         dataframe['sfp_bullish'] = (
-            (dataframe['low'] < dataframe['lowest_low']) &
-            (dataframe['close'] > dataframe['lowest_low']) &
-            (dataframe['close'] > dataframe['open']) &
-            (dataframe['volume_ratio'] > 1.0)
+            (dataframe['low'].shift(1) < dataframe['lowest_low'].shift(1)) &
+            (dataframe['close'].shift(1) > dataframe['lowest_low'].shift(1)) &
+            (dataframe['close'].shift(1) > dataframe['open'].shift(1)) &
+            (dataframe['volume_ratio'].shift(1) > 1.0)
         ).astype(int)
         
         dataframe['sfp_bearish'] = (
-            (dataframe['high'] > dataframe['highest_high']) &
-            (dataframe['close'] < dataframe['highest_high']) &
-            (dataframe['close'] < dataframe['open']) &
-            (dataframe['volume_ratio'] > 1.0)
+            (dataframe['high'].shift(1) > dataframe['highest_high'].shift(1)) &
+            (dataframe['close'].shift(1) < dataframe['highest_high'].shift(1)) &
+            (dataframe['close'].shift(1) < dataframe['open'].shift(1)) &
+            (dataframe['volume_ratio'].shift(1) > 1.0)
         ).astype(int)
         
         # ==================== ML FEATURES ====================
@@ -423,22 +440,50 @@ class EPAStrategyV2(IStrategy):
     
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        Exit signals based on trend reversal only.
+        Exit signals based on multi-indicator reversal (V3-quality logic).
         
-        Note: Chandelier Exit removed from exit_signal because it caused
-        excessive premature exits. ROI and trailing stop handle profit-taking.
+        Exit requires:
+        - Primary: Supertrend reversal OR QQE reversal
+        - Confirmation: EMA fast < EMA slow
+        - Fallback: EMA cross down alone (original logic)
         """
         
-        # Long exit: Only EMA cross down (strong reversal signal)
+        # ==================== LONG EXITS ====================
+        
+        # Primary exit: Multi-indicator reversal with EMA confirmation
+        # (Same logic as EPAUltimateV3)
+        multi_indicator_exit_long = (
+            (
+                (dataframe['supertrend_direction'] == -1) |
+                (dataframe['qqe_trend'] == -1)
+            ) &
+            (dataframe['ema_fast'] < dataframe['ema_slow'])
+        )
+        
+        # Fallback exit: EMA cross down only (original V2 logic)
+        ema_cross_exit_long = (dataframe['ema_cross_down'] == 1)
+        
+        # Combined exit signal
         dataframe.loc[
-            (dataframe['ema_cross_down'] == 1),
+            (multi_indicator_exit_long) | (ema_cross_exit_long),
             'exit_long'
         ] = 1
         
-        # Short exit
+        # ==================== SHORT EXITS ====================
+        
         if self.can_short:
+            multi_indicator_exit_short = (
+                (
+                    (dataframe['supertrend_direction'] == 1) |
+                    (dataframe['qqe_trend'] == 1)
+                ) &
+                (dataframe['ema_fast'] > dataframe['ema_slow'])
+            )
+            
+            ema_cross_exit_short = (dataframe['ema_cross_up'] == 1)
+            
             dataframe.loc[
-                (dataframe['ema_cross_up'] == 1),
+                (multi_indicator_exit_short) | (ema_cross_exit_short),
                 'exit_short'
             ] = 1
         

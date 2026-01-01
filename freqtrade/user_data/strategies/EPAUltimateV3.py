@@ -12,7 +12,7 @@ Key Features:
 - Optimized for 4H timeframe BTC/USDT trading
 
 Author: Emre Uludaşdemir
-Version: 3.0.0
+Version: 3.1.0 - Improved trade frequency with dynamic confluence
 """
 
 import logging
@@ -49,13 +49,15 @@ class EPAUltimateV3(IStrategy):
     
     Entry requires ALL of:
     - Trending market (ADX > threshold, Chop < threshold)
-    - EMA alignment (fast > slow > trend EMA)
-    - Supertrend bullish
-    - Half Trend bullish
-    - QQE bullish
-    - Waddah Attar shows explosion (high momentum)
+    - EMA alignment (fast > slow for direction)
+    - Dynamic Kıvanç confluence (3/3 in HIGH_VOL, 2/3 otherwise)
     - Volume confirmation
     - HTF trend aligned
+    
+    V3.1 Changes:
+    - Dynamic min_kivanc_signals based on volatility regime
+    - WAE used for position sizing boost, not entry filter
+    - Loosened EMA alignment (removed close > ema_trend)
     """
     
     # Strategy version
@@ -155,6 +157,9 @@ class EPAUltimateV3(IStrategy):
     # Volatility regime position size multipliers
     high_vol_size_mult = DecimalParameter(0.3, 0.7, default=0.5, space='buy', optimize=False)
     low_vol_size_mult = DecimalParameter(1.0, 1.5, default=1.2, space='buy', optimize=False)
+    
+    # WAE boost for position sizing (when WAE confirms entry)
+    wae_size_boost = DecimalParameter(1.0, 1.5, default=1.2, space='buy', optimize=False)
     
     # Signal Filters
     use_volume_filter = BooleanParameter(default=True, space='buy', optimize=True)
@@ -291,14 +296,18 @@ class EPAUltimateV3(IStrategy):
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        Entry logic with maximum confluence.
+        Entry logic with dynamic confluence (V3.1).
+        
+        V3.1 Changes:
+        - Dynamic min_kivanc_signals: 3/3 in HIGH_VOL, 2/3 otherwise
+        - WAE removed from entry (used for position sizing boost instead)
+        - Loosened EMA alignment (removed close > ema_trend)
         
         Requires ALL conditions:
-        1. EPA Filters: Trending market + EMA alignment
-        2. Kıvanç Confluence: At least min_kivanc_signals agree
-        3. Volatility: WAE shows explosion (optional but preferred)
-        4. Volume confirmation
-        5. HTF trend aligned
+        1. EPA Filters: Trending market + EMA direction
+        2. Kıvanç Confluence: Dynamic based on volatility
+        3. Volume confirmation
+        4. HTF trend aligned
         """
         
         # Volume filter
@@ -310,35 +319,46 @@ class EPAUltimateV3(IStrategy):
         # HTF alignment
         htf_ok_long = (dataframe['htf_bullish'] == 1)
         
-        # WAE explosion filter (optional)
-        wae_ok = (
-            (~self.use_wae_filter.value) |
-            (dataframe['wae_trend_up'] > dataframe['wae_explosion_line'])
+        # ==================== DYNAMIC KΙVANÇ CONFLUENCE ====================
+        # HIGH_VOL: Require 3/3 (strict - protect capital)
+        # NORMAL/LOW_VOL: Require 2/3 (more trades in stable conditions)
+        min_signals_required = np.where(
+            dataframe['vol_regime'] == 'HIGH_VOL',
+            3,  # Strict in high volatility
+            2   # Relaxed in normal/low volatility
         )
+        
+        # Store WAE confirmation for position sizing (not entry filter)
+        dataframe['wae_confirms_long'] = (
+            dataframe['wae_trend_up'] > dataframe['wae_explosion_line']
+        ).astype(int)
+        
+        dataframe['wae_confirms_short'] = (
+            dataframe['wae_trend_down'] > dataframe['wae_explosion_line']
+        ).astype(int)
         
         # ==================== LONG ENTRIES ====================
         
-        # EPA Base Filters
+        # EPA Base Filters (LOOSENED: removed close > ema_trend)
         epa_filters_long = (
             (dataframe['is_trending'] == 1) &
             (dataframe['is_choppy'] == 0) &
             (dataframe['trend_bullish'] == 1) &
-            (dataframe['ema_fast'] > dataframe['ema_slow']) &
-            (dataframe['ema_slow'] > dataframe['ema_trend']) &
-            (dataframe['close'] > dataframe['ema_trend'])
+            (dataframe['ema_fast'] > dataframe['ema_slow'])
+            # REMOVED: (dataframe['ema_slow'] > dataframe['ema_trend']) - too restrictive
+            # REMOVED: (dataframe['close'] > dataframe['ema_trend']) - too restrictive
         )
         
-        # Kıvanç Confluence (at least min_kivanc_signals agree)
+        # Kıvanç Confluence (DYNAMIC based on volatility)
         kivanc_confluence_long = (
-            dataframe['kivanc_bull_count'] >= self.min_kivanc_signals.value
+            dataframe['kivanc_bull_count'] >= min_signals_required
         )
         
-        # Combined entry
+        # Combined entry (WAE removed from conditions)
         dataframe.loc[
             (epa_filters_long) &
             (kivanc_confluence_long) &
             (volume_ok) &
-            (wae_ok) &
             (htf_ok_long) &
             (dataframe['volume'] > 0),
             'enter_long'
@@ -349,29 +369,23 @@ class EPAUltimateV3(IStrategy):
         if self.can_short:
             htf_ok_short = (dataframe['htf_bearish'] == 1)
             
-            wae_ok_short = (
-                (~self.use_wae_filter.value) |
-                (dataframe['wae_trend_down'] > dataframe['wae_explosion_line'])
-            )
-            
+            # EPA Base Filters (LOOSENED)
             epa_filters_short = (
                 (dataframe['is_trending'] == 1) &
                 (dataframe['is_choppy'] == 0) &
                 (dataframe['trend_bearish'] == 1) &
-                (dataframe['ema_fast'] < dataframe['ema_slow']) &
-                (dataframe['ema_slow'] < dataframe['ema_trend']) &
-                (dataframe['close'] < dataframe['ema_trend'])
+                (dataframe['ema_fast'] < dataframe['ema_slow'])
             )
             
+            # Kıvanç Confluence (DYNAMIC)
             kivanc_confluence_short = (
-                dataframe['kivanc_bear_count'] >= self.min_kivanc_signals.value
+                dataframe['kivanc_bear_count'] >= min_signals_required
             )
             
             dataframe.loc[
                 (epa_filters_short) &
                 (kivanc_confluence_short) &
                 (volume_ok) &
-                (wae_ok_short) &
                 (htf_ok_short) &
                 (dataframe['volume'] > 0),
                 'enter_short'
@@ -442,6 +456,7 @@ class EPAUltimateV3(IStrategy):
         1. Risk per trade (% of wallet)
         2. Stop distance (ATR-based)
         3. Volatility regime (reduce size in high vol)
+        4. WAE confirmation boost (V3.1)
         """
         dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
         
@@ -461,6 +476,13 @@ class EPAUltimateV3(IStrategy):
             risk_amount *= self.high_vol_size_mult.value  # Reduce size in high volatility
         elif last_candle['vol_regime'] == 'LOW_VOL':
             risk_amount *= self.low_vol_size_mult.value  # Increase size in low volatility
+        
+        # WAE confirmation boost (V3.1)
+        # If WAE shows explosion in our direction, increase position size
+        if side == 'long' and last_candle.get('wae_confirms_long', 0) == 1:
+            risk_amount *= self.wae_size_boost.value
+        elif side == 'short' and last_candle.get('wae_confirms_short', 0) == 1:
+            risk_amount *= self.wae_size_boost.value
         
         # Stop distance
         stop_distance_pct = (atr * self.atr_multiplier.value * vol_multiplier) / current_rate
