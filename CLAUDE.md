@@ -1,8 +1,45 @@
 # EPA Trading Bot - Claude Instructions
 
+## User Context
+
+> [!IMPORTANT]
+> The user is not a professional quant/programmer. Follow these guidelines:
+
+### Communication Rules
+
+- **Explain Freqtrade concepts simply** with analogies when possible
+- **Always show backtest commands clearly** - full command, not just snippets
+- **Explain why we need each indicator** before implementation
+
+### Standard Test Timeranges
+
+Always test on these benchmark periods:
+
+- **T1 (Bull Market)**: `20240601-20241231` - Primary benchmark
+- **T2 (Mixed Market)**: `20230101-20231231` - Validation period
+
+### Git Workflow
+
+```bash
+# Commit message format
+git commit -m "feat: add new RSI divergence indicator"
+git commit -m "fix: correct look-ahead bias in entry signal"
+git commit -m "test: add backtest for aggressive ROI"
+```
+
+### Baseline Comparison Rule
+
+> **NEVER optimize without baseline comparison.** Always run:
+>
+> 1. Baseline strategy backtest first
+> 2. New/modified strategy backtest second
+> 3. Compare metrics side-by-side
+
+---
+
 ## Project Structure
 
-```
+```text
 ├── freqtrade/
 │   ├── user_data/
 │   │   ├── strategies/

@@ -17,12 +17,20 @@ description: How to run backtests for EPA Trading Bot strategies
 cd freqtrade
 ```
 
-### 2. Quick Backtest (EPAUltimateV3)
+### 2. Quick Backtest (Standard T1 Timerange)
 
 // turbo
 
 ```bash
-./scripts/backtest_btc.sh
+# T1: Bull Market (Primary Benchmark)
+docker compose run --rm freqtrade backtesting --strategy EPAUltimateV3 --config user_data/config.json --timerange 20240601-20241231 --timeframe 4h
+```
+
+### 2b. Validation Backtest (T2 Timerange)
+
+```bash
+# T2: Mixed Market (Validation)
+docker compose run --rm freqtrade backtesting --strategy EPAUltimateV3 --config user_data/config.json --timerange 20230101-20231231 --timeframe 4h
 ```
 
 ### 3. Custom Backtest

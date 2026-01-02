@@ -4,6 +4,12 @@ description: How to create a new trading strategy for Freqtrade
 
 # Strategy Development Workflow
 
+> [!IMPORTANT] > **Key Rules:**
+>
+> - Always use `kivanc_indicators.py` for custom indicators
+> - Test on T1 (20240601-20241231) and T2 (20230101-20231231) timeranges
+> - Never optimize without baseline comparison
+
 ## Steps
 
 ### 1. Create Strategy File

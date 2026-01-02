@@ -4,7 +4,7 @@ Kıvanç Özbilgiç Indicators for Freqtrade
 Popular TradingView indicators by Kıvanç Özbilgiç implemented in Python.
 
 Author: Emre Uludaşdemir
-Version: 1.1.0
+Version: 1.2.0
 """
 
 import numpy as np
@@ -36,17 +36,18 @@ def supertrend(
         - direction: 1 for bullish, -1 for bearish
         - line: The supertrend line value
     """
-    high = dataframe['high']
-    low = dataframe['low']
-    close = dataframe['close']
+    # Ensure all price columns are pandas Series (not numpy arrays)
+    high = pd.Series(dataframe['high'], index=dataframe.index)
+    low = pd.Series(dataframe['low'], index=dataframe.index)
+    close = pd.Series(dataframe['close'], index=dataframe.index)
     
-    # Calculate ATR
-    atr = ta.ATR(dataframe, timeperiod=period)
+    # Calculate ATR and ensure it's a pandas Series
+    atr = pd.Series(ta.ATR(dataframe, timeperiod=period), index=dataframe.index)
     
-    # Calculate basic upper and lower bands
+    # Calculate basic upper and lower bands (ensure pandas Series)
     hl2 = (high + low) / 2
-    basic_ub = hl2 + (multiplier * atr)
-    basic_lb = hl2 - (multiplier * atr)
+    basic_ub = pd.Series(hl2 + (multiplier * atr), index=dataframe.index)
+    basic_lb = pd.Series(hl2 - (multiplier * atr), index=dataframe.index)
     
     # Initialize bands
     final_ub = pd.Series(0.0, index=dataframe.index)
@@ -112,14 +113,15 @@ def halftrend(
         - halftrend_up: Upper trend line value
         - halftrend_down: Lower trend line value
     """
-    high = dataframe['high']
-    low = dataframe['low']
-    close = dataframe['close']
+    # Ensure all price columns are pandas Series (not numpy arrays)
+    high = pd.Series(dataframe['high'], index=dataframe.index)
+    low = pd.Series(dataframe['low'], index=dataframe.index)
+    close = pd.Series(dataframe['close'], index=dataframe.index)
     
-    # Calculate ATR for adaptive bands
-    atr = ta.ATR(dataframe, timeperiod=14)
+    # Calculate ATR for adaptive bands (ensure pandas Series)
+    atr = pd.Series(ta.ATR(dataframe, timeperiod=14), index=dataframe.index)
     
-    # Rolling high and low
+    # Rolling high and low (these are already Series from rolling operations)
     highma = high.rolling(window=amplitude).max()
     lowma = low.rolling(window=amplitude).min()
     
@@ -368,19 +370,20 @@ def alphatrend(
         - buy_signal: Boolean series, True on bullish crossover
         - sell_signal: Boolean series, True on bearish crossover
     """
-    high = dataframe['high']
-    low = dataframe['low']
-    close = dataframe['close']
+    # Ensure all price columns are pandas Series (not numpy arrays)
+    high = pd.Series(dataframe['high'], index=dataframe.index)
+    low = pd.Series(dataframe['low'], index=dataframe.index)
+    close = pd.Series(dataframe['close'], index=dataframe.index)
 
-    # Calculate ATR
-    atr = ta.ATR(high, low, close, timeperiod=atr_period)
+    # Calculate ATR (ensure pandas Series)
+    atr = pd.Series(ta.ATR(high, low, close, timeperiod=atr_period), index=dataframe.index)
 
-    # Calculate MFI for direction
-    mfi = ta.MFI(high, low, close, dataframe['volume'], timeperiod=mfi_period)
+    # Calculate MFI for direction (ensure pandas Series)
+    mfi = pd.Series(ta.MFI(high, low, close, dataframe['volume'], timeperiod=mfi_period), index=dataframe.index)
 
-    # Calculate bands
-    upT = low - (atr * atr_multiplier)
-    downT = high + (atr * atr_multiplier)
+    # Calculate bands (ensure pandas Series)
+    upT = pd.Series(low - (atr * atr_multiplier), index=dataframe.index)
+    downT = pd.Series(high + (atr * atr_multiplier), index=dataframe.index)
 
     # AlphaTrend calculation (iterative - requires previous value)
     alphatrend = pd.Series(0.0, index=dataframe.index, dtype=float)
@@ -417,6 +420,111 @@ def alphatrend(
     sell_signal = (close < alphatrend) & (close_shifted >= alphatrend_shifted)
 
     return alphatrend, trend, buy_signal, sell_signal
+
+
+def t3_ma(
+    dataframe: pd.DataFrame,
+    period: int = 5,
+    volume_factor: float = 0.7
+) -> Tuple[pd.Series, pd.Series]:
+    """
+    T3 (Tillson T3) Moving Average
+    
+    A superior smoothing indicator that combines responsiveness with smoothness.
+    Created by Tim Tillson in 1998, T3 uses 6 nested EMAs with a volume factor
+    to achieve what traditional MAs cannot: smooth like a long MA, responsive like a short MA.
+    
+    WHY USE T3:
+    - Reduces whipsaws compared to regular EMA (fewer false signals)
+    - Reacts faster than long-period MAs (catches trends earlier)
+    - Acts as reliable dynamic support/resistance (fewer false breaks)
+    - Smooths noise without excessive lag (optimal for trend following)
+    
+    HOW IT WORKS:
+    1. Calculates 6 nested EMAs (e1 through e6)
+    2. Applies Tillson's formula with coefficients based on volume_factor
+    3. The volume_factor controls smoothness vs responsiveness trade-off
+    
+    MATHEMATICS:
+    e1 = EMA(close, period)
+    e2 = EMA(e1, period)
+    e3 = EMA(e2, period)
+    e4 = EMA(e3, period)
+    e5 = EMA(e4, period)
+    e6 = EMA(e5, period)
+    
+    b = volume_factor
+    c1 = -b³
+    c2 = 3b² + 3b³
+    c3 = -6b² - 3b - 3b³
+    c4 = 1 + 3b + b³ + 3b²
+    
+    T3 = c1*e6 + c2*e5 + c3*e4 + c4*e3
+    
+    TRADING APPLICATIONS:
+    - Trend filter: Only long when price > T3
+    - Dynamic support: Buy pullbacks to T3 in uptrend
+    - Exit signal: Close when price crosses below T3
+    - Crossover system: T3(fast) crosses T3(slow)
+    
+    Args:
+        dataframe: OHLCV dataframe
+        period: EMA period for each of the 6 layers (default: 5)
+                Typical values: 5 (responsive), 8 (balanced), 14 (smooth)
+        volume_factor: Responsiveness control, 0.0 to 1.0 (default: 0.7)
+                      0.0 = Very smooth but laggy (like DEMA)
+                      0.7 = Optimal balance (Tillson's recommendation)
+                      1.0 = More responsive but less smooth
+    
+    Returns:
+        Tuple of (t3_line, direction):
+        - t3_line: The T3 moving average values
+        - direction: 1 for uptrend (price > T3), -1 for downtrend (price < T3)
+    
+    Version: 1.2.0
+    Reference: Tim Tillson (1998), "Better Moving Averages"
+    """
+    close = dataframe['close']
+    
+    # Input validation
+    if not 0 <= volume_factor <= 1:
+        logger.warning(f"volume_factor {volume_factor} out of range [0,1], clamping to valid range")
+        volume_factor = max(0.0, min(1.0, volume_factor))
+    
+    if len(dataframe) < period * 6:
+        logger.warning(f"Insufficient data for T3: {len(dataframe)} rows, need ~{period * 6}")
+    
+    # Calculate Tillson's coefficients based on volume_factor
+    b = volume_factor
+    b2 = b * b  # b²
+    b3 = b2 * b  # b³
+    
+    c1 = -b3
+    c2 = 3 * b2 + 3 * b3
+    c3 = -6 * b2 - 3 * b - 3 * b3
+    c4 = 1 + 3 * b + b3 + 3 * b2
+    
+    # Calculate 6 nested EMAs
+    # Each EMA smooths the previous one, creating progressively smoother signals
+    e1 = pd.Series(ta.EMA(close, timeperiod=period), index=dataframe.index)
+    e2 = pd.Series(ta.EMA(e1, timeperiod=period), index=dataframe.index)
+    e3 = pd.Series(ta.EMA(e2, timeperiod=period), index=dataframe.index)
+    e4 = pd.Series(ta.EMA(e3, timeperiod=period), index=dataframe.index)
+    e5 = pd.Series(ta.EMA(e4, timeperiod=period), index=dataframe.index)
+    e6 = pd.Series(ta.EMA(e5, timeperiod=period), index=dataframe.index)
+    
+    # Apply Tillson's formula
+    # This weighted combination creates the optimal frequency response
+    t3 = c1 * e6 + c2 * e5 + c3 * e4 + c4 * e3
+    t3 = pd.Series(t3, index=dataframe.index)
+    
+    # Calculate trend direction
+    # 1 = bullish (price above T3), -1 = bearish (price below T3)
+    direction = pd.Series(0, index=dataframe.index, dtype=int)
+    direction = np.where(close > t3, 1, -1)
+    direction = pd.Series(direction, index=dataframe.index)
+    
+    return t3, direction
 
 
 def add_kivanc_indicators(
