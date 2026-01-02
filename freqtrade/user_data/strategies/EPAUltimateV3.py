@@ -208,6 +208,16 @@ class EPAUltimateV3(IStrategy):
     use_adx_min_filter = BooleanParameter(default=False, space='buy', optimize=False)
     adx_entry_min = IntParameter(15, 30, default=20, space='buy', optimize=False)
     
+    # Regime Exit Protection (see reports/experiments/20260102_regime_exit_protection.md)
+    # Monitors intra-trade regime health and exits proactively when trend deteriorates
+    use_regime_exit = BooleanParameter(default=False, space='sell', optimize=False)
+    regime_adx_threshold = IntParameter(15, 25, default=18, space='sell', optimize=False)
+    regime_profit_cutoff = DecimalParameter(0.01, 0.04, default=0.02, space='sell', optimize=False)
+    
+    # BTC-specific exit tightening (BTC = 72% of exit_signal losses)
+    use_btc_exit_tightening = BooleanParameter(default=False, space='sell', optimize=False)
+    btc_profit_threshold = DecimalParameter(0.01, 0.03, default=0.015, space='sell', optimize=False)
+    
     # Confluence Settings
     min_kivanc_signals = IntParameter(2, 3, default=3, space='buy', optimize=True)
     
@@ -678,9 +688,10 @@ class EPAUltimateV3(IStrategy):
                     current_rate: float, current_profit: float,
                     **kwargs) -> Optional[str]:
         """
-        Custom exit logic - tiered profit targets:
-        - 8%+ profit: Full exit
-        - 5%+ profit after 16h: Full exit
+        Custom exit logic:
+        1. Tiered profit targets (8%+ or 5%+ after 16h)
+        2. Regime deterioration exit (if enabled) - exit when trend weakens in small profit
+        3. BTC-specific tightening (if enabled) - tighter exit for BTC volatility
         """
         # Calculate trade duration
         trade_duration = (current_time - trade.open_date_utc).total_seconds() / 3600
@@ -692,6 +703,38 @@ class EPAUltimateV3(IStrategy):
         if current_profit >= 0.05:
             if trade_duration >= 16:  # 4 x 4h candles
                 return 'tiered_tp_5pct_time'
+        
+        # Get current dataframe for regime checks
+        dataframe, _ = self.dp.get_analyzed_dataframe(pair, self.timeframe)
+        if len(dataframe) < 1:
+            return None
+        
+        last_candle = dataframe.iloc[-1].squeeze()
+        
+        # Regime deterioration exit (V1)
+        if self.use_regime_exit.value:
+            adx = last_candle.get('adx', 50)
+            plus_di = last_candle.get('plus_di', 50)
+            minus_di = last_candle.get('minus_di', 0)
+            
+            # Regime has deteriorated: weak trend AND bearish crossover
+            regime_weak = adx < self.regime_adx_threshold.value
+            trend_bearish = minus_di > plus_di
+            
+            # If in small profit zone and regime deteriorates, exit to prevent loss
+            if regime_weak and trend_bearish:
+                if 0 < current_profit < self.regime_profit_cutoff.value:
+                    return 'regime_deterioration'
+        
+        # BTC-specific exit tightening (V2)
+        if self.use_btc_exit_tightening.value:
+            if 'BTC' in pair:
+                # Exit BTC trades more aggressively when in small profit
+                if 0 < current_profit < self.btc_profit_threshold.value:
+                    # Check if trend shows weakness
+                    adx = last_candle.get('adx', 50)
+                    if adx < 22:  # Slightly higher threshold for BTC
+                        return 'btc_tight_exit'
         
         return None
     
