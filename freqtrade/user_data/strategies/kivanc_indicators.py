@@ -4,7 +4,7 @@ Kıvanç Özbilgiç Indicators for Freqtrade
 Popular TradingView indicators by Kıvanç Özbilgiç implemented in Python.
 
 Author: Emre Uludaşdemir
-Version: 1.0.0
+Version: 1.1.0
 """
 
 import numpy as np
@@ -332,6 +332,91 @@ def waddah_attar_explosion(
     ).astype(int)
     
     return result
+
+
+def alphatrend(
+    dataframe: pd.DataFrame,
+    atr_period: int = 14,
+    atr_multiplier: float = 1.0,
+    mfi_period: int = 14
+) -> Tuple[pd.Series, pd.Series, pd.Series, pd.Series]:
+    """
+    AlphaTrend Indicator by Kıvanç Özbilgiç
+
+    Combines ATR-based bands with MFI direction for trend detection.
+    More responsive than traditional trend indicators.
+
+    Logic:
+    1. Calculate ATR for volatility measurement
+    2. Use MFI (Money Flow Index) for directional bias
+    3. Upper band = low - (ATR * multiplier)
+    4. Lower band = high + (ATR * multiplier)
+    5. If MFI >= 50: AlphaTrend = max(upT, prev_AlphaTrend) [bullish]
+    6. If MFI < 50: AlphaTrend = min(downT, prev_AlphaTrend) [bearish]
+    7. Trend direction based on price vs AlphaTrend line
+
+    Args:
+        dataframe: OHLC dataframe with volume
+        atr_period: ATR calculation period (default: 14)
+        atr_multiplier: ATR multiplier for bands (default: 1.0)
+        mfi_period: MFI calculation period (default: 14)
+
+    Returns:
+        Tuple of (alphatrend_line, trend_direction, buy_signal, sell_signal):
+        - alphatrend_line: The AlphaTrend line value
+        - trend_direction: 1 for bullish, -1 for bearish
+        - buy_signal: Boolean series, True on bullish crossover
+        - sell_signal: Boolean series, True on bearish crossover
+    """
+    high = dataframe['high']
+    low = dataframe['low']
+    close = dataframe['close']
+
+    # Calculate ATR
+    atr = ta.ATR(high, low, close, timeperiod=atr_period)
+
+    # Calculate MFI for direction
+    mfi = ta.MFI(high, low, close, dataframe['volume'], timeperiod=mfi_period)
+
+    # Calculate bands
+    upT = low - (atr * atr_multiplier)
+    downT = high + (atr * atr_multiplier)
+
+    # AlphaTrend calculation (iterative - requires previous value)
+    alphatrend = pd.Series(0.0, index=dataframe.index, dtype=float)
+
+    # Initialize first value as midpoint
+    alphatrend.iloc[0] = (upT.iloc[0] + downT.iloc[0]) / 2
+
+    # Calculate AlphaTrend line based on MFI direction
+    for i in range(1, len(dataframe)):
+        if pd.notna(mfi.iloc[i]) and pd.notna(upT.iloc[i]) and pd.notna(downT.iloc[i]):
+            if mfi.iloc[i] >= 50:
+                # Bullish: use upper band, keep rising
+                alphatrend.iloc[i] = max(upT.iloc[i], alphatrend.iloc[i-1])
+            else:
+                # Bearish: use lower band, keep falling
+                alphatrend.iloc[i] = min(downT.iloc[i], alphatrend.iloc[i-1])
+        else:
+            # If data not available, carry forward
+            alphatrend.iloc[i] = alphatrend.iloc[i-1]
+
+    # Trend direction: 1 if price above AlphaTrend, -1 if below
+    trend = pd.Series(0, index=dataframe.index, dtype=int)
+    trend = np.where(close > alphatrend, 1, -1)
+    trend = pd.Series(trend, index=dataframe.index)
+
+    # Cross signals
+    alphatrend_shifted = alphatrend.shift(1)
+    close_shifted = close.shift(1)
+
+    # Buy signal: price crosses above AlphaTrend
+    buy_signal = (close > alphatrend) & (close_shifted <= alphatrend_shifted)
+
+    # Sell signal: price crosses below AlphaTrend
+    sell_signal = (close < alphatrend) & (close_shifted >= alphatrend_shifted)
+
+    return alphatrend, trend, buy_signal, sell_signal
 
 
 def add_kivanc_indicators(
