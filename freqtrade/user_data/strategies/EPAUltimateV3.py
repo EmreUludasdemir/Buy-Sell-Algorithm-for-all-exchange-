@@ -72,19 +72,19 @@ class EPAUltimateV3(IStrategy):
     
     # Disable shorting for spot markets
     can_short = False
-    
-    # ROI table - optimized for 4H timeframe with patient exits
+
+    # ROI table - default values (will be overridden by hyperopt)
     minimal_roi = {
-        "0": 0.12,       # 12% initial target (was 10%)
-        "360": 0.08,     # 8% after 6h
-        "720": 0.05,     # 5% after 12h  
-        "1440": 0.03,    # 3% after 24h
-        "2880": 0.02,    # 2% after 48h
+        "0": 0.12,
+        "360": 0.08,
+        "720": 0.05,
+        "1440": 0.03,
+        "2880": 0.02,
     }
-    
-    # Base stoploss - widened from -5% to -8% to reduce stop-outs
+
+    # Base stoploss - default value (will be overridden by hyperopt)
     stoploss = -0.08
-    
+
     # ABLATION VARIANT D: both OFF (fixed stoploss only)
     use_custom_stoploss = False
     
@@ -129,7 +129,7 @@ class EPAUltimateV3(IStrategy):
         ]
     
     # ==================== HYPEROPT PARAMETERS ====================
-    
+
     # EMA Settings (from EPAStrategyV2)
     fast_ema = IntParameter(8, 15, default=10, space='buy', optimize=True)
     slow_ema = IntParameter(25, 40, default=30, space='buy', optimize=True)
@@ -183,15 +183,18 @@ class EPAUltimateV3(IStrategy):
     use_smc_zones = BooleanParameter(default=True, space='buy', optimize=False)
     smc_ob_boost = DecimalParameter(0.0, 0.25, default=0.15, space='buy', optimize=False)  # +15% at OB
     smc_fvg_boost = DecimalParameter(0.0, 0.20, default=0.10, space='buy', optimize=False)  # +10% at FVG
-    
+
+    # SMC Score Threshold (1, 2, or 3 - require minimum SMC confluence)
+    min_smc_score = IntParameter(0, 3, default=1, space='buy', optimize=True)
+
     def informative_pairs(self):
         """Higher timeframes for trend confirmation."""
         pairs = self.dp.current_whitelist()
         informative_pairs = []
-        
+
         for pair in pairs:
             informative_pairs.append((pair, '1d'))  # Daily for macro trend
-        
+
         return informative_pairs
     
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
@@ -387,11 +390,18 @@ class EPAUltimateV3(IStrategy):
         kivanc_confluence_long = (
             dataframe['kivanc_bull_count'] >= min_signals_required
         )
-        
+
+        # SMC Score Filter (optional - 0 disables, 1-3 requires minimum SMC confluence)
+        smc_ok_long = (
+            (self.min_smc_score.value == 0) |
+            (dataframe['smc_bull_score'] >= self.min_smc_score.value)
+        )
+
         # Combined entry (WAE removed from conditions)
         dataframe.loc[
             (epa_filters_long) &
             (kivanc_confluence_long) &
+            (smc_ok_long) &
             (volume_ok) &
             (htf_ok_long) &
             (dataframe['volume'] > 0),
@@ -415,10 +425,17 @@ class EPAUltimateV3(IStrategy):
             kivanc_confluence_short = (
                 dataframe['kivanc_bear_count'] >= min_signals_required
             )
-            
+
+            # SMC Score Filter
+            smc_ok_short = (
+                (self.min_smc_score.value == 0) |
+                (dataframe['smc_bear_score'] >= self.min_smc_score.value)
+            )
+
             dataframe.loc[
                 (epa_filters_short) &
                 (kivanc_confluence_short) &
+                (smc_ok_short) &
                 (volume_ok) &
                 (htf_ok_short) &
                 (dataframe['volume'] > 0),

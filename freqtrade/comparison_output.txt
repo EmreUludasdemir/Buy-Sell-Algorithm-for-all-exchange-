@@ -1,0 +1,22 @@
+======================================================================
+BACKTEST COMPARISON: EPAUltimateV3 vs EPAUltimateV3_Aggressive
+Timerange: 20240601-20241231 (7 months) | Wallet: 2000 USDT
+======================================================================
+
+Metric               Baseline             Aggressive           Delta     
+----------------------------------------------------------------------
+Strategy             EPAUltimateV3        EPAUltimateV3_Aggressive           
+Pairs                5                    9                    +4        
+Trades               75                   189                  +114      
+Win Rate             70.7%                74.6%                +3.9%     
+Profit USDT          122.79               76.50                -46.29    
+Profit %             6.14%                3.83%                -2.31%    
+Max DD               8.67%                12.94%               +4.27%    
+ROI Exits            51                   141                  +90       
+SL Exits             10                   31                   +21       
+Signal Exits         12                   17                   +5        
+
+======================================================================
+VERDICT:
+[FAIL] BASELINE performs better. Consider ROI-only change without new pairs.
+======================================================================

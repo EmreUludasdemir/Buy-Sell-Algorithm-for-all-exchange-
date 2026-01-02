@@ -1,0 +1,210 @@
+time="2026-01-02T12:18:01+03:00" level=warning msg="C:\\Users\\Emre\\Desktop\\Buy-sell Algorithm\\Buy-Sell-Algorithm-for-all-exchange-\\freqtrade\\docker-compose.yml: the attribute `version` is obsolete, it will be ignored, please remove it to avoid potential confusion"
+2026-01-02 09:18:03,054 - freqtrade - INFO - freqtrade 2025.11.2
+2026-01-02 09:18:03,799 - numexpr.utils - INFO - NumExpr defaulting to 16 threads.
+2026-01-02 09:18:05,600 - freqtrade.configuration.load_config - INFO - Using config: user_data/config.json ...
+2026-01-02 09:18:05,606 - freqtrade.loggers - INFO - Enabling colorized output.
+2026-01-02 09:18:05,607 - freqtrade.loggers - INFO - Logfile configured
+2026-01-02 09:18:05,607 - freqtrade.loggers - INFO - Verbosity set to 0
+2026-01-02 09:18:05,608 - freqtrade.configuration.configuration - INFO - Parameter -i/--timeframe detected ... Using timeframe: 4h ...
+2026-01-02 09:18:05,609 - freqtrade.configuration.configuration - INFO - Using max_open_trades: 5 ...
+2026-01-02 09:18:05,611 - freqtrade.configuration.configuration - INFO - Parameter --timerange detected: 20240601-20241231 ...
+2026-01-02 09:18:05,941 - freqtrade.configuration.configuration - INFO - Using user-data directory: /freqtrade/user_data ...
+2026-01-02 09:18:05,943 - freqtrade.configuration.configuration - INFO - Using data directory: /freqtrade/user_data/data/binance ...
+2026-01-02 09:18:05,944 - freqtrade.configuration.configuration - INFO - Parameter --epochs detected ... Will run Hyperopt with for 100 epochs ...
+2026-01-02 09:18:05,945 - freqtrade.configuration.configuration - INFO - Parameter -s/--spaces detected: ['buy']
+2026-01-02 09:18:05,945 - freqtrade.configuration.configuration - INFO - Parameter -j/--job-workers detected: 1
+2026-01-02 09:18:05,946 - freqtrade.configuration.configuration - INFO - Parameter --min-trades detected: 1
+2026-01-02 09:18:05,946 - freqtrade.configuration.configuration - INFO - Using Hyperopt loss class name: SharpeHyperOptLoss
+2026-01-02 09:18:05,947 - freqtrade.configuration.configuration - INFO - Filter trades by timerange: 20240601-20241231
+2026-01-02 09:18:05,949 - freqtrade.exchange.check_exchange - INFO - Checking exchange...
+2026-01-02 09:18:05,964 - freqtrade.exchange.check_exchange - INFO - Exchange "binance" is officially supported by the Freqtrade development team.
+2026-01-02 09:18:05,965 - freqtrade.configuration.configuration - INFO - Using pairlist from configuration.
+2026-01-02 09:18:05,967 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+2026-01-02 09:18:05,972 - freqtrade.commands.optimize_commands - INFO - Starting freqtrade in Hyperopt mode
+2026-01-02 09:18:05,980 - freqtrade.optimize.hyperopt.hyperopt - INFO - Removing `/freqtrade/user_data/hyperopt_results/hyperopt_tickerdata.pkl`.
+2026-01-02 09:18:05,984 - freqtrade.exchange.exchange - INFO - Instance is running with dry_run enabled
+2026-01-02 09:18:05,985 - freqtrade.exchange.exchange - INFO - Using CCXT 4.5.27
+2026-01-02 09:18:06,011 - freqtrade.exchange.exchange - INFO - Using Exchange "Binance"
+2026-01-02 09:18:08,096 - freqtrade.resolvers.exchange_resolver - INFO - Using resolved exchange 'Binance'...
+2026-01-02 09:18:08,287 - smc_indicators - WARNING - smartmoneyconcepts not installed. Run: pip install smartmoneyconcepts
+2026-01-02 09:18:08,315 - freqtrade.resolvers.iresolver - INFO - Using resolved strategy EPAUltimateV3 from '/freqtrade/user_data/strategies/EPAUltimateV3.py'...
+2026-01-02 09:18:08,317 - freqtrade.strategy.hyper - INFO - Found no parameter file.
+2026-01-02 09:18:08,318 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'timeframe' with value from the configuration: 4h.
+2026-01-02 09:18:08,319 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_currency' with value from the configuration: USDT.
+2026-01-02 09:18:08,319 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'stake_amount' with value from the configuration: 100.
+2026-01-02 09:18:08,320 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'unfilledtimeout' with value from the configuration: {'entry': 10, 'exit': 10, 'exit_timeout_count': 0, 
+'unit': 'minutes'}.
+2026-01-02 09:18:08,321 - freqtrade.resolvers.strategy_resolver - INFO - Override strategy 'max_open_trades' with value from the configuration: 5.
+2026-01-02 09:18:08,321 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using minimal_roi: {'0': 0.12, '360': 0.08, '720': 0.05, '1440': 0.03, '2880': 0.02}
+2026-01-02 09:18:08,322 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using timeframe: 4h
+2026-01-02 09:18:08,322 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stoploss: -0.08
+2026-01-02 09:18:08,322 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop: False
+2026-01-02 09:18:08,323 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop_positive: 0.03
+2026-01-02 09:18:08,323 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_stop_positive_offset: 0.05
+2026-01-02 09:18:08,324 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using trailing_only_offset_is_reached: True
+2026-01-02 09:18:08,324 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_custom_stoploss: False
+2026-01-02 09:18:08,325 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using process_only_new_candles: True
+2026-01-02 09:18:08,326 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_types: {'entry': 'limit', 'exit': 'limit', 'stoploss': 'limit', 'stoploss_on_exchange': False, 
+'stoploss_on_exchange_interval': 60}
+2026-01-02 09:18:08,326 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using order_time_in_force: {'entry': 'GTC', 'exit': 'GTC'}
+2026-01-02 09:18:08,327 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_currency: USDT
+2026-01-02 09:18:08,328 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using stake_amount: 100
+2026-01-02 09:18:08,329 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using startup_candle_count: 100
+2026-01-02 09:18:08,330 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using unfilledtimeout: {'entry': 10, 'exit': 10, 'exit_timeout_count': 0, 'unit': 'minutes'}
+2026-01-02 09:18:08,331 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using use_exit_signal: True
+2026-01-02 09:18:08,334 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_only: False
+2026-01-02 09:18:08,337 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_roi_if_entry_signal: False
+2026-01-02 09:18:08,338 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using exit_profit_offset: 0.0
+2026-01-02 09:18:08,338 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using disable_dataframe_checks: False
+2026-01-02 09:18:08,339 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using ignore_buying_expired_candle_after: 0
+2026-01-02 09:18:08,339 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using position_adjustment_enable: False
+2026-01-02 09:18:08,340 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_entry_position_adjustment: -1
+2026-01-02 09:18:08,340 - freqtrade.resolvers.strategy_resolver - INFO - Strategy using max_open_trades: 5
+2026-01-02 09:18:08,341 - freqtrade.configuration.config_validation - INFO - Validating configuration ...
+2026-01-02 09:18:08,348 - freqtrade.resolvers.iresolver - INFO - Using resolved pairlist StaticPairList from '/freqtrade/freqtrade/plugins/pairlist/StaticPairList.py'...
+2026-01-02 09:18:08,378 - freqtrade.optimize.backtesting - INFO - Using fee 0.1000% - worst case fee from exchange (lowest tier).
+2026-01-02 09:18:08,380 - freqtrade.strategy.hyper - INFO - No params for buy found, using default values.
+2026-01-02 09:18:08,380 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): adx_period = 14
+2026-01-02 09:18:08,381 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): adx_threshold = 30
+2026-01-02 09:18:08,381 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): chop_period = 14
+2026-01-02 09:18:08,382 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): chop_threshold = 50
+2026-01-02 09:18:08,383 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): fast_ema = 10
+2026-01-02 09:18:08,383 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): halftrend_amplitude = 2
+2026-01-02 09:18:08,384 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): halftrend_deviation = 2.0
+2026-01-02 09:18:08,384 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): high_vol_size_mult = 0.5
+2026-01-02 09:18:08,385 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): htf_ema_period = 21
+2026-01-02 09:18:08,385 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): low_vol_size_mult = 1.2
+2026-01-02 09:18:08,386 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): min_kivanc_signals = 3
+2026-01-02 09:18:08,386 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): min_smc_score = 1
+2026-01-02 09:18:08,387 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): qqe_factor = 4.238
+2026-01-02 09:18:08,387 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): qqe_rsi_period = 14
+2026-01-02 09:18:08,388 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): slow_ema = 30
+2026-01-02 09:18:08,388 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): smc_fvg_boost = 0.1
+2026-01-02 09:18:08,389 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): smc_ob_boost = 0.15
+2026-01-02 09:18:08,390 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): supertrend_multiplier = 3.0
+2026-01-02 09:18:08,390 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): supertrend_period = 10
+2026-01-02 09:18:08,391 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): trend_ema = 100
+2026-01-02 09:18:08,391 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): use_htf_filter = True
+2026-01-02 09:18:08,392 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): use_smc_zones = True
+2026-01-02 09:18:08,392 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): use_volume_filter = True
+2026-01-02 09:18:08,392 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): use_wae_filter = True
+2026-01-02 09:18:08,393 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): volume_threshold = 1.2
+2026-01-02 09:18:08,393 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): wae_sensitivity = 150
+2026-01-02 09:18:08,394 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): wae_size_boost = 1.2
+2026-01-02 09:18:08,394 - freqtrade.strategy.hyper - INFO - No params for sell found, using default values.
+2026-01-02 09:18:08,395 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): atr_multiplier = 3.0
+2026-01-02 09:18:08,395 - freqtrade.strategy.hyper - INFO - Strategy Parameter(default): risk_per_trade = 0.015
+2026-01-02 09:18:08,401 - freqtrade.resolvers.iresolver - INFO - Using resolved hyperoptloss SharpeHyperOptLoss from '/freqtrade/freqtrade/optimize/hyperopt_loss/hyperopt_loss_sharpe.py'...
+2026-01-02 09:18:09,119 - freqtrade.optimize.hyperopt.hyperopt_optimizer - INFO - manager queue <class 'multiprocessing.managers.AutoProxy[Queue]'>
+2026-01-02 09:18:09,120 - freqtrade.optimize.hyperopt.hyperopt - INFO - Using optimizer random state: 17403
+2026-01-02 09:18:09,279 - freqtrade.data.history.datahandlers.idatahandler - WARNING - SOL/USDT, spot, 4h, data starts at 2024-06-01 00:00:00
+2026-01-02 09:18:09,311 - freqtrade.data.history.datahandlers.idatahandler - WARNING - XRP/USDT, spot, 4h, data starts at 2024-06-01 00:00:00
+2026-01-02 09:18:09,327 - freqtrade.optimize.backtesting - INFO - Loading data from 2024-05-15 08:00:00 up to 2024-12-31 00:00:00 (229 days).
+2026-01-02 09:18:09,417 - freqtrade.optimize.hyperopt.hyperopt_optimizer - INFO - Dataload complete. Calculating indicators
+2026-01-02 09:18:09,424 - freqtrade.data.dataprovider - INFO - Loading data for BTC/USDT 1d from 2024-02-22 00:00:00 to 2024-12-31 00:00:00
+/freqtrade/user_data/strategies/smc_indicators.py:654: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bullish_ob_candle = impulsive_up & is_red.shift(1).fillna(False)
+/freqtrade/user_data/strategies/smc_indicators.py:675: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bearish_ob_candle = impulsive_down & is_green.shift(1).fillna(False)
+2026-01-02 09:18:10,190 - freqtrade.data.dataprovider - INFO - Loading data for BNB/USDT 1d from 2024-02-22 00:00:00 to 2024-12-31 00:00:00
+/freqtrade/user_data/strategies/smc_indicators.py:654: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bullish_ob_candle = impulsive_up & is_red.shift(1).fillna(False)
+/freqtrade/user_data/strategies/smc_indicators.py:675: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bearish_ob_candle = impulsive_down & is_green.shift(1).fillna(False)
+2026-01-02 09:18:10,906 - freqtrade.data.dataprovider - INFO - Loading data for ETH/USDT 1d from 2024-02-22 00:00:00 to 2024-12-31 00:00:00
+/freqtrade/user_data/strategies/smc_indicators.py:654: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bullish_ob_candle = impulsive_up & is_red.shift(1).fillna(False)
+/freqtrade/user_data/strategies/smc_indicators.py:675: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bearish_ob_candle = impulsive_down & is_green.shift(1).fillna(False)
+2026-01-02 09:18:11,661 - freqtrade.data.dataprovider - INFO - Loading data for SOL/USDT 1d from 2024-02-22 00:00:00 to 2024-12-31 00:00:00
+/freqtrade/user_data/strategies/smc_indicators.py:654: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bullish_ob_candle = impulsive_up & is_red.shift(1).fillna(False)
+/freqtrade/user_data/strategies/smc_indicators.py:675: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bearish_ob_candle = impulsive_down & is_green.shift(1).fillna(False)
+2026-01-02 09:18:12,395 - freqtrade.data.dataprovider - INFO - Loading data for XRP/USDT 1d from 2024-02-22 00:00:00 to 2024-12-31 00:00:00
+/freqtrade/user_data/strategies/smc_indicators.py:654: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bullish_ob_candle = impulsive_up & is_red.shift(1).fillna(False)
+/freqtrade/user_data/strategies/smc_indicators.py:675: FutureWarning: Downcasting object dtype arrays on .fillna, .ffill, .bfill is deprecated and will change in a future version. Call result.infer_objects(copy=False) instead. To opt-in to the future behavior, set `pd.set_option('future.no_silent_downcasting', True)`
+  bearish_ob_candle = impulsive_down & is_green.shift(1).fillna(False)
+2026-01-02 09:18:13,112 - freqtrade.optimize.hyperopt.hyperopt_optimizer - INFO - Hyperopting with data from 2024-06-01 00:00:00 up to 2024-12-31 00:00:00 (213 days)..
+2026-01-02 09:18:13,460 - freqtrade.optimize.hyperopt.hyperopt - INFO - Found 16 CPU cores. Let's make them scream!
+2026-01-02 09:18:13,461 - freqtrade.optimize.hyperopt.hyperopt - INFO - Number of parallel jobs set as: 1
+2026-01-02 09:18:13,463 - freqtrade.optimize.hyperopt.hyperopt_optimizer - INFO - Using optuna sampler NSGAIIISampler.
+[I 2026-01-02 09:18:13,464] A new study created in memory with name: no-name-5b257a16-b018-4f63-a0ab-d782aca1b8a6
+2026-01-02 09:18:13,464 - freqtrade.optimize.hyperopt.hyperopt - INFO - Effective number of parallel workers used: 1
+                                                                                           Hyperopt results                                                                                             
+                          ┏━━━━━━━━┳━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━┓                           
+                          ┃ Best   ┃ Epoch ┃ Trades ┃  Win  Draw  Loss  Win% ┃ Avg profit ┃                  Profit ┃    Avg duration ┃ Objective ┃     Max Drawdown (Acct) ┃                           
+                          ┡━━━━━━━━╇━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━┩                           
+                          │ * Best │ 1/100 │     31 │   20     0    11  64.5 │      0.52% │  30.437 USDT    (1.52%) │ 1 day, 13:02:00 │  -0.13704 │  94.969 USDT    (4.65%) │                           
+                          │ * Best │ 2/100 │     17 │   12     0     5  70.6 │      1.52% │  78.042 USDT    (3.90%) │ 1 day, 10:07:00 │  -0.34305 │  38.473 USDT    (1.86%) │                           
+                          │ * Best │ 7/100 │     75 │   53     0    22  70.7 │      1.07% │ 122.793 USDT    (6.14%) │ 1 day, 20:26:00 │  -0.44034 │ 173.416 USDT    (8.10%) │                           
+                          └────────┴───────┴────────┴────────────────────────┴────────────┴─────────────────────────┴─────────────────┴───────────┴─────────────────────────┘                           
+Epochs ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 100/100 100% • 0:01:25 • 0:00:00
+2026-01-02 09:19:39,041 - freqtrade.optimize.hyperopt.hyperopt - INFO - 100 epochs saved to '/freqtrade/user_data/hyperopt_results/strategy_EPAUltimateV3_2026-01-02_09-18-05.fthypt'.
+2026-01-02 09:19:39,253 - smc_indicators - WARNING - smartmoneyconcepts not installed. Run: pip install smartmoneyconcepts
+2026-01-02 09:19:39,254 - freqtrade.optimize.hyperopt_tools - INFO - Dumping parameters to /freqtrade/user_data/strategies/EPAUltimateV3.json
+
+Best result:
+
+*    7/100:     75 trades. 53/0/22 Wins/Draws/Losses. Avg profit   1.07%. Median profit   2.00%. Total profit 122.79300390 USDT (   6.14%). Avg duration 1 day, 20:26:00 min. Objective: -0.44034
+
+
+    # Buy parameters:
+    buy_params = {
+        "adx_period": 11,
+        "adx_threshold": 30,
+        "chop_period": 13,
+        "chop_threshold": 58,
+        "fast_ema": 9,
+        "halftrend_amplitude": 3,
+        "halftrend_deviation": 2.082,
+        "htf_ema_period": 21,
+        "min_kivanc_signals": 3,
+        "min_smc_score": 0,
+        "qqe_factor": 4.726,
+        "qqe_rsi_period": 12,
+        "slow_ema": 25,
+        "supertrend_multiplier": 2.054,
+        "supertrend_period": 10,
+        "trend_ema": 82,
+        "use_htf_filter": False,
+        "use_volume_filter": False,
+        "use_wae_filter": True,
+        "volume_threshold": 1.126,
+        "wae_sensitivity": 186,
+        "high_vol_size_mult": 0.5,  # value loaded from strategy
+        "low_vol_size_mult": 1.2,  # value loaded from strategy
+        "smc_fvg_boost": 0.1,  # value loaded from strategy
+        "smc_ob_boost": 0.15,  # value loaded from strategy
+        "use_smc_zones": True,  # value loaded from strategy
+        "wae_size_boost": 1.2,  # value loaded from strategy
+    }
+
+    # Sell parameters:
+    sell_params = {
+        "atr_multiplier": 3.0,  # value loaded from strategy
+        "risk_per_trade": 0.015,  # value loaded from strategy
+    }
+
+    # ROI parameters:  # value loaded from strategy
+    minimal_roi = {
+        "0": 0.12,
+        "360": 0.08,
+        "720": 0.05,
+        "1440": 0.03,
+        "2880": 0.02
+    }
+
+    # Stoploss parameters:
+    stoploss = -0.08  # value loaded from strategy
+
+    # Trailing stop parameters:
+    trailing_stop = False  # value loaded from strategy
+    trailing_stop_positive = 0.03  # value loaded from strategy
+    trailing_stop_positive_offset = 0.05  # value loaded from strategy
+    trailing_only_offset_is_reached = True  # value loaded from strategy
+    
+
+    # max_open_trades parameters:
+    max_open_trades = 5  # value loaded from strategy

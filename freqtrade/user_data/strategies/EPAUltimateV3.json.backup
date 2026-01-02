@@ -1,0 +1,58 @@
+{
+  "strategy_name": "EPAUltimateV3",
+  "params": {
+    "roi": {
+      "0": 0.12,
+      "360": 0.08,
+      "720": 0.05,
+      "1440": 0.03,
+      "2880": 0.02
+    },
+    "stoploss": {
+      "stoploss": -0.08
+    },
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": 0.03,
+      "trailing_stop_positive_offset": 0.05,
+      "trailing_only_offset_is_reached": true
+    },
+    "max_open_trades": {
+      "max_open_trades": 5
+    },
+    "buy": {
+      "high_vol_size_mult": 0.5,
+      "low_vol_size_mult": 1.2,
+      "smc_fvg_boost": 0.1,
+      "smc_ob_boost": 0.15,
+      "use_smc_zones": true,
+      "wae_size_boost": 1.2,
+      "adx_period": 11,
+      "adx_threshold": 44,
+      "chop_period": 16,
+      "chop_threshold": 54,
+      "fast_ema": 12,
+      "halftrend_amplitude": 3,
+      "halftrend_deviation": 1.842,
+      "htf_ema_period": 33,
+      "min_kivanc_signals": 3,
+      "qqe_factor": 3.914,
+      "qqe_rsi_period": 10,
+      "slow_ema": 39,
+      "supertrend_multiplier": 3.853,
+      "supertrend_period": 9,
+      "trend_ema": 106,
+      "use_htf_filter": true,
+      "use_volume_filter": false,
+      "use_wae_filter": true,
+      "volume_threshold": 1.529,
+      "wae_sensitivity": 144
+    },
+    "sell": {
+      "atr_multiplier": 3.0,
+      "risk_per_trade": 0.015
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-01-02 08:51:48.735262+00:00"
+}
