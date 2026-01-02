@@ -9,16 +9,16 @@ Triple-layer trend confirmation system using only Kıvanç indicators:
 Philosophy: Simple, clear, and effective. Quality over quantity.
 
 Author: Emre Uludaşdemir  
-Version: 1.2.0
+Version: 1.1.0
 Based on: Kıvanç Özbilgiç TradingView indicators
 
 Version History:
-- v1.0.0 (2026-01-02): Initial implementation with indicator-based exits
-- v1.1.0 (2026-01-02): Removed AlphaTrend exit, added trailing stop
-                       Bug: Exit signals still triggered (0% win rate)
-- v1.2.0 (2026-01-02): Disabled ALL exit signals - ROI + Trailing Stop ONLY
-                       Rationale: Exit signals cut winners (0% win on 10 trades)
-                       Exit Strategy: ROI (100% win) + Trailing (78% win)
+- v1.0.0 (2026-01-02): Initial implementation
+- v1.1.0 (2026-01-02): Fixed exit logic based on backtest analysis
+                       - Removed AlphaTrend exit (too aggressive, 0% win rate)
+                       - Keep only SuperTrend exit (trend reversal)
+                       - Added trailing stop to protect profits
+                       Bug analysis: ROI exits 100% win, exit_signal 0% win
 """
 
 import logging
@@ -76,13 +76,8 @@ class EPAAlphaTrend(IStrategy):
     # Disable shorting (spot markets)
     can_short = False
     
-    # Exit Strategy Philosophy:
-    # We use ONLY ROI + Trailing Stop, NO exit signals
-    # Reason: Backtest proved exit signals have 0% win rate (10 trades, all losses)
-    # They trigger too early and cut profitable trades before ROI
-    # Performance: ROI exits 100% win | Trailing 78% win | Exit Signal 0% win
-    use_exit_signal = False  # CRITICAL: Disable indicator-based exits
-    use_custom_stoploss = True  # Enable trailing stop
+    # Use custom stoploss (trailing stop)
+    use_custom_stoploss = True
     
     # ROI table - Progressive profit taking
     minimal_roi = {
@@ -260,27 +255,29 @@ class EPAAlphaTrend(IStrategy):
     
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        Exit logic: DISABLED in v1.2.0
+        Exit logic: Simple and effective.
         
-        This function is NO LONGER USED because use_exit_signal = False.
+        Exit condition:
+        - SuperTrend direction = -1 (trend reversal confirmed)
         
-        Exit Strategy Evolution:
-        - v1.0: AlphaTrend + SuperTrend exits → 50% win rate, 0.83% profit
-        - v1.1: SuperTrend exit only → 65% win rate, 0.21% profit (worse!)
-        - v1.2: NO exit signals → Expected 80% win rate, 3-5% profit
+        Philosophy: 
+        - Let winners run (remove aggressive AlphaTrend exit)
+        - Trust ROI and trailing stop to protect profits
+        - Only exit on clear trend reversal
         
-        Why we disabled exit signals:
-        - v1.1 backtest: 10 exit_signal trades, 0% win rate, -39.47 USDT loss
-        - Indicator exits trigger too early in trend-following strategies
-        - ROI + Trailing Stop let winners run while protecting profits
-        
-        Philosophy: "Let winners run, cut losers short"
-        - ROI handles explosive moves (100% win rate)
-        - Trailing stop locks in profits during pullbacks (78% win rate)
-        - Exit signals would prematurely close winning positions
+        Note: v1.0 had AlphaTrend exit which caused 0% win rate on exit_signal.
+              Removed in v1.1 to allow trades to reach ROI targets.
         """
-        # Exit signals disabled - return dataframe unchanged
-        # Exits handled by: ROI table + custom_stoploss (trailing)
+        
+        # ==================== LONG EXIT ====================
+        
+        dataframe.loc[
+            # Only exit on SuperTrend reversal (confirmed trend change)
+            (dataframe['st_dir'] == -1),
+            
+            'exit_long'
+        ] = 1
+        
         return dataframe
     
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime,

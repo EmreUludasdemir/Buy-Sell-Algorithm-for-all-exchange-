@@ -9,16 +9,8 @@ Triple-layer trend confirmation system using only Kıvanç indicators:
 Philosophy: Simple, clear, and effective. Quality over quantity.
 
 Author: Emre Uludaşdemir  
-Version: 1.2.0
+Version: 1.0.0
 Based on: Kıvanç Özbilgiç TradingView indicators
-
-Version History:
-- v1.0.0 (2026-01-02): Initial implementation with indicator-based exits
-- v1.1.0 (2026-01-02): Removed AlphaTrend exit, added trailing stop
-                       Bug: Exit signals still triggered (0% win rate)
-- v1.2.0 (2026-01-02): Disabled ALL exit signals - ROI + Trailing Stop ONLY
-                       Rationale: Exit signals cut winners (0% win on 10 trades)
-                       Exit Strategy: ROI (100% win) + Trailing (78% win)
 """
 
 import logging
@@ -75,14 +67,6 @@ class EPAAlphaTrend(IStrategy):
     
     # Disable shorting (spot markets)
     can_short = False
-    
-    # Exit Strategy Philosophy:
-    # We use ONLY ROI + Trailing Stop, NO exit signals
-    # Reason: Backtest proved exit signals have 0% win rate (10 trades, all losses)
-    # They trigger too early and cut profitable trades before ROI
-    # Performance: ROI exits 100% win | Trailing 78% win | Exit Signal 0% win
-    use_exit_signal = False  # CRITICAL: Disable indicator-based exits
-    use_custom_stoploss = True  # Enable trailing stop
     
     # ROI table - Progressive profit taking
     minimal_roi = {
@@ -260,27 +244,27 @@ class EPAAlphaTrend(IStrategy):
     
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        Exit logic: DISABLED in v1.2.0
+        Exit logic: Fast exit on trend weakness.
         
-        This function is NO LONGER USED because use_exit_signal = False.
+        Exit if ANY condition is true:
+        1. SuperTrend direction = -1 (trend reversal)
+        2. Close < AlphaTrend line (support broken)
         
-        Exit Strategy Evolution:
-        - v1.0: AlphaTrend + SuperTrend exits → 50% win rate, 0.83% profit
-        - v1.1: SuperTrend exit only → 65% win rate, 0.21% profit (worse!)
-        - v1.2: NO exit signals → Expected 80% win rate, 3-5% profit
-        
-        Why we disabled exit signals:
-        - v1.1 backtest: 10 exit_signal trades, 0% win rate, -39.47 USDT loss
-        - Indicator exits trigger too early in trend-following strategies
-        - ROI + Trailing Stop let winners run while protecting profits
-        
-        Philosophy: "Let winners run, cut losers short"
-        - ROI handles explosive moves (100% win rate)
-        - Trailing stop locks in profits during pullbacks (78% win rate)
-        - Exit signals would prematurely close winning positions
+        Philosophy: Exit fast, protect profits.
         """
-        # Exit signals disabled - return dataframe unchanged
-        # Exits handled by: ROI table + custom_stoploss (trailing)
+        
+        # ==================== LONG EXIT ====================
+        
+        dataframe.loc[
+            # Exit 1: SuperTrend reversal (trend weakening)
+            (dataframe['st_dir'] == -1) |
+            
+            # Exit 2: Price broke below AlphaTrend (support failed)
+            (dataframe['close'] < dataframe['alpha_line']),
+            
+            'exit_long'
+        ] = 1
+        
         return dataframe
     
     def custom_exit(self, pair: str, trade: Trade, current_time: datetime,
@@ -305,32 +289,6 @@ class EPAAlphaTrend(IStrategy):
                 return 'swing_tp_5pct'
         
         return None
-    
-    def custom_stoploss(self, pair: str, trade: Trade, current_time: datetime,
-                        current_rate: float, current_profit: float,
-                        **kwargs) -> Optional[float]:
-        """
-        Trailing stop to protect profits.
-        
-        Logic:
-        - Profit > 8%: trail at 3% (let big winners run with protection)
-        - Profit > 5%: trail at 2% (protect good trades)
-        - Profit > 2%: trail at 1% (lock in small profits)
-        - Otherwise: use -8% fixed stop
-        
-        Why this works:
-        - Backtest showed ROI exits had 100% win rate
-        - Trailing stop ensures we capture profit before reversal
-        - Progressive tightening as profit increases
-        """
-        if current_profit > 0.08:
-            return -0.03  # Trail at 3% below current price
-        elif current_profit > 0.05:
-            return -0.02  # Trail at 2%
-        elif current_profit > 0.02:
-            return -0.01  # Trail at 1%
-        
-        return self.stoploss  # Default -8%
     
     def leverage(self, pair: str, current_time: datetime, current_rate: float,
                  proposed_leverage: float, max_leverage: float,
