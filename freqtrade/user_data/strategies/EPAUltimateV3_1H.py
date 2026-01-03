@@ -103,14 +103,14 @@ class EPAUltimateV3_1H(IStrategy):
     # 4H Trend Filter - ENABLED (critical for direction)
     use_4h_filter = BooleanParameter(default=True, space='buy', optimize=False)
     
-    # === ROI - FORCE EXIT EVEN AT LOSS ===
-    # Accept up to 1% loss to force exit on first candle
+    # === ROI - POSITIVE TARGET ===
+    # 0.5% profit target - achievable in 1H
     minimal_roi = {
-        "0": -0.01,     # Accept 1% loss immediately
+        "0": 0.005,     # 0.5% profit immediately
     }
     
-    # === STOPLOSS ===
-    stoploss = -0.03  # 3% tight stop for 1H
+    # === STOPLOSS - SYMMETRIC ===
+    stoploss = -0.005  # 0.5% loss limit
     
     # === TRAILING STOP - DISABLED for testing ===
     trailing_stop = False
