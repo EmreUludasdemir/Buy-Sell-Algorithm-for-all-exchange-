@@ -103,14 +103,16 @@ class EPAUltimateV3_1H(IStrategy):
     # 4H Trend Filter - ENABLED (critical for direction)
     use_4h_filter = BooleanParameter(default=True, space='buy', optimize=False)
     
-    # === ROI - POSITIVE TARGET ===
-    # 0.5% profit target - achievable in 1H
+    # === ROI - REALISTIC TARGET ===
+    # 1H timeframe needs achievable targets
     minimal_roi = {
-        "0": 0.005,     # 0.5% profit immediately
+        "0": 0.03,     # 3% target
+        "240": 0.02,   # 2% after 4h
+        "480": 0.01    # 1% after 8h
     }
     
-    # === STOPLOSS - SYMMETRIC ===
-    stoploss = -0.005  # 0.5% loss limit
+    # === STOPLOSS ===
+    stoploss = -0.03  # 3% stop
     
     # === TRAILING STOP - DISABLED for testing ===
     trailing_stop = False
@@ -119,7 +121,7 @@ class EPAUltimateV3_1H(IStrategy):
     # trailing_only_offset_is_reached = True
     
     # === POSITION MANAGEMENT ===
-    use_exit_signal = False  # DISABLED - rely on ROI/stoploss only
+    use_exit_signal = True  # Enable RSI-based exits
     exit_profit_only = False
     ignore_roi_if_entry_signal = False
     
@@ -273,16 +275,23 @@ class EPAUltimateV3_1H(IStrategy):
     
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
         """
-        ALWAYS TRUE Entry (DEBUG TEST)
+        RSI Crossover Entry with SuperTrend Filter
         
-        This should generate MAXIMUM possible trades.
-        If still 5 trades = issue is exit/ROI, not entry!
+        Entry: RSI crosses above 30 (oversold recovery)
+        + SuperTrend bullish
         """
         
         conditions = []
         
-        # ALWAYS TRUE - just check RSI exists
-        conditions.append(dataframe['rsi'] > 0)
+        # RSI crossover above 30 (momentum recovery)
+        rsi_crossover = (
+            (dataframe['rsi'] > 30) &
+            (dataframe['rsi'].shift(1) <= 30)
+        )
+        conditions.append(rsi_crossover)
+        
+        # SuperTrend bullish
+        conditions.append(dataframe['supertrend_direction'] == 1)
         
         # Volume not zero
         conditions.append(dataframe['volume'] > 0)
