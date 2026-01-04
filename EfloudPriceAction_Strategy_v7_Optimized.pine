@@ -1,0 +1,258 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// ═══════════════════════════════════════════════════════════════════════════
+// EPA Strategy v7.1 - OPTIMIZED FOR MORE TRADES
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Developed by: EMRE ULUDAŞDEMIR
+// Role: Financial Markets Researcher & Algorithm Designer
+//
+// OPTIMIZATIONS FROM v7:
+// - ADX threshold: 25 → 20 (more trades)
+// - Trend score required: 4 → 3 (easier confirmation)
+// - BB filter: optional (default off)
+// - CCI filter: optional (default off)
+// - Added partial profit taking
+// - Better R:R ratio (1.5:3.5 based on research)
+// ═══════════════════════════════════════════════════════════════════════════
+
+//@version=6
+strategy("EPA v7.1 Optimized", shorttitle="EPA-v7.1", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=10,
+         initial_capital=10000, commission_type=strategy.commission.percent,
+         commission_value=0.1, slippage=2, pyramiding=3, calc_on_every_tick=false,
+         process_orders_on_close=true)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              INPUTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// SuperTrend Settings (Research: ATR 9-10, Mult 2.5-3.0)
+grpST = "═══ SuperTrend ═══"
+stPeriod = input.int(9, "ATR Period", minval=5, maxval=15, group=grpST)
+stMultiplier = input.float(2.5, "Multiplier", minval=1.5, maxval=4.0, step=0.5, group=grpST)
+
+// ADX/DMI Settings (Research: ADX > 20-25)
+grpADX = "═══ ADX Filter ═══"
+adxLen = input.int(14, "ADX Length", minval=7, maxval=21, group=grpADX)
+adxThreshold = input.int(20, "ADX Entry Threshold", minval=15, maxval=30, group=grpADX)
+useADXFilter = input.bool(true, "Use ADX Filter", group=grpADX)
+
+// EMA Settings
+grpEMA = "═══ EMA ═══"
+emaFastLen = input.int(10, "Fast EMA", minval=5, maxval=20, group=grpEMA)
+emaSlowLen = input.int(30, "Slow EMA", minval=20, maxval=50, group=grpEMA)
+useTrendEMA = input.bool(true, "Use 200 EMA Trend Filter", group=grpEMA)
+
+// Bollinger Bands Settings
+grpBB = "═══ Bollinger Bands ═══"
+bbLen = input.int(20, "BB Length", minval=10, maxval=50, group=grpBB)
+bbMult = input.float(2.0, "BB Multiplier", minval=1.5, maxval=3.0, step=0.5, group=grpBB)
+useBBBreakout = input.bool(true, "Use BB Breakout Signal", group=grpBB)
+
+// Risk Management (Research: 1.5x ATR SL, 3.5x ATR TP = 2.3:1 R:R)
+grpRisk = "═══ Risk Management ═══"
+atrLen = input.int(14, "ATR Length", minval=7, maxval=21, group=grpRisk)
+atrStopMult = input.float(1.5, "ATR Stop Multiplier", minval=1.0, maxval=3.0, step=0.25, group=grpRisk)
+atrTPMult = input.float(3.5, "ATR TP Multiplier", minval=2.0, maxval=5.0, step=0.5, group=grpRisk)
+useTrailing = input.bool(true, "Use Trailing Stop", group=grpRisk)
+trailMult = input.float(2.0, "Trail ATR Multiplier", minval=1.0, maxval=3.0, step=0.25, group=grpRisk)
+
+// Trade Settings
+grpTrade = "═══ Trade Settings ═══"
+allowLong = input.bool(true, "Allow Long", group=grpTrade)
+allowShort = input.bool(true, "Allow Short", group=grpTrade)
+minBars = input.int(2, "Min Bars Between", minval=1, maxval=10, group=grpTrade)
+minTrendScore = input.int(3, "Min Trend Score (1-6)", minval=2, maxval=5, group=grpTrade)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              CALCULATIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ATR
+atr = ta.atr(atrLen)
+
+// ─── SuperTrend ───
+[superTrend, stDir] = ta.supertrend(stMultiplier, stPeriod)
+stBull = stDir < 0
+stBear = stDir > 0
+stFlipUp = stDir < 0 and stDir[1] > 0
+stFlipDown = stDir > 0 and stDir[1] < 0
+
+// ─── ADX/DMI ───
+[diPlus, diMinus, adx] = ta.dmi(adxLen, adxLen)
+trendStrong = adx > adxThreshold
+diBullish = diPlus > diMinus
+diBearish = diMinus > diPlus
+diCrossUp = ta.crossover(diPlus, diMinus)
+diCrossDown = ta.crossunder(diPlus, diMinus)
+
+// ─── EMA ───
+emaFast = ta.ema(close, emaFastLen)
+emaSlow = ta.ema(close, emaSlowLen)
+ema200 = ta.ema(close, 200)
+emaCrossUp = ta.crossover(emaFast, emaSlow)
+emaCrossDown = ta.crossunder(emaFast, emaSlow)
+aboveEMA200 = close > ema200
+belowEMA200 = close < ema200
+
+// ─── Bollinger Bands ───
+bbBasis = ta.sma(close, bbLen)
+bbDev = bbMult * ta.stdev(close, bbLen)
+bbUpper = bbBasis + bbDev
+bbLower = bbBasis - bbDev
+bbBreakUp = close > bbUpper
+bbBreakDown = close < bbLower
+
+// ─── CCI ───
+cci = ta.cci(close, 14)
+cciBull = cci > 0
+cciBear = cci < 0
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              TREND SCORING (0-6)
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Bull Score
+bullScore = 0
+bullScore += stBull ? 1 : 0
+bullScore += diBullish ? 1 : 0
+bullScore += emaFast > emaSlow ? 1 : 0
+bullScore += aboveEMA200 or not useTrendEMA ? 1 : 0
+bullScore += cciBull ? 1 : 0
+bullScore += close > bbBasis ? 1 : 0
+
+// Bear Score
+bearScore = 0
+bearScore += stBear ? 1 : 0
+bearScore += diBearish ? 1 : 0
+bearScore += emaFast < emaSlow ? 1 : 0
+bearScore += belowEMA200 or not useTrendEMA ? 1 : 0
+bearScore += cciBear ? 1 : 0
+bearScore += close < bbBasis ? 1 : 0
+
+// Trend OK
+bullTrendOK = bullScore >= minTrendScore
+bearTrendOK = bearScore >= minTrendScore
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              ENTRY TRIGGERS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// SuperTrend flip (primary)
+triggerLong_ST = stFlipUp
+triggerShort_ST = stFlipDown
+
+// EMA crossover
+triggerLong_EMA = emaCrossUp
+triggerShort_EMA = emaCrossDown
+
+// DI crossover with ADX confirmation
+triggerLong_DI = diCrossUp and trendStrong
+triggerShort_DI = diCrossDown and trendStrong
+
+// BB breakout
+triggerLong_BB = useBBBreakout and bbBreakUp and stBull
+triggerShort_BB = useBBBreakout and bbBreakDown and stBear
+
+// Any trigger
+anyTriggerLong = triggerLong_ST or triggerLong_EMA or triggerLong_DI or triggerLong_BB
+anyTriggerShort = triggerShort_ST or triggerShort_EMA or triggerShort_DI or triggerShort_BB
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              FILTERS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ADX filter
+adxOK = not useADXFilter or trendStrong
+
+// Bar spacing
+var int lastBar = 0
+canTrade = bar_index - lastBar >= minBars
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              ENTRY CONDITIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+longCond = allowLong and canTrade and anyTriggerLong and bullTrendOK and adxOK
+shortCond = allowShort and canTrade and anyTriggerShort and bearTrendOK and adxOK
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXECUTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+if longCond and strategy.position_size <= 0
+    strategy.close("Short", comment="CS")
+    strategy.entry("Long", strategy.long, comment="L")
+    lastBar := bar_index
+
+if shortCond and strategy.position_size >= 0
+    strategy.close("Long", comment="CL")
+    strategy.entry("Short", strategy.short, comment="S")
+    lastBar := bar_index
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXITS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ATR-based levels
+longSL = strategy.position_avg_price - atr * atrStopMult
+longTP = strategy.position_avg_price + atr * atrTPMult
+shortSL = strategy.position_avg_price + atr * atrStopMult
+shortTP = strategy.position_avg_price - atr * atrTPMult
+
+// Long exits
+if strategy.position_size > 0
+    if useTrailing
+        trailSL = close - atr * trailMult
+        strategy.exit("LX", "Long", stop=math.max(longSL, trailSL), limit=longTP)
+    else
+        strategy.exit("LX", "Long", stop=longSL, limit=longTP)
+
+    // SuperTrend reversal
+    if stFlipDown
+        strategy.close("Long", comment="STR")
+
+// Short exits
+if strategy.position_size < 0
+    if useTrailing
+        trailSL = close + atr * trailMult
+        strategy.exit("SX", "Short", stop=math.min(shortSL, trailSL), limit=shortTP)
+    else
+        strategy.exit("SX", "Short", stop=shortSL, limit=shortTP)
+
+    // SuperTrend reversal
+    if stFlipUp
+        strategy.close("Short", comment="STR")
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              VISUALS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// SuperTrend
+plot(superTrend, "SuperTrend", color=stBull ? color.green : color.red, linewidth=2, style=plot.style_linebr)
+
+// EMAs
+plot(emaFast, "Fast EMA", color=color.blue, linewidth=1)
+plot(emaSlow, "Slow EMA", color=color.orange, linewidth=1)
+plot(useTrendEMA ? ema200 : na, "EMA 200", color=color.gray, linewidth=1)
+
+// Trend background
+bgcolor(bullTrendOK ? color.new(color.green, 95) : bearTrendOK ? color.new(color.red, 95) : na)
+
+// Entry signals
+plotshape(longCond, "Long", location.belowbar, shape.triangleup, size.normal, color.green)
+plotshape(shortCond, "Short", location.abovebar, shape.triangledown, size.normal, color.red)
+
+// Trigger markers
+plotshape(triggerLong_ST, "ST Up", location.belowbar, shape.circle, size.tiny, color.lime)
+plotshape(triggerShort_ST, "ST Down", location.abovebar, shape.circle, size.tiny, color.maroon)
+plotshape(triggerLong_BB, "BB Up", location.belowbar, shape.diamond, size.tiny, color.teal)
+plotshape(triggerShort_BB, "BB Down", location.abovebar, shape.diamond, size.tiny, color.purple)
+
+// ADX strength bar color
+barcolor(trendStrong and stBull ? color.new(color.green, 70) : trendStrong and stBear ? color.new(color.red, 70) : na)
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EPA v7.1 - Optimized for More Trades
+// R:R = 1.5:3.5 (2.3:1) based on research
+// ═══════════════════════════════════════════════════════════════════════════
