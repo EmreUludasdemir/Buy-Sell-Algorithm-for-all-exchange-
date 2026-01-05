@@ -67,38 +67,38 @@ class EPAUltimateV3(IStrategy):
     # Strategy version
     INTERFACE_VERSION = 3
     
-    # Optimal timeframe
-    timeframe = '4h'
+    # Optimal timeframe - 2h for more trades and better performance
+    timeframe = '2h'
     
     # Disable shorting for spot markets
     can_short = False
 
-    # ROI table - default values (will be overridden by hyperopt)
+    # ROI table - optimized for 2h timeframe
     minimal_roi = {
-        "0": 0.12,
-        "360": 0.08,
-        "720": 0.05,
-        "1440": 0.03,
-        "2880": 0.02,
+        "0": 0.20,       # 20% initial
+        "180": 0.12,     # 12% after 3h
+        "360": 0.08,     # 8% after 6h
+        "720": 0.05,     # 5% after 12h
+        "1440": 0.03,    # 3% after 24h
     }
 
-    # Base stoploss - default value (will be overridden by hyperopt)
-    stoploss = -0.08
+    # Wider stoploss for trend following
+    stoploss = -0.15
 
     # ABLATION VARIANT D: both OFF (fixed stoploss only)
     use_custom_stoploss = False
     
-    # Trailing configuration - adjusted for wider stops
-    trailing_stop = False
-    trailing_stop_positive = 0.03        # Trail at 3% (was 2%)
-    trailing_stop_positive_offset = 0.05  # Only trail after 5% profit (was 3%)
+    # Trailing stop ACTIVE - let winners run, lock profits
+    trailing_stop = True
+    trailing_stop_positive = 0.08         # Trail at 8% profit
+    trailing_stop_positive_offset = 0.10  # Only after 10% profit
     trailing_only_offset_is_reached = True
     
     # Process only new candles
     process_only_new_candles = True
     
-    # Disable exit signals - rely on ROI and trailing
-    use_exit_signal = True
+    # EXIT SIGNALS DISABLED - only ROI, trailing, stoploss
+    use_exit_signal = False
     exit_profit_only = False
     
     # Startup candle requirement

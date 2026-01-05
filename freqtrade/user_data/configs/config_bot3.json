@@ -1,0 +1,68 @@
+{
+    "bot_name": "EPA_Bot3_Paper",
+    "max_open_trades": 5,
+    "stake_currency": "USDT",
+    "stake_amount": "unlimited",
+    "tradable_balance_ratio": 0.99,
+    "fiat_display_currency": "USD",
+    "dry_run": true,
+    "dry_run_wallet": 5000,
+    "trading_mode": "spot",
+    "margin_mode": "",
+    "unfilledtimeout": {
+        "entry": 10,
+        "exit": 10,
+        "unit": "minutes"
+    },
+    "entry_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1
+    },
+    "exit_pricing": {
+        "price_side": "same",
+        "use_order_book": true,
+        "order_book_top": 1
+    },
+    "exchange": {
+        "name": "binance",
+        "key": "",
+        "secret": "",
+        "pair_whitelist": [
+            "BTC/USDT",
+            "ETH/USDT",
+            "SOL/USDT",
+            "BNB/USDT",
+            "XRP/USDT"
+        ],
+        "pair_blacklist": [
+            ".*DOWN/.*",
+            ".*UP/.*"
+        ]
+    },
+    "pairlists": [
+        {
+            "method": "StaticPairList"
+        }
+    ],
+    "telegram": {
+        "enabled": false,
+        "token": "",
+        "chat_id": ""
+    },
+    "api_server": {
+        "enabled": true,
+        "listen_ip_address": "0.0.0.0",
+        "listen_port": 8082,
+        "verbosity": "info",
+        "username": "freqtrade",
+        "password": "EPA_Bot3_2026!"
+    },
+    "initial_state": "running",
+    "internals": {
+        "process_throttle_secs": 5,
+        "heartbeat_interval": 60
+    },
+    "dataformat_ohlcv": "feather",
+    "dataformat_trades": "jsongz"
+}

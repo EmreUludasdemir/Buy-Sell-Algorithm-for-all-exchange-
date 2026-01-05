@@ -1,58 +1,58 @@
 {
   "strategy_name": "EPAUltimateV3",
   "params": {
-    "trailing": {
-      "trailing_stop": false,
-      "trailing_stop_positive": 0.03,
-      "trailing_stop_positive_offset": 0.05,
-      "trailing_only_offset_is_reached": true
-    },
     "max_open_trades": {
       "max_open_trades": 5
     },
     "buy": {
-      "adx_period": 11,
-      "adx_threshold": 30,
-      "chop_period": 13,
-      "chop_threshold": 58,
-      "fast_ema": 9,
-      "halftrend_amplitude": 3,
-      "halftrend_deviation": 2.082,
       "high_vol_size_mult": 0.5,
-      "htf_ema_period": 21,
       "low_vol_size_mult": 1.2,
-      "min_kivanc_signals": 3,
-      "min_smc_score": 0,
-      "qqe_factor": 4.726,
-      "qqe_rsi_period": 12,
-      "slow_ema": 25,
       "smc_fvg_boost": 0.1,
       "smc_ob_boost": 0.15,
-      "supertrend_multiplier": 2.054,
-      "supertrend_period": 10,
-      "trend_ema": 82,
-      "use_htf_filter": false,
       "use_smc_zones": true,
-      "use_volume_filter": false,
+      "wae_size_boost": 1.2,
+      "adx_period": 13,
+      "adx_threshold": 37,
+      "chop_period": 10,
+      "chop_threshold": 45,
+      "fast_ema": 14,
+      "halftrend_amplitude": 2,
+      "halftrend_deviation": 1.69,
+      "htf_ema_period": 36,
+      "min_kivanc_signals": 3,
+      "min_smc_score": 0,
+      "qqe_factor": 4.246,
+      "qqe_rsi_period": 10,
+      "slow_ema": 25,
+      "supertrend_multiplier": 3.063,
+      "supertrend_period": 11,
+      "trend_ema": 106,
+      "use_htf_filter": false,
+      "use_volume_filter": true,
       "use_wae_filter": true,
-      "volume_threshold": 1.126,
-      "wae_sensitivity": 186,
-      "wae_size_boost": 1.2
+      "volume_threshold": 1.439,
+      "wae_sensitivity": 107
     },
     "sell": {
-      "atr_multiplier": 3.0,
-      "risk_per_trade": 0.015
+      "risk_per_trade": 0.015,
+      "atr_multiplier": 2.05
     },
     "roi": {
-      "0": 0.436,
-      "662": 0.101,
-      "1369": 0.041,
-      "3941": 0
+      "0": 0.189,
+      "371": 0.098,
+      "993": 0.051,
+      "2384": 0
     },
     "stoploss": {
-      "stoploss": -0.281
+      "stoploss": -0.268
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.197,
+      "trailing_stop_positive_offset": 0.269,
+      "trailing_only_offset_is_reached": true
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-01-05 13:15:06.003229+00:00"
+  "export_time": "2026-01-05 17:47:13.993908+00:00"
 }

@@ -1,4 +1,5 @@
 {
+    "bot_name": "EPA_Hyperopt",
     "max_open_trades": 5,
     "stake_currency": "USDT",
     "stake_amount": "unlimited",
@@ -32,7 +33,12 @@
             "ETH/USDT",
             "SOL/USDT",
             "BNB/USDT",
-            "XRP/USDT"
+            "XRP/USDT",
+            "DOGE/USDT",
+            "AVAX/USDT",
+            "LINK/USDT",
+            "ADA/USDT",
+            "MATIC/USDT"
         ],
         "pair_blacklist": [
             ".*DOWN/.*",
@@ -50,17 +56,18 @@
         "chat_id": ""
     },
     "api_server": {
-        "enabled": false,
+        "enabled": true,
         "listen_ip_address": "0.0.0.0",
         "listen_port": 8080,
+        "verbosity": "info",
         "username": "freqtrade",
-        "password": "hyperopt2026"
+        "password": "EPA_Hyperopt_2026!"
     },
-    "bot_name": "EPA_Hyperopt",
     "initial_state": "running",
     "internals": {
-        "process_throttle_secs": 5
+        "process_throttle_secs": 5,
+        "heartbeat_interval": 60
     },
-    "dataformat_ohlcv": "json",
+    "dataformat_ohlcv": "feather",
     "dataformat_trades": "jsongz"
 }
