@@ -130,9 +130,9 @@ class EPAAlphaTrendV1(IStrategy):
     # HYPEROPT PARAMETERS - TREND
     # ═══════════════════════════════════════════════════════════════
     alphatrend_period = IntParameter(10, 20, default=14, space='buy', optimize=True)
-    alphatrend_coeff = DecimalParameter(0.8, 1.5, default=1.0, decimals=1, space='buy', optimize=True)
-    adx_threshold = IntParameter(18, 35, default=22, space='buy', optimize=True)  # Lowered from 28
-    chop_threshold = IntParameter(45, 65, default=55, space='buy', optimize=True)  # Raised from 50
+    alphatrend_coeff = DecimalParameter(0.5, 1.5, default=0.75, decimals=2, space='buy', optimize=True)  # 0.75 daha hassas
+    adx_threshold = IntParameter(15, 35, default=18, space='buy', optimize=True)  # Düşürüldü
+    chop_threshold = IntParameter(45, 70, default=60, space='buy', optimize=True)  # Yükseltildi
     
     # ═══════════════════════════════════════════════════════════════
     # HYPEROPT PARAMETERS - MOMENTUM
@@ -156,8 +156,8 @@ class EPAAlphaTrendV1(IStrategy):
     # ═══════════════════════════════════════════════════════════════
     # HYPEROPT PARAMETERS - FILTERS
     # ═══════════════════════════════════════════════════════════════
-    confluence_required = IntParameter(2, 3, default=2, space='buy', optimize=False)
-    volume_factor = DecimalParameter(0.5, 1.0, default=0.6, decimals=1, space='buy', optimize=False)
+    confluence_required = IntParameter(1, 3, default=1, space='buy', optimize=True)  # 1 yeterli
+    volume_factor = DecimalParameter(0.3, 1.0, default=0.5, decimals=1, space='buy', optimize=True)  # Düşürüldü
     
     # ═══════════════════════════════════════════════════════════════
     # INFORMATIVE PAIRS
@@ -407,19 +407,22 @@ class EPAAlphaTrendV1(IStrategy):
         """
         
         # ═══════════════════════════════════════════════════════════════
-        # LAYER 1: TREND CONFIRMATION (RELAXED)
+        # LAYER 1: TREND CONFIRMATION (SUPERTREND HYBRID)
         # ═══════════════════════════════════════════════════════════════
-        # AlphaTrend bullish is REQUIRED
-        # Regime filter: ADX > threshold OR Choppiness < threshold (OR logic, not AND)
+        # Regime filter: ADX > threshold OR Choppiness < threshold
         regime_ok = (
             (dataframe['adx'] > self.adx_threshold.value) |
             (dataframe['choppiness'] < self.chop_threshold.value)
         )
         
-        trend_ok = (
-            (dataframe['alphatrend_bullish'] == 1) &
-            regime_ok
+        # HYBRID: AlphaTrend OR SuperTrend bullish
+        # Bu sayede daha fazla entry sinyali yakalanır
+        trend_bullish = (
+            (dataframe['alphatrend_bullish'] == 1) |
+            (dataframe['supertrend_direction'] == 1)
         )
+        
+        trend_ok = trend_bullish & regime_ok
         
         # HTF filter is now OPTIONAL - just logged, not required
         # (Removed from trend_ok to increase signal frequency)
@@ -527,14 +530,12 @@ CUMULATIVE FILTERING:
         """)
         
         # ═══════════════════════════════════════════════════════════════
-        # FINAL ENTRY SIGNAL (SIMPLIFIED FOR TESTING)
+        # FINAL ENTRY SIGNAL (BASİTLEŞTİRİLDİ - TEST)
         # ═══════════════════════════════════════════════════════════════
-        # Temporarily removed L3 (confluence) and L4 (volume) to diagnose low trade count
+        # Sadece: Trend bullish (AT OR ST) + Volume > 0
+        # L2, L3, L4 devre dışı - trade sayısı artırma testi
         enter_long = (
             trend_ok &
-            entry_trigger &
-            # confluence_ok &  # Disabled for testing
-            # volume_ok &      # Disabled for testing
             (dataframe['volume'] > 0)
         )
         

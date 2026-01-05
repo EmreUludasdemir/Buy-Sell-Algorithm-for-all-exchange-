@@ -1,0 +1,101 @@
+[
+  {
+    "name": "EPAUltimateV3_RegimeBTC",
+    "trades": 189,
+    "profit": 342.16,
+    "win_rate": 51.3,
+    "sharpe": 0.291,
+    "pf": 1.182,
+    "status": "KEEP"
+  },
+  {
+    "name": "EPAUltimateV3_Aggressive",
+    "trades": 226,
+    "profit": 277.76,
+    "win_rate": 69.5,
+    "sharpe": 0.312,
+    "pf": 1.144,
+    "status": "KEEP"
+  },
+  {
+    "name": "EPAUltimateV3_MinimalTweak",
+    "trades": 68,
+    "profit": 117.67,
+    "win_rate": 60.3,
+    "sharpe": 0.11,
+    "pf": 1.17,
+    "status": "KEEP"
+  },
+  {
+    "name": "AlphaTrendAdaptive",
+    "trades": 2,
+    "profit": -0.18,
+    "win_rate": 0.0,
+    "sharpe": -0.065,
+    "pf": 0.0,
+    "status": "DELETE"
+  },
+  {
+    "name": "EPAUltimateV3_Balanced",
+    "trades": 91,
+    "profit": -39.34,
+    "win_rate": 42.9,
+    "sharpe": -0.04,
+    "pf": 0.96,
+    "status": "DELETE"
+  },
+  {
+    "name": "EPAAlphaTrend",
+    "trades": 317,
+    "profit": -48.3,
+    "win_rate": 71.3,
+    "sharpe": -0.352,
+    "pf": 0.898,
+    "status": "DELETE"
+  },
+  {
+    "name": "EPAUltimateV3_Optimized",
+    "trades": 98,
+    "profit": -369.31,
+    "win_rate": 29.6,
+    "sharpe": -0.539,
+    "pf": 0.595,
+    "status": "DELETE"
+  },
+  {
+    "name": "EPAUltimateV3",
+    "trades": 538,
+    "profit": -573.74,
+    "win_rate": 48.1,
+    "sharpe": -0.711,
+    "pf": 0.88,
+    "status": "DELETE"
+  },
+  {
+    "name": "EPAAlphaTrendV1",
+    "trades": 3174,
+    "profit": -576.67,
+    "win_rate": 48.4,
+    "sharpe": -6.114,
+    "pf": 0.833,
+    "status": "DELETE"
+  },
+  {
+    "name": "AlphaTrendBaseline",
+    "trades": 2792,
+    "profit": -643.62,
+    "win_rate": 39.9,
+    "sharpe": -10.668,
+    "pf": 0.67,
+    "status": "DELETE"
+  },
+  {
+    "name": "EPAUltimateV4",
+    "trades": 1337,
+    "profit": -1504.77,
+    "win_rate": 38.0,
+    "sharpe": -3.908,
+    "pf": 0.733,
+    "status": "DELETE"
+  }
+]
