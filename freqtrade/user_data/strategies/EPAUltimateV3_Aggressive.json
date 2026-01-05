@@ -1,0 +1,58 @@
+{
+  "strategy_name": "EPAUltimateV3_Aggressive",
+  "params": {
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": 0.03,
+      "trailing_stop_positive_offset": 0.05,
+      "trailing_only_offset_is_reached": true
+    },
+    "max_open_trades": {
+      "max_open_trades": 5
+    },
+    "buy": {
+      "high_vol_size_mult": 0.5,
+      "low_vol_size_mult": 1.2,
+      "smc_fvg_boost": 0.1,
+      "smc_ob_boost": 0.15,
+      "use_pair_stake_scaling": true,
+      "use_smc_zones": true,
+      "wae_size_boost": 1.2,
+      "adx_period": 18,
+      "adx_threshold": 38,
+      "chop_period": 19,
+      "chop_threshold": 58,
+      "fast_ema": 12,
+      "halftrend_amplitude": 1,
+      "halftrend_deviation": 2.051,
+      "htf_ema_period": 28,
+      "min_kivanc_signals": 2,
+      "qqe_factor": 4.946,
+      "qqe_rsi_period": 14,
+      "slow_ema": 39,
+      "supertrend_multiplier": 3.262,
+      "supertrend_period": 14,
+      "trend_ema": 100,
+      "use_htf_filter": true,
+      "use_volume_filter": false,
+      "use_wae_filter": true,
+      "volume_threshold": 1.646,
+      "wae_sensitivity": 117
+    },
+    "sell": {
+      "risk_per_trade": 0.015,
+      "atr_multiplier": 3.881
+    },
+    "roi": {
+      "0": 0.513,
+      "1013": 0.233,
+      "3689": 0.032,
+      "9206": 0
+    },
+    "stoploss": {
+      "stoploss": -0.031
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-01-05 17:02:34.707357+00:00"
+}

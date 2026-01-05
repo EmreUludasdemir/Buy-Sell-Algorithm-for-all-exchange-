@@ -4,43 +4,44 @@ __pycache__/
 *$py.class
 *.so
 .Python
-env/
 venv/
-.venv/
-*.egg-info/
-dist/
-build/
+.env
 
-# Freqtrade data (too large for GitHub)
+# Freqtrade Data
 freqtrade/user_data/data/
-freqtrade/user_data/logs/
 freqtrade/user_data/backtest_results/
 freqtrade/user_data/hyperopt_results/
-freqtrade/user_data/*.sqlite*
-freqtrade/user_data/tradesv3.*
-freqtrade/reports/*.json
+freqtrade/user_data/plot/
+freqtrade/user_data/logs/
+*.sqlite
 
-# Jupyter
-.ipynb_checkpoints/
+# Geçici Dosyalar
+temp_*/
+*.zip
+*.tar.gz
+last_result.json
+session_logs/
 
 # IDE
-.vscode/
 .idea/
+.vscode/
 *.swp
 *.swo
-
-# Environment
-.env
-*.env.local
 
 # OS
 .DS_Store
 Thumbs.db
 
-# Secrets (don't commit real keys!)
-# freqtrade/user_data/config.json  # Uncomment if using real API keys
+# Secrets
+.env
+*.pem
+*.key
+config_live.json
 
-# Temp files
-*.tmp
-*.bak
-*.log
+# Reports
+reports/*.json
+reports/*.html
+
+# Large Files
+*.zip
+*.tar.gz
