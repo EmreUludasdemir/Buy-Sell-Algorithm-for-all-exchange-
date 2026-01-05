@@ -38,7 +38,10 @@
             "AVAX/USDT",
             "LINK/USDT",
             "ADA/USDT",
-            "MATIC/USDT"
+            "MATIC/USDT",
+            "DOT/USDT",
+            "ATOM/USDT",
+            "NEAR/USDT"
         ],
         "pair_blacklist": [
             ".*DOWN/.*",

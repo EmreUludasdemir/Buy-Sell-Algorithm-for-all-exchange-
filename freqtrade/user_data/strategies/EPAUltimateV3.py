@@ -73,25 +73,25 @@ class EPAUltimateV3(IStrategy):
     # Disable shorting for spot markets
     can_short = False
 
-    # ROI table - optimized for 2h timeframe
+    # ROI table - more aggressive for better profit capture
     minimal_roi = {
-        "0": 0.20,       # 20% initial
-        "180": 0.12,     # 12% after 3h
-        "360": 0.08,     # 8% after 6h
-        "720": 0.05,     # 5% after 12h
-        "1440": 0.03,    # 3% after 24h
+        "0": 0.15,       # 15% initial
+        "120": 0.10,     # 10% after 2h
+        "240": 0.07,     # 7% after 4h
+        "480": 0.05,     # 5% after 8h
+        "720": 0.03,     # 3% after 12h
     }
 
-    # Wider stoploss for trend following
-    stoploss = -0.15
+    # Tighter stoploss for better risk management
+    stoploss = -0.10
 
     # ABLATION VARIANT D: both OFF (fixed stoploss only)
     use_custom_stoploss = False
     
-    # Trailing stop ACTIVE - let winners run, lock profits
-    trailing_stop = True
-    trailing_stop_positive = 0.08         # Trail at 8% profit
-    trailing_stop_positive_offset = 0.10  # Only after 10% profit
+    # Trailing stop DISABLED - was causing -207% loss
+    trailing_stop = False
+    trailing_stop_positive = 0.05
+    trailing_stop_positive_offset = 0.08
     trailing_only_offset_is_reached = True
     
     # Process only new candles
