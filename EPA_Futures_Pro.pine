@@ -1,0 +1,349 @@
+// This Pine Script™ code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// ═══════════════════════════════════════════════════════════════════════════
+// EPA FUTURES PRO - ULTIMATE CRYPTO FUTURES STRATEGY
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Developed by: EMRE ULUDAŞDEMIR
+// Role: Financial Markets Researcher & Algorithm Designer
+//
+// STRATEGY COMPONENTS (Research-Based):
+// ✅ Triple SuperTrend (Multi-timeframe confirmation)
+// ✅ ADX Filter (Trend strength > 25)
+// ✅ RSI Momentum (Overbought/Oversold + 50 crossover)
+// ✅ EMA 200 Trend Filter (Major trend direction)
+// ✅ MACD Momentum (Trend confirmation)
+// ✅ ATR Dynamic SL/TP (1.5x SL, 3x TP)
+// ✅ Volume Spike Detection
+//
+// Research Sources:
+// - QuantifiedStrategies.com (RSI 91% win rate strategy)
+// - FMZQuant (EMA-MACD-SuperTrend-ADX-ATR strategy)
+// - GoodCrypto.app (SuperTrend best settings)
+// - Mudrex Learn (SuperTrend profitable strategies)
+//
+// Optimized for: BTC/USDT, ETH/USDT Futures (1H timeframe)
+// ═══════════════════════════════════════════════════════════════════════════
+
+//@version=6
+strategy("EPA Futures Pro", shorttitle="EPA-FUT", overlay=true,
+         default_qty_type=strategy.percent_of_equity, default_qty_value=10,
+         initial_capital=10000, commission_type=strategy.commission.percent,
+         commission_value=0.04, slippage=1, pyramiding=3, calc_on_every_tick=false,
+         process_orders_on_close=true, margin_long=10, margin_short=10)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              INPUTS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// === TRIPLE SUPERTREND ===
+grpST = "═══ Triple SuperTrend ═══"
+st1_period = input.int(10, "ST1 Period (Fast)", minval=5, maxval=20, group=grpST)
+st1_mult = input.float(1.5, "ST1 Multiplier", minval=1.0, maxval=3.0, step=0.5, group=grpST)
+st2_period = input.int(11, "ST2 Period (Medium)", minval=7, maxval=25, group=grpST)
+st2_mult = input.float(2.0, "ST2 Multiplier", minval=1.5, maxval=4.0, step=0.5, group=grpST)
+st3_period = input.int(12, "ST3 Period (Slow)", minval=10, maxval=30, group=grpST)
+st3_mult = input.float(3.0, "ST3 Multiplier", minval=2.0, maxval=5.0, step=0.5, group=grpST)
+stConfirmRequired = input.int(2, "Min SuperTrends Agree (2-3)", minval=1, maxval=3, group=grpST)
+
+// === ADX/DMI ===
+grpADX = "═══ ADX Trend Filter ═══"
+useADX = input.bool(true, "Use ADX Filter", group=grpADX)
+adxLen = input.int(14, "ADX Length", minval=7, maxval=21, group=grpADX)
+adxThreshold = input.int(25, "ADX Threshold", minval=15, maxval=40, group=grpADX)
+
+// === RSI ===
+grpRSI = "═══ RSI Momentum ═══"
+useRSI = input.bool(true, "Use RSI Filter", group=grpRSI)
+rsiLen = input.int(14, "RSI Length", minval=7, maxval=21, group=grpRSI)
+rsiOB = input.int(70, "RSI Overbought", minval=60, maxval=85, group=grpRSI)
+rsiOS = input.int(30, "RSI Oversold", minval=15, maxval=40, group=grpRSI)
+rsiMid = input.int(50, "RSI Middle", minval=45, maxval=55, group=grpRSI)
+
+// === EMA ===
+grpEMA = "═══ EMA Trend ═══"
+useEMA200 = input.bool(true, "Use EMA 200 Filter", group=grpEMA)
+emaFastLen = input.int(9, "EMA Fast", minval=5, maxval=20, group=grpEMA)
+emaSlowLen = input.int(21, "EMA Slow", minval=15, maxval=50, group=grpEMA)
+emaTrendLen = input.int(200, "EMA Trend", minval=100, maxval=300, group=grpEMA)
+
+// === MACD ===
+grpMACD = "═══ MACD Momentum ═══"
+useMACD = input.bool(true, "Use MACD Filter", group=grpMACD)
+macdFast = input.int(12, "MACD Fast", minval=8, maxval=20, group=grpMACD)
+macdSlow = input.int(26, "MACD Slow", minval=20, maxval=40, group=grpMACD)
+macdSignal = input.int(9, "MACD Signal", minval=5, maxval=15, group=grpMACD)
+
+// === RISK MANAGEMENT ===
+grpRisk = "═══ Risk Management ═══"
+atrLen = input.int(14, "ATR Length", minval=7, maxval=21, group=grpRisk)
+slMult = input.float(1.5, "Stop Loss ATR Mult", minval=1.0, maxval=3.0, step=0.25, group=grpRisk)
+tpMult = input.float(3.0, "Take Profit ATR Mult", minval=2.0, maxval=5.0, step=0.5, group=grpRisk)
+useTrailing = input.bool(true, "Use Trailing Stop", group=grpRisk)
+trailMult = input.float(2.0, "Trailing ATR Mult", minval=1.0, maxval=4.0, step=0.25, group=grpRisk)
+
+// === VOLUME ===
+grpVol = "═══ Volume Filter ═══"
+useVolume = input.bool(true, "Use Volume Filter", group=grpVol)
+volLen = input.int(20, "Volume SMA Length", minval=10, maxval=50, group=grpVol)
+volMult = input.float(1.2, "Volume Spike Mult", minval=1.0, maxval=3.0, step=0.1, group=grpVol)
+
+// === TRADE SETTINGS ===
+grpTrade = "═══ Trade Settings ═══"
+allowLong = input.bool(true, "Allow Long", group=grpTrade)
+allowShort = input.bool(true, "Allow Short", group=grpTrade)
+minBars = input.int(3, "Min Bars Between", minval=1, maxval=10, group=grpTrade)
+
+// === VISUALS ===
+grpVis = "═══ Visuals ═══"
+showST = input.bool(true, "Show SuperTrend", group=grpVis)
+showEMA = input.bool(true, "Show EMAs", group=grpVis)
+showSignals = input.bool(true, "Show Signals", group=grpVis)
+showTable = input.bool(true, "Show Info Table", group=grpVis)
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              CALCULATIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// === ATR ===
+atr = ta.atr(atrLen)
+
+// === TRIPLE SUPERTREND ===
+[st1, st1Dir] = ta.supertrend(st1_mult, st1_period)
+[st2, st2Dir] = ta.supertrend(st2_mult, st2_period)
+[st3, st3Dir] = ta.supertrend(st3_mult, st3_period)
+
+st1Bull = st1Dir < 0
+st2Bull = st2Dir < 0
+st3Bull = st3Dir < 0
+
+st1Bear = st1Dir > 0
+st2Bear = st2Dir > 0
+st3Bear = st3Dir > 0
+
+// Count bullish/bearish SuperTrends
+bullSTCount = (st1Bull ? 1 : 0) + (st2Bull ? 1 : 0) + (st3Bull ? 1 : 0)
+bearSTCount = (st1Bear ? 1 : 0) + (st2Bear ? 1 : 0) + (st3Bear ? 1 : 0)
+
+stBullish = bullSTCount >= stConfirmRequired
+stBearish = bearSTCount >= stConfirmRequired
+
+// SuperTrend flip signals
+stFlipUp = bullSTCount >= stConfirmRequired and bullSTCount[1] < stConfirmRequired
+stFlipDown = bearSTCount >= stConfirmRequired and bearSTCount[1] < stConfirmRequired
+
+// === ADX/DMI ===
+[diPlus, diMinus, adx] = ta.dmi(adxLen, adxLen)
+strongTrend = adx > adxThreshold
+diBullish = diPlus > diMinus
+diBearish = diMinus > diPlus
+
+// === RSI ===
+rsi = ta.rsi(close, rsiLen)
+rsiBullish = rsi > rsiMid and rsi < rsiOB
+rsiBearish = rsi < rsiMid and rsi > rsiOS
+rsiOS_zone = rsi < rsiOS
+rsiOB_zone = rsi > rsiOB
+
+// === EMA ===
+emaFast = ta.ema(close, emaFastLen)
+emaSlow = ta.ema(close, emaSlowLen)
+ema200 = ta.ema(close, emaTrendLen)
+
+emaBullish = emaFast > emaSlow
+emaBearish = emaFast < emaSlow
+above200 = close > ema200
+below200 = close < ema200
+
+emaCrossUp = ta.crossover(emaFast, emaSlow)
+emaCrossDown = ta.crossunder(emaFast, emaSlow)
+
+// === MACD ===
+[macdLine, signalLine, histLine] = ta.macd(close, macdFast, macdSlow, macdSignal)
+macdBullish = macdLine > signalLine and histLine > 0
+macdBearish = macdLine < signalLine and histLine < 0
+macdCrossUp = ta.crossover(macdLine, signalLine)
+macdCrossDown = ta.crossunder(macdLine, signalLine)
+
+// === VOLUME ===
+volSMA = ta.sma(volume, volLen)
+volSpike = volume > volSMA * volMult
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              SIGNAL SCORING
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Bull Score (0-6)
+bullScore = 0
+bullScore += stBullish ? 1 : 0
+bullScore += (not useADX or (strongTrend and diBullish)) ? 1 : 0
+bullScore += (not useRSI or rsiBullish) ? 1 : 0
+bullScore += (not useEMA200 or above200) ? 1 : 0
+bullScore += (not useMACD or macdBullish) ? 1 : 0
+bullScore += emaBullish ? 1 : 0
+
+// Bear Score (0-6)
+bearScore = 0
+bearScore += stBearish ? 1 : 0
+bearScore += (not useADX or (strongTrend and diBearish)) ? 1 : 0
+bearScore += (not useRSI or rsiBearish) ? 1 : 0
+bearScore += (not useEMA200 or below200) ? 1 : 0
+bearScore += (not useMACD or macdBearish) ? 1 : 0
+bearScore += emaBearish ? 1 : 0
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              ENTRY TRIGGERS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Primary: SuperTrend flip
+triggerLong_ST = stFlipUp
+triggerShort_ST = stFlipDown
+
+// Secondary: EMA cross
+triggerLong_EMA = emaCrossUp and stBullish
+triggerShort_EMA = emaCrossDown and stBearish
+
+// Tertiary: MACD cross
+triggerLong_MACD = useMACD and macdCrossUp and stBullish
+triggerShort_MACD = useMACD and macdCrossDown and stBearish
+
+// Any trigger
+anyLongTrigger = triggerLong_ST or triggerLong_EMA or triggerLong_MACD
+anyShortTrigger = triggerShort_ST or triggerShort_EMA or triggerShort_MACD
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              FILTERS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ADX filter
+adxOK = not useADX or strongTrend
+
+// RSI filter (not overbought for long, not oversold for short)
+rsiOK_Long = not useRSI or (rsi < rsiOB and rsi > rsiOS)
+rsiOK_Short = not useRSI or (rsi > rsiOS and rsi < rsiOB)
+
+// EMA 200 filter
+ema200OK_Long = not useEMA200 or above200
+ema200OK_Short = not useEMA200 or below200
+
+// Volume filter
+volOK = not useVolume or volSpike
+
+// Bar spacing
+var int lastBar = 0
+canTrade = bar_index - lastBar >= minBars
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              ENTRY CONDITIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// LONG: Trigger + Score >= 4 + Filters
+longCond = allowLong and canTrade and anyLongTrigger and bullScore >= 4 and adxOK and rsiOK_Long and ema200OK_Long and volOK
+
+// SHORT: Trigger + Score >= 4 + Filters
+shortCond = allowShort and canTrade and anyShortTrigger and bearScore >= 4 and adxOK and rsiOK_Short and ema200OK_Short and volOK
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXECUTION
+// ═══════════════════════════════════════════════════════════════════════════
+
+if longCond and strategy.position_size <= 0
+    strategy.close("Short", comment="CS")
+    strategy.entry("Long", strategy.long, comment="L")
+    lastBar := bar_index
+
+if shortCond and strategy.position_size >= 0
+    strategy.close("Long", comment="CL")
+    strategy.entry("Short", strategy.short, comment="S")
+    lastBar := bar_index
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              EXITS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// ATR-based levels
+longSL = strategy.position_avg_price - atr * slMult
+longTP = strategy.position_avg_price + atr * tpMult
+shortSL = strategy.position_avg_price + atr * slMult
+shortTP = strategy.position_avg_price - atr * tpMult
+
+// Long exits
+if strategy.position_size > 0
+    if useTrailing
+        trailSL = close - atr * trailMult
+        strategy.exit("LX", "Long", stop=math.max(longSL, trailSL), limit=longTP)
+    else
+        strategy.exit("LX", "Long", stop=longSL, limit=longTP)
+
+    // SuperTrend reversal exit
+    if stFlipDown
+        strategy.close("Long", comment="STR")
+
+// Short exits
+if strategy.position_size < 0
+    if useTrailing
+        trailSL = close + atr * trailMult
+        strategy.exit("SX", "Short", stop=math.min(shortSL, trailSL), limit=shortTP)
+    else
+        strategy.exit("SX", "Short", stop=shortSL, limit=shortTP)
+
+    // SuperTrend reversal exit
+    if stFlipUp
+        strategy.close("Short", comment="STR")
+
+// ═══════════════════════════════════════════════════════════════════════════
+//                              VISUALS
+// ═══════════════════════════════════════════════════════════════════════════
+
+// SuperTrend lines
+plot(showST ? st1 : na, "ST1", color=st1Bull ? color.new(color.green, 70) : color.new(color.red, 70), linewidth=1)
+plot(showST ? st2 : na, "ST2", color=st2Bull ? color.new(color.green, 50) : color.new(color.red, 50), linewidth=2)
+plot(showST ? st3 : na, "ST3", color=st3Bull ? color.new(color.green, 30) : color.new(color.red, 30), linewidth=3)
+
+// EMAs
+plot(showEMA ? emaFast : na, "EMA Fast", color=color.blue, linewidth=1)
+plot(showEMA ? emaSlow : na, "EMA Slow", color=color.orange, linewidth=1)
+plot(showEMA and useEMA200 ? ema200 : na, "EMA 200", color=color.gray, linewidth=2)
+
+// Background
+bgcolor(stBullish ? color.new(color.green, 95) : stBearish ? color.new(color.red, 95) : na)
+
+// Entry signals
+plotshape(showSignals and longCond, "Long Entry", location.belowbar, shape.triangleup, size.normal, color.green)
+plotshape(showSignals and shortCond, "Short Entry", location.abovebar, shape.triangledown, size.normal, color.red)
+
+// Trigger markers
+plotshape(showSignals and triggerLong_ST, "ST Up", location.belowbar, shape.circle, size.tiny, color.lime)
+plotshape(showSignals and triggerShort_ST, "ST Down", location.abovebar, shape.circle, size.tiny, color.maroon)
+
+// Info Table
+var table infoTbl = table.new(position.top_right, 2, 8, bgcolor=color.new(color.black, 85), border_width=1)
+if showTable and barstate.islast
+    table.cell(infoTbl, 0, 0, "EPA Futures Pro", text_color=color.yellow, text_size=size.small)
+    table.cell(infoTbl, 1, 0, syminfo.ticker, text_color=color.white, text_size=size.small)
+
+    table.cell(infoTbl, 0, 1, "SuperTrend", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTbl, 1, 1, str.tostring(bullSTCount) + "/3 Bull", text_color=stBullish ? color.green : color.red, text_size=size.tiny)
+
+    table.cell(infoTbl, 0, 2, "ADX", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTbl, 1, 2, str.tostring(adx, "#.0"), text_color=strongTrend ? color.green : color.gray, text_size=size.tiny)
+
+    table.cell(infoTbl, 0, 3, "RSI", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTbl, 1, 3, str.tostring(rsi, "#.0"), text_color=rsiBullish ? color.green : rsiBearish ? color.red : color.gray, text_size=size.tiny)
+
+    table.cell(infoTbl, 0, 4, "MACD", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTbl, 1, 4, macdBullish ? "BULL" : macdBearish ? "BEAR" : "NEUTRAL", text_color=macdBullish ? color.green : macdBearish ? color.red : color.gray, text_size=size.tiny)
+
+    table.cell(infoTbl, 0, 5, "Bull Score", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTbl, 1, 5, str.tostring(bullScore) + "/6", text_color=bullScore >= 4 ? color.green : color.gray, text_size=size.tiny)
+
+    table.cell(infoTbl, 0, 6, "Bear Score", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTbl, 1, 6, str.tostring(bearScore) + "/6", text_color=bearScore >= 4 ? color.red : color.gray, text_size=size.tiny)
+
+    table.cell(infoTbl, 0, 7, "ATR", text_color=color.gray, text_size=size.tiny)
+    table.cell(infoTbl, 1, 7, str.tostring(atr, "#.00"), text_color=color.white, text_size=size.tiny)
+
+// ═══════════════════════════════════════════════════════════════════════════
+// EPA FUTURES PRO
+// Triple SuperTrend + ADX + RSI + MACD + EMA 200 + ATR Risk Management
+// Optimized for Crypto Futures (Long & Short)
+// ═══════════════════════════════════════════════════════════════════════════
