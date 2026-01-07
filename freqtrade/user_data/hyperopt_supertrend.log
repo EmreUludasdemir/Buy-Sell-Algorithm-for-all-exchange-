@@ -1,0 +1,587 @@
+﻿docker : 2026-01-06 15:46:2
+9,486 - freqtrade - INFO - 
+freqtrade 2025.11.2
+At line:1 char:1
++ docker run --rm -v "${PWD
+}/user_data:/freqtrade/user
+_data" freqtradeo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (202  
+  6-01-06 15:4...trade 2   
+ 025.11.2:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+2026-01-06 15:46:30,229 - n
+umexpr.utils - INFO - NumEx
+pr defaulting to 16 threads
+.
+2026-01-06 15:46:32,452 - f
+reqtrade.configuration.load
+_config - INFO - Using conf
+ig: /freqtrade/user_data/co
+nfigs/config_bot1.json ...
+2026-01-06 15:46:32,463 - f
+reqtrade.loggers - INFO - E
+nabling colorized output.
+2026-01-06 15:46:32,464 - f
+reqtrade.loggers - INFO - L
+ogfile configured
+2026-01-06 15:46:32,465 - f
+reqtrade.loggers - INFO - V
+erbosity set to 0
+2026-01-06 15:46:32,466 - f
+reqtrade.configuration.conf
+iguration - INFO - Using ma
+x_open_trades: 3 ...
+2026-01-06 15:46:32,467 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --timerange detected: 202
+30101-20260101 ...
+2026-01-06 15:46:33,883 - f
+reqtrade.configuration.conf
+iguration - INFO - Using us
+er-data directory: /freqtra
+de/user_data ...
+2026-01-06 15:46:33,888 - f
+reqtrade.configuration.conf
+iguration - INFO - Using da
+ta directory: /freqtrade/us
+er_data/data/binance ...
+2026-01-06 15:46:33,889 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --epochs detected ... Wil
+l run Hyperopt with for 40 
+epochs ...
+2026-01-06 15:46:33,889 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r -s/--spaces detected: ['b
+uy']
+2026-01-06 15:46:33,890 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r -j/--job-workers detected
+: 1
+2026-01-06 15:46:33,890 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --min-trades detected: 1
+2026-01-06 15:46:33,891 - f
+reqtrade.configuration.conf
+iguration - INFO - Using Hy
+peropt loss class name: Sor
+tinoHyperOptLoss
+2026-01-06 15:46:33,891 - f
+reqtrade.configuration.conf
+iguration - INFO - Filter t
+rades by timerange: 2023010
+1-20260101
+2026-01-06 15:46:33,894 - f
+reqtrade.exchange.check_exc
+hange - INFO - Checking exc
+hange...
+2026-01-06 15:46:33,913 - f
+reqtrade.exchange.check_exc
+hange - INFO - Exchange "bi
+nance" is officially suppor
+ted by the Freqtrade develo
+pment team.
+2026-01-06 15:46:33,914 - f
+reqtrade.configuration.conf
+iguration - INFO - Using pa
+irlist from configuration.
+2026-01-06 15:46:33,914 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 15:46:33,919 - f
+reqtrade.commands.optimize_
+commands - INFO - Starting 
+freqtrade in Hyperopt mode
+2026-01-06 15:46:33,929 - f
+reqtrade.optimize.hyperopt.
+hyperopt - INFO - Removing 
+`/freqtrade/user_data/hyper
+opt_results/hyperopt_ticker
+data.pkl`.
+2026-01-06 15:46:33,936 - f
+reqtrade.exchange.exchange 
+- INFO - Instance is runnin
+g with dry_run enabled
+2026-01-06 15:46:33,937 - f
+reqtrade.exchange.exchange 
+- INFO - Using CCXT 4.5.27
+2026-01-06 15:46:33,967 - f
+reqtrade.exchange.exchange 
+- INFO - Using Exchange "Bi
+nance"
+2026-01-06 15:46:36,804 - f
+reqtrade.resolvers.exchange
+_resolver - INFO - Using re
+solved exchange 'Binance'..
+.
+2026-01-06 15:46:36,939 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved s
+trategy EPASuperTrendHypero
+pt from '/freqtrade/user_da
+ta/strategies/EPASuperTrend
+Hyperopt.py'...
+2026-01-06 15:46:36,943 - f
+reqtrade.strategy.hyper - I
+NFO - Found no parameter fi
+le.
+2026-01-06 15:46:36,946 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_currency' 
+with value from the configu
+ration: USDT.
+2026-01-06 15:46:36,947 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_amount' wi
+th value from the configura
+tion: unlimited.
+2026-01-06 15:46:36,948 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'unfilledtimeout'
+ with value from the config
+uration: {'entry': 10, 'exi
+t': 10, 'unit': 'minutes', 
+'exit_timeout_count': 0}.
+2026-01-06 15:46:36,949 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'max_open_trades'
+ with value from the config
+uration: 3.
+2026-01-06 15:46:36,950 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using minimal_roi: {'0': 0
+.15, '120': 0.1, '240': 0.0
+7, '480': 0.04, '720': 0.02
+}
+2026-01-06 15:46:36,951 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using timeframe: 2h
+2026-01-06 15:46:36,952 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stoploss: -0.08
+2026-01-06 15:46:36,955 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop: True
+2026-01-06 15:46:36,957 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve: 0.03
+2026-01-06 15:46:36,958 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve_offset: 0.05
+2026-01-06 15:46:36,960 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_only_offset
+_is_reached: True
+2026-01-06 15:46:36,961 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_custom_stoploss:
+ False
+2026-01-06 15:46:36,962 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using process_only_new_can
+dles: True
+2026-01-06 15:46:36,963 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_types: {'entry
+': 'limit', 'exit': 'limit'
+, 'stoploss': 'limit', 'sto
+ploss_on_exchange': False, 
+'stoploss_on_exchange_inter
+val': 60}
+2026-01-06 15:46:36,964 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_time_in_force:
+ {'entry': 'GTC', 'exit': '
+GTC'}
+2026-01-06 15:46:36,964 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_currency: USDT
+2026-01-06 15:46:36,965 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_amount: unlimi
+ted
+2026-01-06 15:46:36,966 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using startup_candle_count
+: 250
+2026-01-06 15:46:36,966 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using unfilledtimeout: {'e
+ntry': 10, 'exit': 10, 'uni
+t': 'minutes', 'exit_timeou
+t_count': 0}
+2026-01-06 15:46:36,967 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_exit_signal: Fal
+se
+2026-01-06 15:46:36,967 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_only: Fa
+lse
+2026-01-06 15:46:36,968 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_roi_if_entry_
+signal: False
+2026-01-06 15:46:36,970 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_offset: 
+0.0
+2026-01-06 15:46:36,970 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using disable_dataframe_ch
+ecks: False
+2026-01-06 15:46:36,972 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_buying_expire
+d_candle_after: 0
+2026-01-06 15:46:36,973 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using position_adjustment_
+enable: False
+2026-01-06 15:46:36,974 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_entry_position_a
+djustment: -1
+2026-01-06 15:46:36,976 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_open_trades: 3
+2026-01-06 15:46:36,977 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 15:46:36,985 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved p
+airlist StaticPairList from
+ '/freqtrade/freqtrade/plug
+ins/pairlist/StaticPairList
+.py'...
+2026-01-06 15:46:37,026 - f
+reqtrade.optimize.backtesti
+ng - INFO - Using fee 0.100
+0% - worst case fee from ex
+change (lowest tier).
+2026-01-06 15:46:37,028 - f
+reqtrade.strategy.hyper - I
+NFO - No params for buy fou
+nd, using default values.
+2026-01-06 15:46:37,029 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter(de
+fault): buy_st_multiplier =
+ 3.0
+2026-01-06 15:46:37,030 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter(de
+fault): buy_st_period = 10
+2026-01-06 15:46:37,031 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter(de
+fault): buy_use_ema = False
+2026-01-06 15:46:37,038 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved h
+yperoptloss SortinoHyperOpt
+Loss from '/freqtrade/freqt
+rade/optimize/hyperopt_loss
+/hyperopt_loss_sortino.py'.
+..
+2026-01-06 15:46:37,839 - f
+reqtrade.optimize.hyperopt.
+hyperopt_optimizer - INFO -
+ manager queue <class 'mult
+iprocessing.managers.AutoPr
+oxy[Queue]'>
+2026-01-06 15:46:37,840 - f
+reqtrade.optimize.hyperopt.
+hyperopt - INFO - Using opt
+imizer random state: 34644
+2026-01-06 15:46:37,908 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - BTC/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 15:46:37,972 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - ETH/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 15:46:37,993 - f
+reqtrade.optimize.backtesti
+ng - INFO - Loading data fr
+om 2023-01-01 00:00:00 up t
+o 2026-01-01 00:00:00 (1096
+ days).
+2026-01-06 15:46:37,994 - f
+reqtrade.configuration.time
+range - WARNING - Moving st
+art-date by 250 candles to 
+account for startup time.
+2026-01-06 15:46:38,256 - f
+reqtrade.optimize.hyperopt.
+hyperopt_optimizer - INFO -
+ Dataload complete. Calcula
+ting indicators
+2026-01-06 15:48:29,366 - f
+reqtrade.optimize.hyperopt.
+hyperopt_optimizer - INFO -
+ Hyperopting with data from
+ 2023-01-21 20:00:00 up to 
+2026-01-01 00:00:00 (1075 d
+ays)..
+2026-01-06 15:48:29,719 - f
+reqtrade.optimize.hyperopt.
+hyperopt - INFO - Found 16 
+CPU cores. Let's make them 
+scream!
+2026-01-06 15:48:29,720 - f
+reqtrade.optimize.hyperopt.
+hyperopt - INFO - Number of
+ parallel jobs set as: 1
+2026-01-06 15:48:29,723 - f
+reqtrade.optimize.hyperopt.
+hyperopt_optimizer - INFO -
+ Using optuna sampler NSGAI
+IISampler.
+[I 2026-01-06 15:48:29,724]
+ A new study created in mem
+ory with name: no-name-30f7
+f0e2-2744-4aaf-876b-b18c963
+92b40
+2026-01-06 15:48:29,725 - f
+reqtrade.optimize.hyperopt.
+hyperopt - INFO - Effective
+ number of parallel workers
+ used: 1
+2026-01-06 15:49:22,966 - f
+reqtrade.optimize.hyperopt.
+hyperopt - WARNING - Duplic
+ate params detected. Maybe 
+your search space is too sm
+all?
+                           
+                           
+                           
+          Hyperopt results 
+                           
+                           
+                           
+           
+                         Ôö
+ÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│Ôö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│Ôö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöô              
+            
+                         Ôö
+â Best   Ôöâ Epoch Ôöâ Trad
+es Ôöâ  Win  Draw  Loss  Wi
+n% Ôöâ Avg profit Ôöâ      
+             Profit Ôöâ    
+ Avg duration Ôöâ Objective
+ Ôöâ     Max Drawdown (Acct
+) Ôöâ                      
+    
+                         Ôö
+íÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔò
+çÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔö®              
+            
+                         Ôö
+é * Best Ôöé  1/40 Ôöé    2
+56 Ôöé  196     0    60  76
+.6 Ôöé     -0.20% Ôöé -378.
+930 USDT  (-18.95%) Ôöé 3 d
+ays, 15:17:00 Ôöé   0.82871
+ Ôöé 447.783 USDT   (21.90%
+) Ôöé                      
+    
+                         Ôö
+é * Best Ôöé  3/40 Ôöé    1
+74 Ôöé  142     0    32  81
+.6 Ôöé      0.34% Ôöé  382.
+557 USDT   (19.13%) Ôöé 3 d
+ays, 15:10:00 Ôöé  -0.63402
+ Ôöé 351.924 USDT   (14.69%
+) Ôöé                      
+    
+                         Ôö
+é * Best Ôöé  6/40 Ôöé    1
+73 Ôöé  143     0    30  82
+.7 Ôöé      0.44% Ôöé  531.
+258 USDT   (26.56%) Ôöé 3 d
+ays, 17:09:00 Ôöé  -0.81474
+ Ôöé 307.807 USDT   (12.33%
+) Ôöé                      
+    
+                         Ôö
+öÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤Ôö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤Ôö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö
+ÇÔöÇÔöÇÔöÇÔöİ              
+            
+Epochs ÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö
+üÔò©                       
+      33/40  82% ÔÇó 0:01:0
+2 ÔÇó 0:00:14
+2026-01-06 15:49:31,988 - f
+reqtrade.optimize.hyperopt.
+hyperopt - INFO - 7 epochs 
+skipped due to duplicate pa
+rameters.
+2026-01-06 15:49:31,989 - f
+reqtrade.optimize.hyperopt.
+hyperopt - INFO - 33 epochs
+ saved to '/freqtrade/user_
+data/hyperopt_results/strat
+egy_EPASuperTrendHyperopt_2
+026-01-06_15-46-33.fthypt'.
+2026-01-06 15:49:32,301 - s
+mc_indicators - WARNING - s
+martmoneyconcepts not insta
+lled. Run: pip install smar
+tmoneyconcepts
+2026-01-06 15:49:32,350 - s
+mc_indicators - WARNING - s
+martmoneyconcepts not insta
+lled. Run: pip install smar
+tmoneyconcepts
+2026-01-06 15:49:32,351 - f
+reqtrade.optimize.hyperopt_
+tools - INFO - Dumping para
+meters to /freqtrade/user_d
+ata/strategies/EPASuperTren
+dHyperopt.json
+
+Best result:
+
+*    6/40:    173 trades. 143/0/30 Wins/Draws/Losses. Avg profit   0.44%. Median profit   2.00%. Total profit 531.25767141 USDT (  26.56%). Avg duration 3 days, 17:09:00 min. Objective: -0.81474
+
+
+    # Buy parameters:
+    buy_params = {
+        "buy_st_multiplier": 3.5,
+        "buy_st_period": 14,
+        "buy_use_ema": False,
+    }
+
+    # ROI parameters:  # value loaded from strategy
+    minimal_roi = {
+        "0": 0.15,
+        "120": 0.1,
+        "240": 0.07,
+        "480": 0.04,
+        "720": 0.02
+    }
+
+    # Stoploss parameters:
+    stoploss = -0.08  # value loaded from strategy
+
+    # Trailing stop parameters:
+    trailing_stop = True  # value loaded from strategy
+    trailing_stop_positive = 0.03  # value loaded from strategy
+    trailing_stop_positive_offset = 0.05  # value loaded from strategy
+    trailing_only_offset_is_reached = True  # value loaded from strategy
+    
+
+    # max_open_trades parameters:
+    max_open_trades = 3  # value loaded from strategy

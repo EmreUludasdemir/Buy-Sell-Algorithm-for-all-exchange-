@@ -1,0 +1,31 @@
+{
+  "strategy_name": "EPASuperTrendHyperopt",
+  "params": {
+    "roi": {
+      "0": 0.15,
+      "120": 0.1,
+      "240": 0.07,
+      "480": 0.04,
+      "720": 0.02
+    },
+    "stoploss": {
+      "stoploss": -0.08
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.03,
+      "trailing_stop_positive_offset": 0.05,
+      "trailing_only_offset_is_reached": true
+    },
+    "max_open_trades": {
+      "max_open_trades": 3
+    },
+    "buy": {
+      "buy_st_multiplier": 3.5,
+      "buy_st_period": 14,
+      "buy_use_ema": false
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-01-06 15:49:32.351359+00:00"
+}

@@ -1,0 +1,1138 @@
+﻿docker : time="2026-01-06T1
+5:04:57+03:00" level=warnin
+g msg="Found orphan contain
+ers ([freqtrade]) for this 
+project. If you removed or 
+renamed this service in you
+r compose file, you can run
+ this command with the --re
+move-orphans flag to clean 
+it up."
+At line:1 char:1
++ docker compose run --rm b
+ot1_btceth backtesting --st
+rategy EPAUltimat ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (tim  
+  e="2026-01-0...o clean   
+  it up.":String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+2026-01-06 12:04:59,929 - f
+reqtrade - INFO - freqtrade
+ 2025.11.2
+2026-01-06 12:05:00,484 - n
+umexpr.utils - INFO - NumEx
+pr defaulting to 16 threads
+.
+2026-01-06 12:05:04,163 - f
+reqtrade.configuration.load
+_config - INFO - Using conf
+ig: user_data/config_hypero
+pt.json ...
+2026-01-06 12:05:04,173 - f
+reqtrade.loggers - INFO - E
+nabling colorized output.
+2026-01-06 12:05:04,174 - f
+reqtrade.loggers - INFO - L
+ogfile configured
+2026-01-06 12:05:04,175 - f
+reqtrade.loggers - INFO - V
+erbosity set to 0
+2026-01-06 12:05:04,175 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r -i/--timeframe detected .
+.. Using timeframe: 2h ...
+2026-01-06 12:05:04,176 - f
+reqtrade.configuration.conf
+iguration - INFO - Using ma
+x_open_trades: 5 ...
+2026-01-06 12:05:04,177 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --timerange detected: 202
+30101-20260101 ...
+2026-01-06 12:05:05,742 - f
+reqtrade.configuration.conf
+iguration - INFO - Using us
+er-data directory: /freqtra
+de/user_data ...
+2026-01-06 12:05:05,747 - f
+reqtrade.configuration.conf
+iguration - INFO - Using da
+ta directory: /freqtrade/us
+er_data/data/binance ...
+2026-01-06 12:05:05,748 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --cache=day detected ...
+2026-01-06 12:05:05,749 - f
+reqtrade.configuration.conf
+iguration - INFO - Using "f
+eather" to store OHLCV data
+.
+2026-01-06 12:05:05,750 - f
+reqtrade.configuration.conf
+iguration - INFO - Filter t
+rades by timerange: 2023010
+1-20260101
+2026-01-06 12:05:05,753 - f
+reqtrade.exchange.check_exc
+hange - INFO - Checking exc
+hange...
+2026-01-06 12:05:05,776 - f
+reqtrade.exchange.check_exc
+hange - INFO - Exchange "bi
+nance" is officially suppor
+ted by the Freqtrade develo
+pment team.
+2026-01-06 12:05:05,778 - f
+reqtrade.configuration.conf
+iguration - INFO - Using pa
+irlist from configuration.
+2026-01-06 12:05:05,779 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 12:05:05,783 - f
+reqtrade.commands.optimize_
+commands - INFO - Starting 
+freqtrade in Backtesting mo
+de
+2026-01-06 12:05:05,785 - f
+reqtrade.exchange.exchange 
+- INFO - Instance is runnin
+g with dry_run enabled
+2026-01-06 12:05:05,786 - f
+reqtrade.exchange.exchange 
+- INFO - Using CCXT 4.5.27
+2026-01-06 12:05:05,824 - f
+reqtrade.exchange.exchange 
+- INFO - Using Exchange "Bi
+nance"
+2026-01-06 12:05:09,037 - f
+reqtrade.resolvers.exchange
+_resolver - INFO - Using re
+solved exchange 'Binance'..
+.
+2026-01-06 12:05:09,300 - s
+mc_indicators - WARNING - s
+martmoneyconcepts not insta
+lled. Run: pip install smar
+tmoneyconcepts
+2026-01-06 12:05:09,332 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved s
+trategy EPAUltimateV3 from 
+'/freqtrade/user_data/strat
+egies/EPAUltimateV3.py'...
+2026-01-06 12:05:09,336 - f
+reqtrade.strategy.hyper - I
+NFO - Loading parameters fr
+om file /freqtrade/user_dat
+a/strategies/EPAUltimateV3.
+json
+2026-01-06 12:05:09,344 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'timeframe' with 
+value from the configuratio
+n: 2h.
+2026-01-06 12:05:09,345 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_currency' 
+with value from the configu
+ration: USDT.
+2026-01-06 12:05:09,346 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_amount' wi
+th value from the configura
+tion: unlimited.
+2026-01-06 12:05:09,347 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'unfilledtimeout'
+ with value from the config
+uration: {'entry': 10, 'exi
+t': 10, 'unit': 'minutes', 
+'exit_timeout_count': 0}.
+2026-01-06 12:05:09,348 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'max_open_trades'
+ with value from the config
+uration: 5.
+2026-01-06 12:05:09,350 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using minimal_roi: {'0': 0
+.304, '869': 0.163, '1742':
+ 0.045, '4411': 0}
+2026-01-06 12:05:09,351 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using timeframe: 2h
+2026-01-06 12:05:09,352 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stoploss: -0.229
+2026-01-06 12:05:09,355 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop: False
+2026-01-06 12:05:09,356 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve: 0.05
+2026-01-06 12:05:09,358 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve_offset: 0.1
+2026-01-06 12:05:09,359 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_only_offset
+_is_reached: True
+2026-01-06 12:05:09,360 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_custom_stoploss:
+ False
+2026-01-06 12:05:09,361 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using process_only_new_can
+dles: True
+2026-01-06 12:05:09,362 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_types: {'entry
+': 'limit', 'exit': 'limit'
+, 'stoploss': 'limit', 'sto
+ploss_on_exchange': False, 
+'stoploss_on_exchange_inter
+val': 60}
+2026-01-06 12:05:09,363 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_time_in_force:
+ {'entry': 'GTC', 'exit': '
+GTC'}
+2026-01-06 12:05:09,364 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_currency: USDT
+2026-01-06 12:05:09,365 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_amount: unlimi
+ted
+2026-01-06 12:05:09,367 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using startup_candle_count
+: 100
+2026-01-06 12:05:09,368 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using unfilledtimeout: {'e
+ntry': 10, 'exit': 10, 'uni
+t': 'minutes', 'exit_timeou
+t_count': 0}
+2026-01-06 12:05:09,370 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_exit_signal: Fal
+se
+2026-01-06 12:05:09,371 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_only: Fa
+lse
+2026-01-06 12:05:09,372 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_roi_if_entry_
+signal: False
+2026-01-06 12:05:09,372 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_offset: 
+0.0
+2026-01-06 12:05:09,373 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using disable_dataframe_ch
+ecks: False
+2026-01-06 12:05:09,376 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_buying_expire
+d_candle_after: 0
+2026-01-06 12:05:09,377 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using position_adjustment_
+enable: False
+2026-01-06 12:05:09,378 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_entry_position_a
+djustment: -1
+2026-01-06 12:05:09,380 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_open_trades: 5
+2026-01-06 12:05:09,381 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 12:05:09,390 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved p
+airlist StaticPairList from
+ '/freqtrade/freqtrade/plug
+ins/pairlist/StaticPairList
+.py'...
+2026-01-06 12:05:09,487 - f
+reqtrade.plugins.pairlist.I
+PairList - INFO - Ignoring 
+MATIC/USDT from whitelist. 
+Market is not active.
+2026-01-06 12:05:09,525 - f
+reqtrade.optimize.backtesti
+ng - INFO - Using fee 0.100
+0% - worst case fee from ex
+change (lowest tier).
+2026-01-06 12:05:09,744 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - BTC/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 12:05:09,842 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - ETH/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 12:05:09,923 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - SOL/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 12:05:09,993 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - BNB/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 12:05:10,072 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - XRP/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 12:05:10,158 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - DOGE/USDT, spot, 2h, 
+data starts at 2024-01-01 0
+0:00:00
+2026-01-06 12:05:10,230 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - AVAX/USDT, spot, 2h, 
+data starts at 2024-01-01 0
+0:00:00
+2026-01-06 12:05:10,307 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - LINK/USDT, spot, 2h, 
+data starts at 2024-01-01 0
+0:00:00
+2026-01-06 12:05:10,380 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - ADA/USDT, spot, 2h, d
+ata starts at 2024-01-01 00
+:00:00
+2026-01-06 12:05:10,680 - f
+reqtrade.optimize.backtesti
+ng - INFO - Loading data fr
+om 2022-12-23 16:00:00 up t
+o 2026-01-01 00:00:00 (1104
+ days).
+2026-01-06 12:05:12,757 - f
+reqtrade.optimize.backtesti
+ng - INFO - Dataload comple
+te. Calculating indicators
+2026-01-06 12:05:12,832 - f
+reqtrade.optimize.backtesti
+ng - INFO - Running backtes
+ting for Strategy EPAUltima
+teV3
+2026-01-06 12:05:12,834 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: a
+dx_period = 19
+2026-01-06 12:05:12,835 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: a
+dx_threshold = 33
+2026-01-06 12:05:12,835 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: c
+hop_period = 13
+2026-01-06 12:05:12,836 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: c
+hop_threshold = 47
+2026-01-06 12:05:12,837 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: f
+ast_ema = 11
+2026-01-06 12:05:12,838 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: h
+alftrend_amplitude = 3
+2026-01-06 12:05:12,839 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: h
+alftrend_deviation = 2.831
+2026-01-06 12:05:12,840 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: h
+igh_vol_size_mult = 0.5
+2026-01-06 12:05:12,841 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: h
+tf_ema_period = 50
+2026-01-06 12:05:12,842 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: l
+ow_vol_size_mult = 1.2
+2026-01-06 12:05:12,843 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: m
+in_kivanc_signals = 2
+2026-01-06 12:05:12,844 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: m
+in_smc_score = 0
+2026-01-06 12:05:12,845 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: q
+qe_factor = 3.112
+2026-01-06 12:05:12,847 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: q
+qe_rsi_period = 18
+2026-01-06 12:05:12,848 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: s
+low_ema = 26
+2026-01-06 12:05:12,849 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: s
+mc_fvg_boost = 0.1
+2026-01-06 12:05:12,849 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: s
+mc_ob_boost = 0.15
+2026-01-06 12:05:12,850 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: s
+upertrend_multiplier = 3.29
+9
+2026-01-06 12:05:12,851 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: s
+upertrend_period = 9
+2026-01-06 12:05:12,852 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: t
+rend_ema = 101
+2026-01-06 12:05:12,853 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: u
+se_htf_filter = True
+2026-01-06 12:05:12,854 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: u
+se_smc_zones = True
+2026-01-06 12:05:12,855 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: u
+se_volume_filter = False
+2026-01-06 12:05:12,855 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: u
+se_wae_filter = True
+2026-01-06 12:05:12,856 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: v
+olume_threshold = 1.333
+2026-01-06 12:05:12,857 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: w
+ae_sensitivity = 123
+2026-01-06 12:05:12,857 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: w
+ae_size_boost = 1.2
+2026-01-06 12:05:12,858 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: a
+tr_multiplier = 2.651
+2026-01-06 12:05:12,859 - f
+reqtrade.strategy.hyper - I
+NFO - Strategy Parameter: r
+isk_per_trade = 0.015
+2026-01-06 12:05:12,875 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for B
+TC/USDT 1d from 2022-09-23 
+00:00:00 to 2026-01-01 00:0
+0:00
+2026-01-06 12:05:12,922 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - BTC/USDT, spot, 1d, d
+ata starts at 2023-12-29 00
+:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:05:26,248 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for E
+TH/USDT 1d from 2022-09-23 
+00:00:00 to 2026-01-01 00:0
+0:00
+2026-01-06 12:05:26,313 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - ETH/USDT, spot, 1d, d
+ata starts at 2023-12-29 00
+:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:05:37,410 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for S
+OL/USDT 1d from 2022-09-23 
+00:00:00 to 2026-01-01 00:0
+0:00
+2026-01-06 12:05:37,458 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - SOL/USDT, spot, 1d, d
+ata starts at 2023-12-29 00
+:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:05:48,104 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for B
+NB/USDT 1d from 2022-09-23 
+00:00:00 to 2026-01-01 00:0
+0:00
+2026-01-06 12:05:48,149 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - BNB/USDT, spot, 1d, d
+ata starts at 2024-01-01 00
+:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:05:58,216 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for X
+RP/USDT 1d from 2022-09-23 
+00:00:00 to 2026-01-01 00:0
+0:00
+2026-01-06 12:05:58,267 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - XRP/USDT, spot, 1d, d
+ata starts at 2024-01-01 00
+:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:06:08,133 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for D
+OGE/USDT 1d from 2022-09-23
+ 00:00:00 to 2026-01-01 00:
+00:00
+2026-01-06 12:06:08,194 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - DOGE/USDT, spot, 1d, 
+data starts at 2024-01-01 0
+0:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:06:14,385 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for A
+VAX/USDT 1d from 2022-09-23
+ 00:00:00 to 2026-01-01 00:
+00:00
+2026-01-06 12:06:14,444 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - AVAX/USDT, spot, 1d, 
+data starts at 2024-01-01 0
+0:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:06:20,799 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for L
+INK/USDT 1d from 2022-09-23
+ 00:00:00 to 2026-01-01 00:
+00:00
+2026-01-06 12:06:20,859 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - LINK/USDT, spot, 1d, 
+data starts at 2024-01-01 0
+0:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:06:27,380 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for A
+DA/USDT 1d from 2022-09-23 
+00:00:00 to 2026-01-01 00:0
+0:00
+2026-01-06 12:06:27,442 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - ADA/USDT, spot, 1d, d
+ata starts at 2024-01-01 00
+:00:00
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:06:34,258 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for D
+OT/USDT 1d from 2022-09-23 
+00:00:00 to 2026-01-01 00:0
+0:00
+2026-01-06 12:06:34,268 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - No history for DOT/US
+DT, spot, 1d found. Use `fr
+eqtrade download-data` to d
+ownload the data
+2026-01-06 12:06:34,269 - f
+reqtrade.data.dataprovider 
+- WARNING - No data found f
+or (DOT/USDT, 1d, ).
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:06:44,667 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for A
+TOM/USDT 1d from 2022-09-23
+ 00:00:00 to 2026-01-01 00:
+00:00
+2026-01-06 12:06:44,676 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - No history for ATOM/U
+SDT, spot, 1d found. Use `f
+reqtrade download-data` to 
+download the data
+2026-01-06 12:06:44,677 - f
+reqtrade.data.dataprovider 
+- WARNING - No data found f
+or (ATOM/USDT, 1d, ).
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:06:54,233 - f
+reqtrade.data.dataprovider 
+- INFO - Loading data for N
+EAR/USDT 1d from 2022-09-23
+ 00:00:00 to 2026-01-01 00:
+00:00
+2026-01-06 12:06:54,241 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - No history for NEAR/U
+SDT, spot, 1d found. Use `f
+reqtrade download-data` to 
+download the data
+2026-01-06 12:06:54,242 - f
+reqtrade.data.dataprovider 
+- WARNING - No data found f
+or (NEAR/USDT, 1d, ).
+/freqtrade/user_data/strate
+gies/smc_indicators.py:654:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bullish_ob_candle = impul
+sive_up & is_red.shift(1).f
+illna(False)
+/freqtrade/user_data/strate
+gies/smc_indicators.py:675:
+ FutureWarning: Downcasting
+ object dtype arrays on .fi
+llna, .ffill, .bfill is dep
+recated and will change in 
+a future version. Call resu
+lt.infer_objects(copy=False
+) instead. To opt-in to the
+ future behavior, set `pd.s
+et_option('future.no_silent
+_downcasting', True)`
+  bearish_ob_candle = impul
+sive_down & is_green.shift(
+1).fillna(False)
+2026-01-06 12:07:03,877 - f
+reqtrade.optimize.backtesti
+ng - INFO - Backtesting wit
+h data from 2023-01-01 00:0
+0:00 up to 2026-01-01 00:00
+:00 (1096 days).
+2026-01-06 12:07:09,319 - f
+reqtrade.misc - INFO - dump
+ing json to "/freqtrade/use
+r_data/backtest_results/bac
+ktest-result-2026-01-06_12-
+07-09.meta.json"
+Result for strategy EPAUltimateV3
+                                                BACKTESTING REPORT                                                
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ      Pair Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ     Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé  XRP/USDT Ôöé     25 Ôöé         0.61 Ôöé         142.781 Ôöé         7.14 Ôöé 5 days, 10:43:00 Ôöé   13     8     4  52.0 Ôöé
+Ôöé LINK/USDT Ôöé     13 Ôöé         3.26 Ôöé          98.580 Ôöé         4.93 Ôöé 2 days, 11:42:00 Ôöé    8     5     0   100 Ôöé
+Ôöé DOGE/USDT Ôöé     25 Ôöé         3.08 Ôöé          94.732 Ôöé         4.74 Ôöé  4 days, 1:31:00 Ôöé   14     8     3  56.0 Ôöé
+Ôöé NEAR/USDT Ôöé     37 Ôöé         0.87 Ôöé          69.726 Ôöé         3.49 Ôöé 3 days, 13:50:00 Ôöé   25     8     4  67.6 Ôöé
+Ôöé  SOL/USDT Ôöé     14 Ôöé          0.4 Ôöé          47.625 Ôöé         2.38 Ôöé  6 days, 4:00:00 Ôöé    7     6     1  50.0 Ôöé
+Ôöé  BNB/USDT Ôöé     19 Ôöé        -0.66 Ôöé          34.827 Ôöé         1.74 Ôöé 6 days, 12:44:00 Ôöé   10     7     2  52.6 Ôöé
+Ôöé  BTC/USDT Ôöé     21 Ôöé        -0.36 Ôöé          -8.655 Ôöé        -0.43 Ôöé 12 days, 2:11:00 Ôöé   10     9     2  47.6 Ôöé
+Ôöé ATOM/USDT Ôöé     25 Ôöé        -1.58 Ôöé         -58.797 Ôöé        -2.94 Ôöé  8 days, 0:43:00 Ôöé    9    12     4  36.0 Ôöé
+Ôöé  ETH/USDT Ôöé     22 Ôöé        -0.37 Ôöé         -63.961 Ôöé         -3.2 Ôöé 4 days, 19:05:00 Ôöé   14     5     3  63.6 Ôöé
+Ôöé  ADA/USDT Ôöé     15 Ôöé        -6.36 Ôöé        -268.409 Ôöé       -13.42 Ôöé 8 days, 18:08:00 Ôöé    6     3     6  40.0 Ôöé
+Ôöé AVAX/USDT Ôöé     19 Ôöé        -2.98 Ôöé        -375.479 Ôöé       -18.77 Ôöé  6 days, 6:13:00 Ôöé    7     8     4  36.8 Ôöé
+Ôöé  DOT/USDT Ôöé     21 Ôöé        -3.57 Ôöé        -628.727 Ôöé       -31.44 Ôöé  7 days, 0:57:00 Ôöé    8     8     5  38.1 Ôöé
+Ôöé     TOTAL Ôöé    256 Ôöé        -0.48 Ôöé        -915.757 Ôöé       -45.79 Ôöé  6 days, 3:17:00 Ôöé  131    87    38  51.2 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                         LEFT OPEN TRADES REPORT                                          
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ  Pair Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé TOTAL Ôöé      0 Ôöé          0.0 Ôöé           0.000 Ôöé          0.0 Ôöé         0:00 Ôöé    0     0     0     0 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                                 ENTER TAG STATS                                                  
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ Enter Tag Ôöâ Entries Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ    Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé     OTHER Ôöé     256 Ôöé        -0.48 Ôöé        -915.757 Ôöé       -45.79 Ôöé 6 days, 3:17:00 Ôöé  131    87    38  51.2 Ôöé
+Ôöé     TOTAL Ôöé     256 Ôöé        -0.48 Ôöé        -915.757 Ôöé       -45.79 Ôöé 6 days, 3:17:00 Ôöé  131    87    38  51.2 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                                 EXIT REASON STATS                                                  
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ Exit Reason Ôöâ Exits Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ      Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé         roi Ôöé   218 Ôöé         3.46 Ôöé        2407.008 Ôöé       120.35 Ôöé   4 days, 3:43:00 Ôöé  131    87     0   100 Ôöé
+Ôöé   stop_loss Ôöé    38 Ôöé       -23.05 Ôöé       -3322.765 Ôöé      -166.14 Ôöé 17 days, 12:09:00 Ôöé    0     0    38     0 Ôöé
+Ôöé       TOTAL Ôöé   256 Ôöé        -0.48 Ôöé        -915.757 Ôöé       -45.79 Ôöé   6 days, 3:17:00 Ôöé  131    87    38  51.2 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                                         MIXED TAG STATS                                                         
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ Enter Tag Ôöâ Exit Reason Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ      Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé           Ôöé         roi Ôöé    218 Ôöé         3.46 Ôöé        2407.008 Ôöé       120.35 Ôöé   4 days, 3:43:00 Ôöé  131    87     0   100 Ôöé
+Ôöé           Ôöé   stop_loss Ôöé     38 Ôöé       -23.05 Ôöé       -3322.765 Ôöé      -166.14 Ôöé 17 days, 12:09:00 Ôöé    0     0    38     0 Ôöé
+Ôöé     TOTAL Ôöé             Ôöé    256 Ôöé        -0.48 Ôöé        -915.757 Ôöé       -45.79 Ôöé   6 days, 3:17:00 Ôöé  131    87    38  51.2 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                          SUMMARY METRICS                           
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ Metric                        Ôöâ Value                            Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé Backtesting from              Ôöé 2023-01-01 00:00:00              Ôöé
+Ôöé Backtesting to                Ôöé 2026-01-01 00:00:00              Ôöé
+Ôöé Trading Mode                  Ôöé Spot                             Ôöé
+Ôöé Max open trades               Ôöé 5                                Ôöé
+Ôöé                               Ôöé                                  Ôöé
+Ôöé Total/Daily Avg Trades        Ôöé 256 / 0.23                       Ôöé
+Ôöé Starting balance              Ôöé 2000 USDT                        Ôöé
+Ôöé Final balance                 Ôöé 1084.243 USDT                    Ôöé
+Ôöé Absolute profit               Ôöé -915.757 USDT                    Ôöé
+Ôöé Total profit %                Ôöé -45.79%                          Ôöé
+Ôöé CAGR %                        Ôöé -18.45%                          Ôöé
+Ôöé Sortino                       Ôöé -0.25                            Ôöé
+Ôöé Sharpe                        Ôöé -0.35                            Ôöé
+Ôöé Calmar                        Ôöé -1.56                            Ôöé
+Ôöé SQN                           Ôöé -1.26                            Ôöé
+Ôöé Profit factor                 Ôöé 0.72                             Ôöé
+Ôöé Expectancy (Ratio)            Ôöé -3.58 (-0.38)                    Ôöé
+Ôöé Avg. daily profit             Ôöé -0.836 USDT                      Ôöé
+Ôöé Avg. stake amount             Ôöé 371.527 USDT                     Ôöé
+Ôöé Total trade volume            Ôöé 189685.194 USDT                  Ôöé
+Ôöé                               Ôöé                                  Ôöé
+Ôöé Best Pair                     Ôöé XRP/USDT 7.14%                   Ôöé
+Ôöé Worst Pair                    Ôöé DOT/USDT -31.44%                 Ôöé
+Ôöé Best trade                    Ôöé ADA/USDT 20.41%                  Ôöé
+Ôöé Worst trade                   Ôöé AVAX/USDT -23.05%                Ôöé
+Ôöé Best day                      Ôöé 134.053 USDT                     Ôöé
+Ôöé Worst day                     Ôöé -271.815 USDT                    Ôöé
+Ôöé Days win/draw/lose            Ôöé 93 / 946 / 30                    Ôöé
+Ôöé Min/Max/Avg. Duration Winners Ôöé 0d 16:00 / 3d 02:00 / 1d 17:24   Ôöé
+Ôöé Min/Max/Avg. Duration Losers  Ôöé 0d 18:00 / 51d 02:00 / 17d 12:09 Ôöé
+Ôöé Max Consecutive Wins / Loss   Ôöé 19 / 7                           Ôöé
+Ôöé Rejected Entry signals        Ôöé 124                              Ôöé
+Ôöé Entry/Exit Timeouts           Ôöé 0 / 0                            Ôöé
+Ôöé                               Ôöé                                  Ôöé
+Ôöé Min balance                   Ôöé 1078.542 USDT                    Ôöé
+Ôöé Max balance                   Ôöé 2212.512 USDT                    Ôöé
+Ôöé Max % of account underwater   Ôöé 51.25%                           Ôöé
+Ôöé Absolute drawdown             Ôöé 1133.971 USDT (51.25%)           Ôöé
+Ôöé Drawdown duration             Ôöé 1028 days 02:00:00               Ôöé
+Ôöé Profit at drawdown start      Ôöé 212.512 USDT                     Ôöé
+Ôöé Profit at drawdown end        Ôöé -921.458 USDT                    Ôöé
+Ôöé Drawdown start                Ôöé 2023-01-26 14:00:00              Ôöé
+Ôöé Drawdown end                  Ôöé 2025-11-19 16:00:00              Ôöé
+Ôöé Market change                 Ôöé 183.91%                          Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+
+Backtested 2023-01-01 00:00:00 -> 2026-01-01 00:00:00 | Max open trades : 5
+                                                              STRATEGY SUMMARY                                                               
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ      Strategy Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ    Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ              Drawdown Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé EPAUltimateV3 Ôöé    256 Ôöé        -0.48 Ôöé        -915.757 Ôöé       -45.79 Ôöé 6 days, 3:17:00 Ôöé  131    87    38  51.2 Ôöé 1133.971 USDT  51.25% Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ

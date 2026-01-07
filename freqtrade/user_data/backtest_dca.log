@@ -1,0 +1,380 @@
+﻿docker : 2026-01-06 17:23:2
+4,296 - freqtrade - INFO - 
+freqtrade 2025.11.2
+At line:1 char:1
++ docker run --rm -v "${PWD
+}/user_data:/freqtrade/user
+_data" freqtradeo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (202  
+  6-01-06 17:2...trade 2   
+ 025.11.2:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+2026-01-06 17:23:24,574 - n
+umexpr.utils - INFO - NumEx
+pr defaulting to 16 threads
+.
+2026-01-06 17:23:26,106 - f
+reqtrade.configuration.load
+_config - INFO - Using conf
+ig: /freqtrade/user_data/co
+nfigs/config_bot1.json ...
+2026-01-06 17:23:26,112 - f
+reqtrade.loggers - INFO - E
+nabling colorized output.
+2026-01-06 17:23:26,113 - f
+reqtrade.loggers - INFO - L
+ogfile configured
+2026-01-06 17:23:26,113 - f
+reqtrade.loggers - INFO - V
+erbosity set to 0
+2026-01-06 17:23:26,114 - f
+reqtrade.configuration.conf
+iguration - INFO - Using ma
+x_open_trades: 3 ...
+2026-01-06 17:23:26,114 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --timerange detected: 202
+30101-20260101 ...
+2026-01-06 17:23:26,863 - f
+reqtrade.configuration.conf
+iguration - INFO - Using us
+er-data directory: /freqtra
+de/user_data ...
+2026-01-06 17:23:26,865 - f
+reqtrade.configuration.conf
+iguration - INFO - Using da
+ta directory: /freqtrade/us
+er_data/data/binance ...
+2026-01-06 17:23:26,865 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --cache=day detected ...
+2026-01-06 17:23:26,866 - f
+reqtrade.configuration.conf
+iguration - INFO - Filter t
+rades by timerange: 2023010
+1-20260101
+2026-01-06 17:23:26,867 - f
+reqtrade.exchange.check_exc
+hange - INFO - Checking exc
+hange...
+2026-01-06 17:23:26,875 - f
+reqtrade.exchange.check_exc
+hange - INFO - Exchange "bi
+nance" is officially suppor
+ted by the Freqtrade develo
+pment team.
+2026-01-06 17:23:26,876 - f
+reqtrade.configuration.conf
+iguration - INFO - Using pa
+irlist from configuration.
+2026-01-06 17:23:26,876 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 17:23:26,878 - f
+reqtrade.commands.optimize_
+commands - INFO - Starting 
+freqtrade in Backtesting mo
+de
+2026-01-06 17:23:26,878 - f
+reqtrade.exchange.exchange 
+- INFO - Instance is runnin
+g with dry_run enabled
+2026-01-06 17:23:26,879 - f
+reqtrade.exchange.exchange 
+- INFO - Using CCXT 4.5.27
+2026-01-06 17:23:26,892 - f
+reqtrade.exchange.exchange 
+- INFO - Using Exchange "Bi
+nance"
+2026-01-06 17:23:28,698 - f
+reqtrade.resolvers.exchange
+_resolver - INFO - Using re
+solved exchange 'Binance'..
+.
+2026-01-06 17:23:28,738 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved s
+trategy EPADCA from '/freqt
+rade/user_data/strategies/E
+PADCA.py'...
+2026-01-06 17:23:28,740 - f
+reqtrade.strategy.hyper - I
+NFO - Found no parameter fi
+le.
+2026-01-06 17:23:28,741 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_currency' 
+with value from the configu
+ration: USDT.
+2026-01-06 17:23:28,741 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_amount' wi
+th value from the configura
+tion: unlimited.
+2026-01-06 17:23:28,741 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'unfilledtimeout'
+ with value from the config
+uration: {'entry': 10, 'exi
+t': 10, 'unit': 'minutes', 
+'exit_timeout_count': 0}.
+2026-01-06 17:23:28,742 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'max_open_trades'
+ with value from the config
+uration: 3.
+2026-01-06 17:23:28,742 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using minimal_roi: {'0': 0
+.1, '120': 0.06, '240': 0.0
+4, '480': 0.02}
+2026-01-06 17:23:28,742 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using timeframe: 2h
+2026-01-06 17:23:28,742 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stoploss: -0.15
+2026-01-06 17:23:28,743 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop: True
+2026-01-06 17:23:28,743 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve: 0.03
+2026-01-06 17:23:28,743 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve_offset: 0.05
+2026-01-06 17:23:28,744 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_only_offset
+_is_reached: True
+2026-01-06 17:23:28,744 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_custom_stoploss:
+ False
+2026-01-06 17:23:28,744 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using process_only_new_can
+dles: True
+2026-01-06 17:23:28,745 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_types: {'entry
+': 'limit', 'exit': 'limit'
+, 'stoploss': 'limit', 'sto
+ploss_on_exchange': False, 
+'stoploss_on_exchange_inter
+val': 60}
+2026-01-06 17:23:28,745 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_time_in_force:
+ {'entry': 'GTC', 'exit': '
+GTC'}
+2026-01-06 17:23:28,745 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_currency: USDT
+2026-01-06 17:23:28,746 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_amount: unlimi
+ted
+2026-01-06 17:23:28,746 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using startup_candle_count
+: 50
+2026-01-06 17:23:28,746 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using unfilledtimeout: {'e
+ntry': 10, 'exit': 10, 'uni
+t': 'minutes', 'exit_timeou
+t_count': 0}
+2026-01-06 17:23:28,746 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_exit_signal: Fal
+se
+2026-01-06 17:23:28,747 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_only: Fa
+lse
+2026-01-06 17:23:28,747 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_roi_if_entry_
+signal: False
+2026-01-06 17:23:28,747 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_offset: 
+0.0
+2026-01-06 17:23:28,748 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using disable_dataframe_ch
+ecks: False
+2026-01-06 17:23:28,748 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_buying_expire
+d_candle_after: 0
+2026-01-06 17:23:28,748 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using position_adjustment_
+enable: True
+2026-01-06 17:23:28,748 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_entry_position_a
+djustment: 3
+2026-01-06 17:23:28,749 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_open_trades: 3
+2026-01-06 17:23:28,750 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 17:23:28,755 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved p
+airlist StaticPairList from
+ '/freqtrade/freqtrade/plug
+ins/pairlist/StaticPairList
+.py'...
+2026-01-06 17:23:28,775 - f
+reqtrade.optimize.backtesti
+ng - INFO - Using fee 0.100
+0% - worst case fee from ex
+change (lowest tier).
+2026-01-06 17:23:28,825 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - BTC/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 17:23:28,863 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - ETH/USDT, spot, 2h, d
+ata starts at 2023-01-01 00
+:00:00
+2026-01-06 17:23:28,876 - f
+reqtrade.optimize.backtesti
+ng - INFO - Loading data fr
+om 2023-01-01 00:00:00 up t
+o 2026-01-01 00:00:00 (1096
+ days).
+2026-01-06 17:23:28,876 - f
+reqtrade.configuration.time
+range - WARNING - Moving st
+art-date by 50 candles to a
+ccount for startup time.
+2026-01-06 17:23:29,016 - f
+reqtrade.optimize.backtesti
+ng - INFO - Dataload comple
+te. Calculating indicators
+2026-01-06 17:23:29,038 - f
+reqtrade.optimize.backtesti
+ng - INFO - Running backtes
+ting for Strategy EPADCA
+2026-01-06 17:23:29,042 - f
+reqtrade - ERROR - Fatal ex
+ception!
+Traceback (most recent call
+ last):
+  File "/freqtrade/freqtrad
+e/main.py", line 53, in mai
+n
+    return_code = args["fun
+c"](args)
+  File "/freqtrade/freqtrad
+e/commands/optimize_command
+s.py", line 61, in start_ba
+cktesting
+    backtesting.start()
+    ~~~~~~~~~~~~~~~~~^^
+  File "/freqtrade/freqtrad
+e/optimize/backtesting.py",
+ line 1843, in start
+    min_date, max_date = se
+lf.backtest_one_strategy(st
+rat, data, timerange)
+                         ~~
+~~~~~~~~~~~~~~~~~~~~~~~~^^^
+^^^^^^^^^^^^^^^^^^^^^
+  File "/freqtrade/freqtrad
+e/optimize/backtesting.py",
+ line 1753, in backtest_one
+_strategy
+    preprocessed = self.str
+ategy.advise_all_indicators
+(data)
+  File "/freqtrade/freqtrad
+e/strategy/interface.py", l
+ine 1749, in advise_all_ind
+icators
+    res[pair] = self.advise
+_indicators(pair_data.copy(
+), {"pair": pair}).copy()
+                ~~~~~~~~~~~
+~~~~~~~~~~~^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^
+  File "/freqtrade/freqtrad
+e/strategy/interface.py", l
+ine 1811, in advise_indicat
+ors
+    dataframe = self.popula
+te_indicators(dataframe, me
+tadata)
+  File "/freqtrade/user_dat
+a/strategies/EPADCA.py", li
+ne 62, in populate_indicato
+rs
+    bollinger = ta.BBANDS(d
+ataframe['close'], timeperi
+od=20, nbdevup=2, nbdevdn=2
+)
+  File "talib/_abstract.pxi
+", line 461, in talib._ta_l
+ib.Function.__call__
+  File "talib/_abstract.pxi
+", line 311, in talib._ta_l
+ib.Function.set_function_ar
+gs
+  File "talib/_abstract.pxi
+", line 530, in talib._ta_l
+ib.Function.__check_opt_inp
+ut_value
+TypeError: Invalid paramete
+r value for nbdevup (expect
+ed float, got int)

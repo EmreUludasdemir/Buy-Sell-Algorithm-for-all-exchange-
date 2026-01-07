@@ -1,0 +1,431 @@
+﻿docker : 2026-01-06 15:22:0
+6,452 - freqtrade - INFO - 
+freqtrade 2025.11.2
+At line:1 char:1
++ docker run --rm -v "${PWD
+}/user_data:/freqtrade/user
+_data" freqtradeo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (202  
+  6-01-06 15:2...trade 2   
+ 025.11.2:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+2026-01-06 15:22:06,890 - n
+umexpr.utils - INFO - NumEx
+pr defaulting to 16 threads
+.
+2026-01-06 15:22:09,193 - f
+reqtrade.configuration.load
+_config - INFO - Using conf
+ig: /freqtrade/user_data/co
+nfigs/config_futures_majors
+.json ...
+2026-01-06 15:22:09,204 - f
+reqtrade.loggers - INFO - E
+nabling colorized output.
+2026-01-06 15:22:09,205 - f
+reqtrade.loggers - INFO - L
+ogfile configured
+2026-01-06 15:22:09,205 - f
+reqtrade.loggers - INFO - V
+erbosity set to 0
+2026-01-06 15:22:09,206 - f
+reqtrade.configuration.conf
+iguration - INFO - Using ma
+x_open_trades: 3 ...
+2026-01-06 15:22:09,207 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --timerange detected: 202
+30101-20260101 ...
+2026-01-06 15:22:10,226 - f
+reqtrade.configuration.conf
+iguration - INFO - Using us
+er-data directory: /freqtra
+de/user_data ...
+2026-01-06 15:22:10,230 - f
+reqtrade.configuration.conf
+iguration - INFO - Using da
+ta directory: /freqtrade/us
+er_data/data/binance ...
+2026-01-06 15:22:10,230 - f
+reqtrade.configuration.conf
+iguration - INFO - Paramete
+r --cache=day detected ...
+2026-01-06 15:22:10,231 - f
+reqtrade.configuration.conf
+iguration - INFO - Filter t
+rades by timerange: 2023010
+1-20260101
+2026-01-06 15:22:10,232 - f
+reqtrade.exchange.check_exc
+hange - INFO - Checking exc
+hange...
+2026-01-06 15:22:10,248 - f
+reqtrade.exchange.check_exc
+hange - INFO - Exchange "bi
+nance" is officially suppor
+ted by the Freqtrade develo
+pment team.
+2026-01-06 15:22:10,249 - f
+reqtrade.configuration.conf
+iguration - INFO - Using pa
+irlist from configuration.
+2026-01-06 15:22:10,250 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 15:22:10,255 - f
+reqtrade.commands.optimize_
+commands - INFO - Starting 
+freqtrade in Backtesting mo
+de
+2026-01-06 15:22:10,257 - f
+reqtrade.exchange.exchange 
+- INFO - Instance is runnin
+g with dry_run enabled
+2026-01-06 15:22:10,258 - f
+reqtrade.exchange.exchange 
+- INFO - Using CCXT 4.5.27
+2026-01-06 15:22:10,260 - f
+reqtrade.exchange.exchange 
+- INFO - Applying additiona
+l ccxt config: {'options': 
+{'defaultType': 'swap'}}
+2026-01-06 15:22:10,279 - f
+reqtrade.exchange.exchange 
+- INFO - Applying additiona
+l ccxt config: {'options': 
+{'defaultType': 'swap'}}
+2026-01-06 15:22:10,297 - f
+reqtrade.exchange.exchange 
+- INFO - Using Exchange "Bi
+nance"
+2026-01-06 15:22:13,627 - f
+reqtrade.resolvers.exchange
+_resolver - INFO - Using re
+solved exchange 'Binance'..
+.
+2026-01-06 15:22:13,768 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved s
+trategy EPASuperTrendFuture
+sLong from '/freqtrade/user
+_data/strategies/EPASuperTr
+endFuturesLong.py'...
+2026-01-06 15:22:13,770 - f
+reqtrade.strategy.hyper - I
+NFO - Found no parameter fi
+le.
+2026-01-06 15:22:13,772 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_currency' 
+with value from the configu
+ration: USDT.
+2026-01-06 15:22:13,772 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'stake_amount' wi
+th value from the configura
+tion: unlimited.
+2026-01-06 15:22:13,773 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'unfilledtimeout'
+ with value from the config
+uration: {'entry': 10, 'exi
+t': 10, 'unit': 'minutes', 
+'exit_timeout_count': 0}.
+2026-01-06 15:22:13,774 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Override
+ strategy 'max_open_trades'
+ with value from the config
+uration: 3.
+2026-01-06 15:22:13,775 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using minimal_roi: {'0': 0
+.15, '60': 0.1, '120': 0.06
+, '240': 0.03}
+2026-01-06 15:22:13,775 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using timeframe: 4h
+2026-01-06 15:22:13,776 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stoploss: -0.07
+2026-01-06 15:22:13,777 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop: True
+2026-01-06 15:22:13,778 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve: 0.03
+2026-01-06 15:22:13,778 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_stop_positi
+ve_offset: 0.05
+2026-01-06 15:22:13,779 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using trailing_only_offset
+_is_reached: True
+2026-01-06 15:22:13,780 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_custom_stoploss:
+ False
+2026-01-06 15:22:13,781 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using process_only_new_can
+dles: True
+2026-01-06 15:22:13,782 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_types: {'entry
+': 'limit', 'exit': 'limit'
+, 'stoploss': 'limit', 'sto
+ploss_on_exchange': False, 
+'stoploss_on_exchange_inter
+val': 60}
+2026-01-06 15:22:13,782 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using order_time_in_force:
+ {'entry': 'GTC', 'exit': '
+GTC'}
+2026-01-06 15:22:13,783 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_currency: USDT
+2026-01-06 15:22:13,785 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using stake_amount: unlimi
+ted
+2026-01-06 15:22:13,788 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using startup_candle_count
+: 250
+2026-01-06 15:22:13,790 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using unfilledtimeout: {'e
+ntry': 10, 'exit': 10, 'uni
+t': 'minutes', 'exit_timeou
+t_count': 0}
+2026-01-06 15:22:13,792 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using use_exit_signal: Fal
+se
+2026-01-06 15:22:13,793 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_only: Fa
+lse
+2026-01-06 15:22:13,794 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_roi_if_entry_
+signal: False
+2026-01-06 15:22:13,795 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using exit_profit_offset: 
+0.0
+2026-01-06 15:22:13,795 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using disable_dataframe_ch
+ecks: False
+2026-01-06 15:22:13,796 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using ignore_buying_expire
+d_candle_after: 0
+2026-01-06 15:22:13,796 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using position_adjustment_
+enable: False
+2026-01-06 15:22:13,797 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_entry_position_a
+djustment: -1
+2026-01-06 15:22:13,797 - f
+reqtrade.resolvers.strategy
+_resolver - INFO - Strategy
+ using max_open_trades: 3
+2026-01-06 15:22:13,798 - f
+reqtrade.configuration.conf
+ig_validation - INFO - Vali
+dating configuration ...
+2026-01-06 15:22:13,804 - f
+reqtrade.resolvers.iresolve
+r - INFO - Using resolved p
+airlist StaticPairList from
+ '/freqtrade/freqtrade/plug
+ins/pairlist/StaticPairList
+.py'...
+2026-01-06 15:22:13,824 - f
+reqtrade.optimize.backtesti
+ng - INFO - Using fee 0.050
+0% - worst case fee from ex
+change (lowest tier).
+2026-01-06 15:22:13,901 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - BTC/USDT:USDT, future
+s, 4h, data starts at 2023-
+01-01 00:00:00
+2026-01-06 15:22:13,949 - f
+reqtrade.data.history.datah
+andlers.idatahandler - WARN
+ING - ETH/USDT:USDT, future
+s, 4h, data starts at 2023-
+01-01 00:00:00
+2026-01-06 15:22:13,964 - f
+reqtrade.optimize.backtesti
+ng - INFO - Loading data fr
+om 2023-01-01 00:00:00 up t
+o 2026-01-01 00:00:00 (1096
+ days).
+2026-01-06 15:22:13,965 - f
+reqtrade.configuration.time
+range - WARNING - Moving st
+art-date by 250 candles to 
+account for startup time.
+2026-01-06 15:22:14,248 - f
+reqtrade.optimize.backtesti
+ng - INFO - Dataload comple
+te. Calculating indicators
+2026-01-06 15:22:14,273 - f
+reqtrade.optimize.backtesti
+ng - INFO - Running backtes
+ting for Strategy EPASuperT
+rendFuturesLong
+2026-01-06 15:22:16,957 - f
+reqtrade.optimize.backtesti
+ng - INFO - Backtesting wit
+h data from 2023-02-11 16:0
+0:00 up to 2026-01-01 00:00
+:00 (1054 days).
+2026-01-06 15:22:19,040 - f
+reqtrade.misc - INFO - dump
+ing json to "/freqtrade/use
+r_data/backtest_results/bac
+ktest-result-2026-01-06_15-
+22-19.meta.json"
+Result for strategy EPASuperTrendFuturesLong
+                                                BACKTESTING REPORT                                                
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ          Pair Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé ETH/USDT:USDT Ôöé     38 Ôöé         0.84 Ôöé         197.391 Ôöé         9.87 Ôöé      8:38:00 Ôöé   27     0    11  71.1 Ôöé
+Ôöé BTC/USDT:USDT Ôöé     44 Ôöé        -0.76 Ôöé        -236.236 Ôöé       -11.81 Ôöé     14:11:00 Ôöé   27     0    17  61.4 Ôöé
+Ôöé         TOTAL Ôöé     82 Ôöé        -0.02 Ôöé         -38.846 Ôöé        -1.94 Ôöé     11:37:00 Ôöé   54     0    28  65.9 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                         LEFT OPEN TRADES REPORT                                          
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ  Pair Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé TOTAL Ôöé      0 Ôöé          0.0 Ôöé           0.000 Ôöé          0.0 Ôöé         0:00 Ôöé    0     0     0     0 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                                      ENTER TAG STATS                                                       
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ              Enter Tag Ôöâ Entries Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé supertrend_long_ema200 Ôöé      82 Ôöé        -0.02 Ôöé         -38.846 Ôöé        -1.94 Ôöé     11:37:00 Ôöé   54     0    28  65.9 Ôöé
+Ôöé                  TOTAL Ôöé      82 Ôöé        -0.02 Ôöé         -38.846 Ôöé        -1.94 Ôöé     11:37:00 Ôöé   54     0    28  65.9 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                                  EXIT REASON STATS                                                   
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ        Exit Reason Ôöâ Exits Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé                roi Ôöé    52 Ôöé         3.68 Ôöé        1250.111 Ôöé        62.51 Ôöé     12:32:00 Ôöé   52     0     0   100 Ôöé
+Ôöé trailing_stop_loss Ôöé     2 Ôöé          6.2 Ôöé          84.971 Ôöé         4.25 Ôöé      2:00:00 Ôöé    2     0     0   100 Ôöé
+Ôöé          stop_loss Ôöé    28 Ôöé        -7.35 Ôöé       -1373.928 Ôöé        -68.7 Ôöé     10:34:00 Ôöé    0     0    28     0 Ôöé
+Ôöé              TOTAL Ôöé    82 Ôöé        -0.02 Ôöé         -38.846 Ôöé        -1.94 Ôöé     11:37:00 Ôöé   54     0    28  65.9 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                                                                MIXED TAG STATS                                                                 
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ              Enter Tag Ôöâ        Exit Reason Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé supertrend_long_ema200 Ôöé                roi Ôöé     52 Ôöé         3.68 Ôöé        1250.111 Ôöé        62.51 Ôöé     12:32:00 Ôöé   52     0     0   100 Ôöé
+Ôöé supertrend_long_ema200 Ôöé trailing_stop_loss Ôöé      2 Ôöé          6.2 Ôöé          84.971 Ôöé         4.25 Ôöé      2:00:00 Ôöé    2     0     0   100 Ôöé
+Ôöé supertrend_long_ema200 Ôöé          stop_loss Ôöé     28 Ôöé        -7.35 Ôöé       -1373.928 Ôöé        -68.7 Ôöé     10:34:00 Ôöé    0     0    28     0 Ôöé
+Ôöé                  TOTAL Ôöé                    Ôöé     82 Ôöé        -0.02 Ôöé         -38.846 Ôöé        -1.94 Ôöé     11:37:00 Ôöé   54     0    28  65.9 Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+                         SUMMARY METRICS                          
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ Metric                        Ôöâ Value                          Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé Backtesting from              Ôöé 2023-02-11 16:00:00            Ôöé
+Ôöé Backtesting to                Ôöé 2026-01-01 00:00:00            Ôöé
+Ôöé Trading Mode                  Ôöé Isolated Futures               Ôöé
+Ôöé Max open trades               Ôöé 2                              Ôöé
+Ôöé                               Ôöé                                Ôöé
+Ôöé Total/Daily Avg Trades        Ôöé 82 / 0.08                      Ôöé
+Ôöé Starting balance              Ôöé 2000 USDT                      Ôöé
+Ôöé Final balance                 Ôöé 1961.154 USDT                  Ôöé
+Ôöé Absolute profit               Ôöé -38.846 USDT                   Ôöé
+Ôöé Total profit %                Ôöé -1.94%                         Ôöé
+Ôöé CAGR %                        Ôöé -0.68%                         Ôöé
+Ôöé Sortino                       Ôöé -0.27                          Ôöé
+Ôöé Sharpe                        Ôöé -0.02                          Ôöé
+Ôöé Calmar                        Ôöé -0.19                          Ôöé
+Ôöé SQN                           Ôöé -0.12                          Ôöé
+Ôöé Profit factor                 Ôöé 0.97                           Ôöé
+Ôöé Expectancy (Ratio)            Ôöé -0.47 (-0.01)                  Ôöé
+Ôöé Avg. daily profit             Ôöé -0.037 USDT                    Ôöé
+Ôöé Avg. stake amount             Ôöé 656.918 USDT                   Ôöé
+Ôöé Total trade volume            Ôöé 323517.123 USDT                Ôöé
+Ôöé                               Ôöé                                Ôöé
+Ôöé Best Pair                     Ôöé ETH/USDT:USDT 9.87%            Ôöé
+Ôöé Worst Pair                    Ôöé BTC/USDT:USDT -11.81%          Ôöé
+Ôöé Best trade                    Ôöé ETH/USDT:USDT 14.97%           Ôöé
+Ôöé Worst trade                   Ôöé BTC/USDT:USDT -7.75%           Ôöé
+Ôöé Best day                      Ôöé 96.776 USDT                    Ôöé
+Ôöé Worst day                     Ôöé -102.252 USDT                  Ôöé
+Ôöé Days win/draw/lose            Ôöé 47 / 867 / 26                  Ôöé
+Ôöé Min/Max/Avg. Duration Winners Ôöé 0d 00:00 / 2d 12:00 / 0d 12:09 Ôöé
+Ôöé Min/Max/Avg. Duration Losers  Ôöé 0d 00:00 / 2d 00:00 / 0d 10:34 Ôöé
+Ôöé Max Consecutive Wins / Loss   Ôöé 10 / 3                         Ôöé
+Ôöé Rejected Entry signals        Ôöé 0                              Ôöé
+Ôöé Entry/Exit Timeouts           Ôöé 0 / 12                         Ôöé
+Ôöé                               Ôöé                                Ôöé
+Ôöé Min balance                   Ôöé 1792.787 USDT                  Ôöé
+Ôöé Max balance                   Ôöé 2200.818 USDT                  Ôöé
+Ôöé Max % of account underwater   Ôöé 18.54%                         Ôöé
+Ôöé Absolute drawdown             Ôöé 408.031 USDT (18.54%)          Ôöé
+Ôöé Drawdown duration             Ôöé 500 days 16:00:00              Ôöé
+Ôöé Profit at drawdown start      Ôöé 200.818 USDT                   Ôöé
+Ôöé Profit at drawdown end        Ôöé -207.213 USDT                  Ôöé
+Ôöé Drawdown start                Ôöé 2023-05-06 00:00:00            Ôöé
+Ôöé Drawdown end                  Ôöé 2024-09-17 16:00:00            Ôöé
+Ôöé Market change                 Ôöé 200.93%                        Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
+
+Backtested 2023-02-11 16:00:00 -> 2026-01-01 00:00:00 | Max open trades : 2
+                                                                  STRATEGY SUMMARY                                                                  
+ÔöÅÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö│ÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöô
+Ôöâ                 Strategy Ôöâ Trades Ôöâ Avg Profit % Ôöâ Tot Profit USDT Ôöâ Tot Profit % Ôöâ Avg Duration Ôöâ  Win  Draw  Loss  Win% Ôöâ             Drawdown Ôöâ
+ÔöíÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔòçÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔöüÔö®
+Ôöé EPASuperTrendFuturesLong Ôöé     82 Ôöé        -0.02 Ôöé         -38.846 Ôöé        -1.94 Ôöé     11:37:00 Ôöé   54     0    28  65.9 Ôöé 408.031 USDT  18.54% Ôöé
+ÔööÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔö┤ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöİ
