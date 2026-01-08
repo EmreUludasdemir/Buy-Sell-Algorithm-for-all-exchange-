@@ -43,6 +43,9 @@ class TradingConfig(BaseModel):
     min_confidence_threshold: int = Field(
         default_factory=lambda: int(os.getenv("MIN_CONFIDENCE_THRESHOLD", "70"))
     )
+    default_capital: float = Field(
+        default_factory=lambda: float(os.getenv("DEFAULT_CAPITAL", "10000"))
+    )
     
 
 class IndicatorConfig(BaseModel):
@@ -80,10 +83,11 @@ class SentimentConfig(BaseModel):
 
 class SignalWeights(BaseModel):
     """Signal Generation Weights"""
-    technical_analysis: float = 0.40
-    sentiment_analysis: float = 0.25
+    technical_analysis: float = 0.30
     pattern_recognition: float = 0.20
+    sentiment_analysis: float = 0.20
     ai_prediction: float = 0.15
+    mtf_analysis: float = 0.15
 
 
 class ServerConfig(BaseModel):

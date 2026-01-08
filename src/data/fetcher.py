@@ -8,13 +8,31 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict, List, Any, Tuple
 import logging
 import aiohttp
 import asyncio
 from functools import lru_cache
+import time
+import hashlib
+
+try:
+    from cachetools import TTLCache
+    CACHE_AVAILABLE = True
+except ImportError:
+    CACHE_AVAILABLE = False
+
+try:
+    import anyio
+    ANYIO_AVAILABLE = True
+except ImportError:
+    ANYIO_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
+
+# Global TTL cache for yfinance data (5 minute TTL)
+_data_cache: Dict[str, Tuple[Any, float]] = {}
+_CACHE_TTL = 300  # 5 minutes
 
 
 class DataFetcher:
@@ -45,13 +63,38 @@ class DataFetcher:
         self.finnhub_key = finnhub_key
         self._cache: Dict[str, Any] = {}
         
+    def _get_cache_key(self, ticker: str, period: str, interval: str, start: Optional[str], end: Optional[str]) -> str:
+        """Generate cache key for data request."""
+        key_str = f"{ticker}_{period}_{interval}_{start}_{end}"
+        return hashlib.md5(key_str.encode()).hexdigest()
+    
+    def _get_from_cache(self, cache_key: str) -> Optional[pd.DataFrame]:
+        """Get data from cache if valid."""
+        if cache_key in _data_cache:
+            data, timestamp = _data_cache[cache_key]
+            if time.time() - timestamp < _CACHE_TTL:
+                logger.debug(f"Cache hit for {cache_key}")
+                return data
+            else:
+                del _data_cache[cache_key]
+        return None
+    
+    def _set_cache(self, cache_key: str, data: pd.DataFrame) -> None:
+        """Store data in cache."""
+        _data_cache[cache_key] = (data, time.time())
+        # Limit cache size to 100 entries
+        if len(_data_cache) > 100:
+            oldest_key = min(_data_cache.keys(), key=lambda k: _data_cache[k][1])
+            del _data_cache[oldest_key]
+    
     def get_stock_data(
         self, 
         ticker: str, 
         period: str = "1y",
         interval: str = "1d",
         start: Optional[str] = None,
-        end: Optional[str] = None
+        end: Optional[str] = None,
+        max_retries: int = 3
     ) -> pd.DataFrame:
         """
         Fetch historical OHLCV data for a ticker.
@@ -62,44 +105,63 @@ class DataFetcher:
             interval: Data interval ('1m', '1h', '1d', etc.)
             start: Optional start date (YYYY-MM-DD)
             end: Optional end date (YYYY-MM-DD)
+            max_retries: Maximum retry attempts on failure
             
         Returns:
             DataFrame with OHLCV data
         """
-        try:
-            stock = yf.Ticker(ticker)
-            
-            if start and end:
-                df = stock.history(start=start, end=end, interval=interval)
-            else:
-                df = stock.history(period=period, interval=interval)
-            
-            if df.empty:
-                logger.warning(f"No data found for {ticker}")
-                return pd.DataFrame()
-            
-            # Standardize column names
-            df.columns = [col.lower().replace(' ', '_') for col in df.columns]
-            
-            # Ensure we have required columns
-            required_cols = ['open', 'high', 'low', 'close', 'volume']
-            for col in required_cols:
-                if col not in df.columns:
-                    logger.warning(f"Missing column {col} for {ticker}")
-                    
-            # Reset index to have date as column
-            df = df.reset_index()
-            if 'Date' in df.columns:
-                df = df.rename(columns={'Date': 'date'})
-            elif 'Datetime' in df.columns:
-                df = df.rename(columns={'Datetime': 'date'})
+        # Check cache first
+        cache_key = self._get_cache_key(ticker, period, interval, start, end)
+        cached_data = self._get_from_cache(cache_key)
+        if cached_data is not None:
+            return cached_data
+        
+        # Retry logic with exponential backoff
+        last_error = None
+        for attempt in range(max_retries):
+            try:
+                stock = yf.Ticker(ticker)
                 
-            logger.info(f"Fetched {len(df)} rows for {ticker}")
-            return df
-            
-        except Exception as e:
-            logger.error(f"Error fetching data for {ticker}: {e}")
-            return pd.DataFrame()
+                if start and end:
+                    df = stock.history(start=start, end=end, interval=interval)
+                else:
+                    df = stock.history(period=period, interval=interval)
+                
+                if df.empty:
+                    logger.warning(f"No data found for {ticker}")
+                    return pd.DataFrame()
+                
+                # Standardize column names
+                df.columns = [col.lower().replace(' ', '_') for col in df.columns]
+                
+                # Ensure we have required columns
+                required_cols = ['open', 'high', 'low', 'close', 'volume']
+                for col in required_cols:
+                    if col not in df.columns:
+                        logger.warning(f"Missing column {col} for {ticker}")
+                        
+                # Reset index to have date as column
+                df = df.reset_index()
+                if 'Date' in df.columns:
+                    df = df.rename(columns={'Date': 'date'})
+                elif 'Datetime' in df.columns:
+                    df = df.rename(columns={'Datetime': 'date'})
+                    
+                logger.info(f"Fetched {len(df)} rows for {ticker}")
+                
+                # Cache the result
+                self._set_cache(cache_key, df)
+                
+                return df
+                
+            except Exception as e:
+                last_error = e
+                wait_time = (2 ** attempt) * 0.5  # 0.5s, 1s, 2s
+                logger.warning(f"Attempt {attempt + 1}/{max_retries} failed for {ticker}: {e}. Retrying in {wait_time}s...")
+                time.sleep(wait_time)
+        
+        logger.error(f"Error fetching data for {ticker} after {max_retries} attempts: {last_error}")
+        return pd.DataFrame()
     
     def get_multi_stock_data(
         self, 

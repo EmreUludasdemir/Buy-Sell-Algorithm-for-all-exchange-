@@ -160,17 +160,31 @@ class SignalGenerator:
         else:
             self.sentiment_analyzer = SimpleSentimentAnalyzer()
         
-        # Price predictor
+        # Price predictor with model status check
         self.price_predictor = LSTMPricePredictor()
+        self._ai_model_loaded = self.price_predictor.load_model()
         
-        # Weights for ensemble (from config)
+        if not self._ai_model_loaded:
+            logger.warning("AI model not loaded - AI prediction weight set to 0")
+        
+        # Load weights from config (single source of truth)
         self.weights = {
-            "technical": 0.30,
-            "pattern": 0.20,
-            "sentiment": 0.20,
-            "ai": 0.15,
-            "mtf": 0.15,
+            "technical": self.config.weights.technical_analysis,
+            "pattern": self.config.weights.pattern_recognition,
+            "sentiment": self.config.weights.sentiment_analysis,
+            "ai": self.config.weights.ai_prediction if self._ai_model_loaded else 0.0,
+            "mtf": self.config.weights.mtf_analysis,
         }
+        
+        # Normalize weights to sum to 1.0 if AI is disabled
+        if not self._ai_model_loaded:
+            total = sum(self.weights.values())
+            if total > 0:
+                for key in self.weights:
+                    if key != "ai":
+                        self.weights[key] /= total
+        
+        logger.info(f"SignalGenerator initialized. AI model loaded: {self._ai_model_loaded}. Weights: {self.weights}")
     
     async def generate_signal(
         self,
@@ -449,9 +463,9 @@ class SignalGenerator:
         risk_amount = abs(entry - stop_loss)
         rr_ratio = abs(tp1 - entry) / risk_amount if risk_amount > 0 else 0
         
-        # Position size based on 2% risk
+        # Position size based on configured risk percent
         position_size = self.risk_manager.calculate_position_size(
-            capital=10000,  # Example capital
+            capital=self.config.trading.default_capital,
             risk_percent=self.config.trading.default_risk_percent,
             entry_price=entry,
             stop_loss=stop_loss

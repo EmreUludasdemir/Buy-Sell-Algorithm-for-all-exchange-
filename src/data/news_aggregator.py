@@ -10,8 +10,13 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Any, Optional
 import logging
 from dataclasses import dataclass, asdict
+import time
 
 logger = logging.getLogger(__name__)
+
+# Rate limiting constants
+_MAX_REQUESTS_PER_SECOND = 5
+_last_request_times: List[float] = []
 
 
 @dataclass
@@ -28,6 +33,23 @@ class NewsArticle:
     
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
+
+
+async def _rate_limit_check():
+    """Enforce rate limiting for API requests."""
+    global _last_request_times
+    now = time.time()
+    
+    # Remove old timestamps (older than 1 second)
+    _last_request_times = [t for t in _last_request_times if now - t < 1.0]
+    
+    # If at limit, wait
+    if len(_last_request_times) >= _MAX_REQUESTS_PER_SECOND:
+        wait_time = 1.0 - (now - _last_request_times[0])
+        if wait_time > 0:
+            await asyncio.sleep(wait_time)
+    
+    _last_request_times.append(time.time())
 
 
 class NewsAggregator:
@@ -57,6 +79,7 @@ class NewsAggregator:
         self._cache: Dict[str, List[NewsArticle]] = {}
         self._cache_time: Dict[str, datetime] = {}
         self._cache_duration = timedelta(minutes=15)
+        self._max_retries = 3
     
     async def fetch_all_news(
         self, 
@@ -127,7 +150,7 @@ class NewsAggregator:
         company_name: Optional[str],
         days: int
     ) -> List[NewsArticle]:
-        """Fetch from NewsAPI."""
+        """Fetch from NewsAPI with rate limiting and retry."""
         articles = []
         
         # Build query
@@ -147,25 +170,38 @@ class NewsAggregator:
             "pageSize": 50,
         }
         
-        try:
-            async with session.get(url, params=params) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    
-                    for item in data.get("articles", []):
-                        articles.append(NewsArticle(
-                            title=item.get("title", ""),
-                            description=item.get("description", ""),
-                            source=item.get("source", {}).get("name", "NewsAPI"),
-                            url=item.get("url", ""),
-                            published_at=item.get("publishedAt", ""),
-                            ticker=ticker,
-                        ))
-                else:
-                    logger.warning(f"NewsAPI returned status {response.status}")
-                    
-        except Exception as e:
-            logger.error(f"NewsAPI error: {e}")
+        for attempt in range(self._max_retries):
+            try:
+                # Rate limit check
+                await _rate_limit_check()
+                
+                async with session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                    if response.status == 200:
+                        data = await response.json()
+                        
+                        for item in data.get("articles", []):
+                            articles.append(NewsArticle(
+                                title=item.get("title", ""),
+                                description=item.get("description", ""),
+                                source=item.get("source", {}).get("name", "NewsAPI"),
+                                url=item.get("url", ""),
+                                published_at=item.get("publishedAt", ""),
+                                ticker=ticker,
+                            ))
+                        return articles
+                    elif response.status == 429:
+                        # Rate limited - wait and retry
+                        wait_time = (2 ** attempt) * 1.0
+                        logger.warning(f"NewsAPI rate limited. Waiting {wait_time}s before retry...")
+                        await asyncio.sleep(wait_time)
+                    else:
+                        logger.warning(f"NewsAPI returned status {response.status}")
+                        return articles
+                        
+            except asyncio.TimeoutError:
+                logger.warning(f"NewsAPI timeout on attempt {attempt + 1}")
+            except Exception as e:
+                logger.error(f"NewsAPI error: {e}")
         
         return articles
     
@@ -175,7 +211,7 @@ class NewsAggregator:
         ticker: str,
         days: int
     ) -> List[NewsArticle]:
-        """Fetch from Finnhub."""
+        """Fetch from Finnhub with rate limiting and retry."""
         articles = []
         
         end_date = datetime.now().strftime("%Y-%m-%d")
@@ -189,30 +225,43 @@ class NewsAggregator:
             "token": self.finnhub_key,
         }
         
-        try:
-            async with session.get(url, params=params) as response:
-                if response.status == 200:
-                    data = await response.json()
-                    
-                    for item in data:
-                        # Convert timestamp to ISO format
-                        pub_date = datetime.fromtimestamp(
-                            item.get("datetime", 0)
-                        ).isoformat() if item.get("datetime") else ""
+        for attempt in range(self._max_retries):
+            try:
+                # Rate limit check
+                await _rate_limit_check()
+                
+                async with session.get(url, params=params, timeout=aiohttp.ClientTimeout(total=30)) as response:
+                    if response.status == 200:
+                        data = await response.json()
                         
-                        articles.append(NewsArticle(
-                            title=item.get("headline", ""),
-                            description=item.get("summary", ""),
-                            source=item.get("source", "Finnhub"),
-                            url=item.get("url", ""),
-                            published_at=pub_date,
-                            ticker=ticker,
-                        ))
-                else:
-                    logger.warning(f"Finnhub returned status {response.status}")
-                    
-        except Exception as e:
-            logger.error(f"Finnhub news error: {e}")
+                        for item in data:
+                            # Convert timestamp to ISO format
+                            pub_date = datetime.fromtimestamp(
+                                item.get("datetime", 0)
+                            ).isoformat() if item.get("datetime") else ""
+                            
+                            articles.append(NewsArticle(
+                                title=item.get("headline", ""),
+                                description=item.get("summary", ""),
+                                source=item.get("source", "Finnhub"),
+                                url=item.get("url", ""),
+                                published_at=pub_date,
+                                ticker=ticker,
+                            ))
+                        return articles
+                    elif response.status == 429:
+                        # Rate limited - wait and retry
+                        wait_time = (2 ** attempt) * 1.0
+                        logger.warning(f"Finnhub rate limited. Waiting {wait_time}s before retry...")
+                        await asyncio.sleep(wait_time)
+                    else:
+                        logger.warning(f"Finnhub returned status {response.status}")
+                        return articles
+                        
+            except asyncio.TimeoutError:
+                logger.warning(f"Finnhub timeout on attempt {attempt + 1}")
+            except Exception as e:
+                logger.error(f"Finnhub news error: {e}")
         
         return articles
     
