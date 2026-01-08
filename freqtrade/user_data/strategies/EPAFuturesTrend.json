@@ -1,0 +1,31 @@
+{
+  "strategy_name": "EPAFuturesTrend",
+  "params": {
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.03,
+      "trailing_stop_positive_offset": 0.05,
+      "trailing_only_offset_is_reached": true
+    },
+    "max_open_trades": {
+      "max_open_trades": 5
+    },
+    "buy": {
+      "adx_period": 20,
+      "adx_threshold": 34,
+      "fast_ema": 9,
+      "slow_ema": 32
+    },
+    "roi": {
+      "0": 0.835,
+      "1378": 0.231,
+      "3714": 0.048,
+      "8029": 0
+    },
+    "stoploss": {
+      "stoploss": -0.331
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-01-08 17:30:26.296142+00:00"
+}
