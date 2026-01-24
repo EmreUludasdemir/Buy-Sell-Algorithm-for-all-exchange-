@@ -36,6 +36,51 @@ class TestStrategyImports:
         except ImportError as e:
             pytest.skip(f"EPAFuturesPro not available: {e}")
 
+    @pytest.mark.unit
+    def test_import_rsi2_strategy(self):
+        """Test RSI2Strategy imports."""
+        try:
+            from RSI2Strategy import RSI2Strategy
+            assert RSI2Strategy is not None
+        except ImportError as e:
+            pytest.skip(f"RSI2Strategy not available: {e}")
+
+    @pytest.mark.unit
+    def test_import_macd_rsi_combo(self):
+        """Test MACDRSICombo imports."""
+        try:
+            from MACDRSICombo import MACDRSICombo
+            assert MACDRSICombo is not None
+        except ImportError as e:
+            pytest.skip(f"MACDRSICombo not available: {e}")
+
+    @pytest.mark.unit
+    def test_import_supertrend_adx(self):
+        """Test SuperTrendADX imports."""
+        try:
+            from SuperTrendADX import SuperTrendADX
+            assert SuperTrendADX is not None
+        except ImportError as e:
+            pytest.skip(f"SuperTrendADX not available: {e}")
+
+    @pytest.mark.unit
+    def test_import_triple_confluence(self):
+        """Test TripleConfluence imports."""
+        try:
+            from TripleConfluence import TripleConfluence
+            assert TripleConfluence is not None
+        except ImportError as e:
+            pytest.skip(f"TripleConfluence not available: {e}")
+
+    @pytest.mark.unit
+    def test_import_ema_dynamic_atr(self):
+        """Test EMADynamicATR imports."""
+        try:
+            from EMADynamicATR import EMADynamicATR
+            assert EMADynamicATR is not None
+        except ImportError as e:
+            pytest.skip(f"EMADynamicATR not available: {e}")
+
 
 class TestStrategySanity:
     """Test that strategies don't crash on basic operations."""

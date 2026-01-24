@@ -78,12 +78,22 @@ jobs:
           import sys
           sys.path.insert(0, '.')
 
-          # Test EPAFuturesPro imports
-          try:
-              from EPAFuturesPro import EPAFuturesPro
-              print('✓ EPAFuturesPro imports successfully')
-          except Exception as e:
-              print(f'⚠ EPAFuturesPro import warning: {e}')
+          strategies = [
+              ('EPAFuturesPro', 'EPAFuturesPro'),
+              ('RSI2Strategy', 'RSI2Strategy'),
+              ('MACDRSICombo', 'MACDRSICombo'),
+              ('SuperTrendADX', 'SuperTrendADX'),
+              ('TripleConfluence', 'TripleConfluence'),
+              ('EMADynamicATR', 'EMADynamicATR'),
+          ]
+
+          for module, class_name in strategies:
+              try:
+                  mod = __import__(module)
+                  getattr(mod, class_name)
+                  print(f'✓ {class_name} imports successfully')
+              except Exception as e:
+                  print(f'⚠ {class_name} import warning: {e}')
 
           # Test kivanc_indicators
           try:
