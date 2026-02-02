@@ -1,0 +1,67 @@
+# US Market Baskets - Lone Stock Trader Style
+# "Hisseler yalnız koşmaz, tema iter."
+
+quantum_computing:
+  - RGTI
+  - IONQ
+  - QBTS
+  - QUBT
+
+crypto_miners:
+  - MARA
+  - RIOT
+  - CLSK
+  - HUT
+  - BTBT
+
+ai_chips:
+  - NVDA
+  - AMD
+  - SMCI
+  - AVGO
+  - MRVL
+
+ev_auto:
+  - TSLA
+  - RIVN
+  - LCID
+  - NIO
+  - XPEV
+
+cybersecurity:
+  - CRWD
+  - PANW
+  - ZS
+  - FTNT
+  - S
+
+biotech:
+  - MRNA
+  - BNTX
+  - NVAX
+  - REGN
+  - VRTX
+
+fintech:
+  - COIN
+  - SQ
+  - PYPL
+  - AFRM
+  - SOFI
+
+cloud:
+  - SNOW
+  - DDOG
+  - NET
+  - MDB
+  - PLTR
+
+semiconductors:
+  - NVDA
+  - AMD
+  - INTC
+  - MU
+  - QCOM
+  - ASML
+  - LRCX
+  - AMAT

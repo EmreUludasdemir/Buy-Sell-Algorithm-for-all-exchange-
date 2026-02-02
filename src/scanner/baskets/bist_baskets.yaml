@@ -1,0 +1,51 @@
+# BIST Baskets - Tema Grupları
+# Yahoo Finance ticker format: XXXXX.IS
+
+savunma:
+  - ASELS.IS
+
+bankalar:
+  - AKBNK.IS
+  - YKBNK.IS
+  - ISCTR.IS
+  - GARAN.IS
+  - VAKBN.IS
+  - HALKB.IS
+  - TSKB.IS
+
+holding:
+  - KCHOL.IS
+  - SAHOL.IS
+  - DOHOL.IS
+  - SISE.IS
+  - TAVHL.IS
+
+havayolu_ulasim:
+  - THYAO.IS
+  - PGSUS.IS
+  - TCELL.IS
+  - TTKOM.IS
+
+perakende:
+  - BIMAS.IS
+  - MGROS.IS
+  - BIZIM.IS
+  - SOKM.IS
+
+enerji:
+  - TUPRS.IS
+  - PETKM.IS
+  - AYGAZ.IS
+  - AKSEN.IS
+  - ENKAI.IS
+
+insaat_gayrimenkul:
+  - ENKAI.IS
+  - TOASO.IS
+  - FROTO.IS
+  - KORDS.IS
+
+teknoloji:
+  - LOGO.IS
+  - INDES.IS
+  - NETAS.IS

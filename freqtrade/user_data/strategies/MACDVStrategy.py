@@ -51,20 +51,23 @@ class MACDVStrategy(IStrategy):
 
     INTERFACE_VERSION = 3
     timeframe = "4h"
-    can_short = True
+    can_short = False  # Spot market için long-only
 
-    # ROI tablosu - MACD-V'nin momentum aşamalarına göre ayarlandı
+    # Exit signal'i devre dışı bırak - ROI/trailing stop daha iyi performans gösteriyor
+    use_exit_signal = False
+
+    # ROI tablosu - Dengeli yaklaşım
     minimal_roi = {
-        "0": 0.08,  # İlk 8% kar al
-        "48": 0.05,  # 48 bar sonra 5%
-        "96": 0.03,  # 96 bar sonra 3%
-        "144": 0.015,  # 144 bar sonra 1.5%
+        "0": 0.12,   # İlk 12% kar al
+        "48": 0.08,  # 2 gün sonra 8%
+        "96": 0.05,  # 4 gün sonra 5%
+        "192": 0.025, # 8 gün sonra 2.5%
     }
 
-    stoploss = -0.08
+    stoploss = -0.06  # %6 stop loss
     trailing_stop = True
-    trailing_stop_positive = 0.025
-    trailing_stop_positive_offset = 0.04
+    trailing_stop_positive = 0.025   # %2.5'te trailing başlasın
+    trailing_stop_positive_offset = 0.04  # %4 kar sonra aktif
     trailing_only_offset_is_reached = True
 
     # MACD-V Parametreleri
@@ -169,21 +172,15 @@ class MACDVStrategy(IStrategy):
         SHORT: Retracing zone'da (overbought'tan düşüş) + signal cross down
         """
         # ====== LONG ENTRY ======
-        # Rebounding: Oversold'dan çıkıp toparlanma aşaması
-        # MACD-V signal'ı yukarı kesiyor VE neutral zone dışında
+        # Dengeli koşullar - Rebounding zone focus
         long_conditions = (
             # MACD-V signal'ı yukarı kesiyor
             (dataframe["macdv_cross_up"])
-            # Oversold'dan çıkış veya rebounding
-            & (
-                (dataframe["macdv"].shift(1) <= self.oversold_level.value)  # Oversold'dan çıkış
-                | (dataframe["is_rebounding"])  # Veya rebounding zone'da
-            )
-            # Trend filtresi: Fiyat EMA üstünde
+            # Rebounding zone'da (toparlanma)
+            & (dataframe["is_rebounding"])
+            # Uptrend: Fiyat EMA üstünde
             & (dataframe["close"] > dataframe["ema_trend"])
-            # ADX filtresi: Yeterli trend gücü
-            & (dataframe["adx"] > self.adx_threshold.value)
-            # Volume filtresi
+            # Hacim onayı
             & (dataframe["volume"] > dataframe["volume_sma"] * 0.5)
             & (dataframe["volume"] > 0)
         )
@@ -220,26 +217,43 @@ class MACDVStrategy(IStrategy):
         SHORT EXIT: Oversold (<-150) veya signal cross up
         """
         # ====== LONG EXIT ======
-        # Overbought zone veya momentum kaybı
+        # Sadece güçlü çıkış sinyalleri - erken çıkışları önle
+        # NOT: use_exit_signal = False ile devre dışı, ama yine de tanımlı
         exit_long_conditions = (
-            # Overbought seviyesine ulaştı
+            # Overbought seviyesine ulaştı (güçlü sinyal)
             (dataframe["is_overbought"])
-            # VEYA MACD-V signal'ı aşağı kesti
-            | (dataframe["macdv_cross_down"])
-            # VEYA rallying'den retracing'e geçiş
-            | ((dataframe["is_rallying"].shift(1)) & (dataframe["is_retracing"]))
+            # VEYA ciddi momentum kaybı (rallying'den retracing'e + cross down)
+            | (
+                (dataframe["is_rallying"].shift(1))
+                & (dataframe["is_retracing"])
+                & (dataframe["macdv_cross_down"])
+            )
+            # VEYA fiyat EMA altına düştü + cross down
+            | (
+                (dataframe["close"] < dataframe["ema_trend"])
+                & (dataframe["macdv_cross_down"])
+                & (dataframe["macdv"] < 0)  # MACD-V negatife döndü
+            )
         )
         dataframe.loc[exit_long_conditions, "exit_long"] = 1
 
         # ====== SHORT EXIT ======
-        # Oversold zone veya momentum kaybı
+        # Sadece güçlü çıkış sinyalleri - erken çıkışları önle
         exit_short_conditions = (
-            # Oversold seviyesine ulaştı
+            # Oversold seviyesine ulaştı (güçlü sinyal)
             (dataframe["is_oversold"])
-            # VEYA MACD-V signal'ı yukarı kesti
-            | (dataframe["macdv_cross_up"])
-            # VEYA reversing'den rebounding'e geçiş
-            | ((dataframe["is_reversing"].shift(1)) & (dataframe["is_rebounding"]))
+            # VEYA ciddi momentum kaybı (reversing'den rebounding'e + cross up)
+            | (
+                (dataframe["is_reversing"].shift(1))
+                & (dataframe["is_rebounding"])
+                & (dataframe["macdv_cross_up"])
+            )
+            # VEYA fiyat EMA üstüne çıktı + cross up
+            | (
+                (dataframe["close"] > dataframe["ema_trend"])
+                & (dataframe["macdv_cross_up"])
+                & (dataframe["macdv"] > 0)  # MACD-V pozitife döndü
+            )
         )
         dataframe.loc[exit_short_conditions, "exit_short"] = 1
 
