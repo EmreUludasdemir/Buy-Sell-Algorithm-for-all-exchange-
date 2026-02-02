@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker run:*)",
+      "Bash(MSYS_NO_PATHCONV=1 docker run:*)"
+    ]
+  }
+}
