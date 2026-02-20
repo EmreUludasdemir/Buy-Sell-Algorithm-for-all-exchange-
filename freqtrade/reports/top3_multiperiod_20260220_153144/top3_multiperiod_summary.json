@@ -1,0 +1,236 @@
+{
+  "run": "top3_multiperiod_20260220_153144",
+  "generated_at": "2026-02-20T12:35:06.931218+00:00",
+  "periods": [
+    [
+      "y2022",
+      "20220101-20221231"
+    ],
+    [
+      "y2023",
+      "20230101-20231231"
+    ],
+    [
+      "y2024",
+      "20240101-20241231"
+    ],
+    [
+      "y2025",
+      "20250101-20251231"
+    ]
+  ],
+  "rows": [
+    {
+      "period_id": "y2022",
+      "period_timerange": "20220101-20221231",
+      "strategy": "EPASimpleTrend",
+      "expected_strategy": "EPASimpleTrend",
+      "zip_file": "backtest-result-2026-02-20_12-31-55.zip",
+      "trades": 56,
+      "win_rate": 32.142857142857146,
+      "ret_pct": -29.83642366,
+      "pf": 0.434529561998444,
+      "sharpe": -0.9835466690926287,
+      "dd_pct": 31.167916344402347,
+      "score": 0.08690591239968881,
+      "final_1000": 701.6357634
+    },
+    {
+      "period_id": "y2022",
+      "period_timerange": "20220101-20221231",
+      "strategy": "MACDVSupertrendStrategy",
+      "expected_strategy": "MACDVSupertrendStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-32-07.zip",
+      "trades": 48,
+      "win_rate": 41.66666666666667,
+      "ret_pct": 1.3195125850000002,
+      "pf": 1.0651636833530889,
+      "sharpe": 0.06119996483827796,
+      "dd_pct": 5.056114985203897,
+      "score": 0.3065897176372539,
+      "final_1000": 1013.1951258500001
+    },
+    {
+      "period_id": "y2022",
+      "period_timerange": "20220101-20221231",
+      "strategy": "RegimeStrategy",
+      "expected_strategy": "RegimeStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-32-20.zip",
+      "trades": 170,
+      "win_rate": 16.470588235294116,
+      "ret_pct": -10.501733723000003,
+      "pf": 0.8357976322766508,
+      "sharpe": -0.6075862648286674,
+      "dd_pct": 22.897040551999996,
+      "score": 0.16715952645533017,
+      "final_1000": 894.9826627699999
+    },
+    {
+      "period_id": "y2023",
+      "period_timerange": "20230101-20231231",
+      "strategy": "EPASimpleTrend",
+      "expected_strategy": "EPASimpleTrend",
+      "zip_file": "backtest-result-2026-02-20_12-32-31.zip",
+      "trades": 104,
+      "win_rate": 53.84615384615385,
+      "ret_pct": 47.899506998999996,
+      "pf": 2.0490119995932816,
+      "sharpe": 1.2562840253808558,
+      "dd_pct": 11.780414060552959,
+      "score": 0.8923547347734063,
+      "final_1000": 1478.9950699899998
+    },
+    {
+      "period_id": "y2023",
+      "period_timerange": "20230101-20231231",
+      "strategy": "MACDVSupertrendStrategy",
+      "expected_strategy": "MACDVSupertrendStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-32-43.zip",
+      "trades": 98,
+      "win_rate": 50.0,
+      "ret_pct": 50.480358038000006,
+      "pf": 2.2795965720820193,
+      "sharpe": 1.1694848523844479,
+      "dd_pct": 11.33634791044416,
+      "score": 0.8772152309246687,
+      "final_1000": 1504.8035803799999
+    },
+    {
+      "period_id": "y2023",
+      "period_timerange": "20230101-20231231",
+      "strategy": "RegimeStrategy",
+      "expected_strategy": "RegimeStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-32-56.zip",
+      "trades": 229,
+      "win_rate": 17.46724890829694,
+      "ret_pct": 17.158972936,
+      "pf": 1.252874907645094,
+      "sharpe": 0.7108169569192438,
+      "dd_pct": 17.176996896853773,
+      "score": 0.4926482531085987,
+      "final_1000": 1171.5897293599999
+    },
+    {
+      "period_id": "y2024",
+      "period_timerange": "20240101-20241231",
+      "strategy": "EPASimpleTrend",
+      "expected_strategy": "EPASimpleTrend",
+      "zip_file": "backtest-result-2026-02-20_12-33-07.zip",
+      "trades": 82,
+      "win_rate": 53.65853658536586,
+      "ret_pct": 56.475733567,
+      "pf": 2.878862041131441,
+      "sharpe": 1.098592940538564,
+      "dd_pct": 5.991831170892585,
+      "score": 0.88975943225325,
+      "final_1000": 1564.75733567
+    },
+    {
+      "period_id": "y2024",
+      "period_timerange": "20240101-20241231",
+      "strategy": "MACDVSupertrendStrategy",
+      "expected_strategy": "MACDVSupertrendStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-33-20.zip",
+      "trades": 90,
+      "win_rate": 44.44444444444444,
+      "ret_pct": 7.6898927110000015,
+      "pf": 1.217557003979275,
+      "sharpe": 0.3117783750587986,
+      "dd_pct": 15.67343906141159,
+      "score": 0.36594934405555674,
+      "final_1000": 1076.89892711
+    },
+    {
+      "period_id": "y2024",
+      "period_timerange": "20240101-20241231",
+      "strategy": "RegimeStrategy",
+      "expected_strategy": "RegimeStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-33-37.zip",
+      "trades": 230,
+      "win_rate": 20.434782608695652,
+      "ret_pct": 16.869094162000003,
+      "pf": 1.2228831094428851,
+      "sharpe": 0.7994998846423489,
+      "dd_pct": 19.08713798387471,
+      "score": 0.49338637970767324,
+      "final_1000": 1168.6909416199999
+    },
+    {
+      "period_id": "y2025",
+      "period_timerange": "20250101-20251231",
+      "strategy": "EPASimpleTrend",
+      "expected_strategy": "EPASimpleTrend",
+      "zip_file": "backtest-result-2026-02-20_12-33-49.zip",
+      "trades": 69,
+      "win_rate": 40.57971014492754,
+      "ret_pct": -20.434471937,
+      "pf": 0.6260707681286145,
+      "sharpe": -0.5675960138212116,
+      "dd_pct": 20.554532806127114,
+      "score": 0.1252141536257229,
+      "final_1000": 795.65528063
+    },
+    {
+      "period_id": "y2025",
+      "period_timerange": "20250101-20251231",
+      "strategy": "MACDVSupertrendStrategy",
+      "expected_strategy": "MACDVSupertrendStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-34-02.zip",
+      "trades": 67,
+      "win_rate": 41.7910447761194,
+      "ret_pct": -4.994720083999999,
+      "pf": 0.8151194431381285,
+      "sharpe": -0.2412720761546551,
+      "dd_pct": 9.393317176670411,
+      "score": 0.21605730274427365,
+      "final_1000": 950.05279916
+    },
+    {
+      "period_id": "y2025",
+      "period_timerange": "20250101-20251231",
+      "strategy": "RegimeStrategy",
+      "expected_strategy": "RegimeStrategy",
+      "zip_file": "backtest-result-2026-02-20_12-34-15.zip",
+      "trades": 232,
+      "win_rate": 15.086206896551724,
+      "ret_pct": -15.645918403,
+      "pf": 0.75774389521788,
+      "sharpe": -1.090605502098636,
+      "dd_pct": 23.058302101123296,
+      "score": 0.151548779043576,
+      "final_1000": 843.5408159699999
+    }
+  ],
+  "overall": [
+    {
+      "strategy": "EPASimpleTrend",
+      "score": 0.49855855826301704,
+      "ret_pct": 13.526086242249999,
+      "pf": 1.4971185927129453,
+      "sharpe": 0.20093357075139487,
+      "dd_pct": 17.373673595493752,
+      "final_1000": 1135.2608624225,
+      "trades": 311
+    },
+    {
+      "strategy": "MACDVSupertrendStrategy",
+      "score": 0.44145289884043826,
+      "ret_pct": 13.623760812500002,
+      "pf": 1.344359175638128,
+      "sharpe": 0.3252977790317173,
+      "dd_pct": 10.364804783432515,
+      "final_1000": 1136.237608125,
+      "trades": 303
+    },
+    {
+      "strategy": "RegimeStrategy",
+      "score": 0.3261857345787945,
+      "ret_pct": 1.9701037430000006,
+      "pf": 1.0173248861456274,
+      "sharpe": -0.04696873134142768,
+      "dd_pct": 20.554869383462943,
+      "final_1000": 1019.7010374299999,
+      "trades": 861
+    }
+  ]
+}
