@@ -1,0 +1,275 @@
+{
+  "run": "top3_rollback_multicond_20260220_162623",
+  "generated_at": "2026-02-20T13:34:12.751521+00:00",
+  "scenarios": [
+    [
+      "bull",
+      "Bull",
+      "20231001-20240315"
+    ],
+    [
+      "bear",
+      "Bear",
+      "20220501-20221231"
+    ],
+    [
+      "sideways",
+      "Sideways",
+      "20240401-20240831"
+    ],
+    [
+      "recovery",
+      "Recovery",
+      "20230101-20230930"
+    ],
+    [
+      "choppy2025",
+      "Choppy-2025",
+      "20250101-20251231"
+    ]
+  ],
+  "rows": [
+    {
+      "scenario_id": "bull",
+      "scenario": "Bull",
+      "timerange": "20231001-20240315",
+      "strategy": "EPASimpleTrend",
+      "trades": 71,
+      "win_rate": 60.56338028169014,
+      "ret_pct": 52.81721930300001,
+      "final_1000": 1528.17219303,
+      "pf": 3.828551723281532,
+      "sharpe": 3.5295258155152016,
+      "dd_pct": 4.946715478312456,
+      "score": 0.9752664226084377
+    },
+    {
+      "scenario_id": "bull",
+      "scenario": "Bull",
+      "timerange": "20231001-20240315",
+      "strategy": "MACDVSupertrendStrategy",
+      "trades": 62,
+      "win_rate": 54.83870967741935,
+      "ret_pct": 16.807724205,
+      "final_1000": 1168.07724205,
+      "pf": 1.6572265846008267,
+      "sharpe": 1.2232722920078791,
+      "dd_pct": 10.29209481205861,
+      "score": 0.7086779222864481
+    },
+    {
+      "scenario_id": "bull",
+      "scenario": "Bull",
+      "timerange": "20231001-20240315",
+      "strategy": "RegimeStrategy",
+      "trades": 88,
+      "win_rate": 27.27272727272727,
+      "ret_pct": 27.933118841,
+      "final_1000": 1279.33118841,
+      "pf": 2.1250422316222273,
+      "sharpe": 2.4109240427349117,
+      "dd_pct": 5.893220380451232,
+      "score": 0.9101994923027438
+    },
+    {
+      "scenario_id": "bear",
+      "scenario": "Bear",
+      "timerange": "20220501-20221231",
+      "strategy": "EPASimpleTrend",
+      "trades": 34,
+      "win_rate": 20.588235294117645,
+      "ret_pct": -26.727984705,
+      "final_1000": 732.72015295,
+      "pf": 0.2620631322362182,
+      "sharpe": -1.3603405842686456,
+      "dd_pct": 29.60772961311498,
+      "score": 0.05241262644724364
+    },
+    {
+      "scenario_id": "bear",
+      "scenario": "Bear",
+      "timerange": "20220501-20221231",
+      "strategy": "MACDVSupertrendStrategy",
+      "trades": 31,
+      "win_rate": 41.935483870967744,
+      "ret_pct": -0.7896392989999995,
+      "final_1000": 992.10360701,
+      "pf": 0.9535574108508088,
+      "sharpe": -0.042681349657536366,
+      "dd_pct": 4.454235303207197,
+      "score": 0.2684403056541258
+    },
+    {
+      "scenario_id": "bear",
+      "scenario": "Bear",
+      "timerange": "20220501-20221231",
+      "strategy": "RegimeStrategy",
+      "trades": 119,
+      "win_rate": 18.487394957983195,
+      "ret_pct": -0.14950066699999878,
+      "final_1000": 998.5049933299999,
+      "pf": 0.9969060687631672,
+      "sharpe": -0.009589953537887773,
+      "dd_pct": 13.979733991000002,
+      "score": 0.22948254379763344
+    },
+    {
+      "scenario_id": "sideways",
+      "scenario": "Sideways",
+      "timerange": "20240401-20240831",
+      "strategy": "EPASimpleTrend",
+      "trades": 19,
+      "win_rate": 31.57894736842105,
+      "ret_pct": -6.708618485,
+      "final_1000": 932.91381515,
+      "pf": 0.3960682071057111,
+      "sharpe": -0.7262340086923564,
+      "dd_pct": 8.287451519000001,
+      "score": 0.1377763838261422
+    },
+    {
+      "scenario_id": "sideways",
+      "scenario": "Sideways",
+      "timerange": "20240401-20240831",
+      "strategy": "MACDVSupertrendStrategy",
+      "trades": 26,
+      "win_rate": 26.923076923076923,
+      "ret_pct": -6.9685034660000005,
+      "final_1000": 930.3149653400001,
+      "pf": 0.4535093765677005,
+      "sharpe": -0.9031640703610807,
+      "dd_pct": 7.480183897000006,
+      "score": 0.1533009558285401
+    },
+    {
+      "scenario_id": "sideways",
+      "scenario": "Sideways",
+      "timerange": "20240401-20240831",
+      "strategy": "RegimeStrategy",
+      "trades": 104,
+      "win_rate": 14.423076923076922,
+      "ret_pct": -3.0147598160000006,
+      "final_1000": 969.85240184,
+      "pf": 0.9090575480920285,
+      "sharpe": -0.4008461184202142,
+      "dd_pct": 11.309871858999998,
+      "score": 0.22526215032340574
+    },
+    {
+      "scenario_id": "recovery",
+      "scenario": "Recovery",
+      "timerange": "20230101-20230930",
+      "strategy": "EPASimpleTrend",
+      "trades": 60,
+      "win_rate": 50.0,
+      "ret_pct": 14.303164166999998,
+      "final_1000": 1143.03164167,
+      "pf": 1.5603999884089155,
+      "sharpe": 0.5871324426908847,
+      "dd_pct": 11.780414060552959,
+      "score": 0.5421202367521953
+    },
+    {
+      "scenario_id": "recovery",
+      "scenario": "Recovery",
+      "timerange": "20230101-20230930",
+      "strategy": "MACDVSupertrendStrategy",
+      "trades": 64,
+      "win_rate": 46.875,
+      "ret_pct": 30.435243804000006,
+      "final_1000": 1304.35243804,
+      "pf": 2.04662255955434,
+      "sharpe": 0.8409596234584963,
+      "dd_pct": 8.11164578292214,
+      "score": 0.7798099147970886
+    },
+    {
+      "scenario_id": "recovery",
+      "scenario": "Recovery",
+      "timerange": "20230101-20230930",
+      "strategy": "RegimeStrategy",
+      "trades": 189,
+      "win_rate": 15.343915343915343,
+      "ret_pct": 2.062430794999999,
+      "final_1000": 1020.6243079499999,
+      "pf": 1.0350784886293436,
+      "sharpe": 0.11580344140297992,
+      "dd_pct": 17.176996896853773,
+      "score": 0.2546035554971958
+    },
+    {
+      "scenario_id": "choppy2025",
+      "scenario": "Choppy-2025",
+      "timerange": "20250101-20251231",
+      "strategy": "EPASimpleTrend",
+      "trades": 69,
+      "win_rate": 40.57971014492754,
+      "ret_pct": -20.434471937,
+      "final_1000": 795.65528063,
+      "pf": 0.6260707681286145,
+      "sharpe": -0.5675960138212116,
+      "dd_pct": 20.554532806127114,
+      "score": 0.1252141536257229
+    },
+    {
+      "scenario_id": "choppy2025",
+      "scenario": "Choppy-2025",
+      "timerange": "20250101-20251231",
+      "strategy": "MACDVSupertrendStrategy",
+      "trades": 67,
+      "win_rate": 41.7910447761194,
+      "ret_pct": -4.994720083999999,
+      "final_1000": 950.05279916,
+      "pf": 0.8151194431381285,
+      "sharpe": -0.2412720761546551,
+      "dd_pct": 9.393317176670411,
+      "score": 0.21605730274427365
+    },
+    {
+      "scenario_id": "choppy2025",
+      "scenario": "Choppy-2025",
+      "timerange": "20250101-20251231",
+      "strategy": "RegimeStrategy",
+      "trades": 232,
+      "win_rate": 15.086206896551724,
+      "ret_pct": -15.645918403,
+      "final_1000": 843.5408159699999,
+      "pf": 0.75774389521788,
+      "sharpe": -1.090605502098636,
+      "dd_pct": 23.058302101123296,
+      "score": 0.151548779043576
+    }
+  ],
+  "overall": [
+    {
+      "strategy": "MACDVSupertrendStrategy",
+      "score": 0.42525728026209525,
+      "ret_pct": 6.898021032000001,
+      "final_1000": 1068.98021032,
+      "pf": 1.1852070749423609,
+      "sharpe": 0.17542288385862065,
+      "dd_pct": 7.946295394371672,
+      "trades": 250
+    },
+    {
+      "strategy": "EPASimpleTrend",
+      "score": 0.36655796465194834,
+      "ret_pct": 2.649861668600001,
+      "final_1000": 1026.498616686,
+      "pf": 1.3346307638321984,
+      "sharpe": 0.29249753028477454,
+      "dd_pct": 15.035368695421502,
+      "trades": 253
+    },
+    {
+      "strategy": "RegimeStrategy",
+      "score": 0.354219304192911,
+      "ret_pct": 2.2370741499999998,
+      "final_1000": 1022.3707414999999,
+      "pf": 1.1647656464649292,
+      "sharpe": 0.2051371820162307,
+      "dd_pct": 14.283625045685659,
+      "trades": 732
+    }
+  ]
+}
