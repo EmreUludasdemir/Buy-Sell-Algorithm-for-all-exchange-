@@ -1,0 +1,31 @@
+{
+  "strategy_name": "EPASimpleTrend",
+  "params": {
+    "max_open_trades": {
+      "max_open_trades": 4
+    },
+    "buy": {
+      "adx_period": 20,
+      "adx_threshold": 30,
+      "fast_ema": 19,
+      "slow_ema": 31
+    },
+    "roi": {
+      "0": 0.854,
+      "1097": 0.327,
+      "3805": 0.119,
+      "4366": 0
+    },
+    "stoploss": {
+      "stoploss": -0.253
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.141,
+      "trailing_stop_positive_offset": 0.227,
+      "trailing_only_offset_is_reached": true
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-02-20 12:13:27.113010+00:00"
+}
