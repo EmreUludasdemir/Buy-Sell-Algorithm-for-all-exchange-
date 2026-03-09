@@ -1,0 +1,56 @@
+[
+  {
+    "scenario": "bear_2022",
+    "baseline_profit_pct": -24.57,
+    "candidate_profit_pct": 12.51,
+    "profit_delta_pct": 37.08,
+    "baseline_dd_pct": 27.87,
+    "candidate_dd_pct": 12.49,
+    "drawdown_delta_pct": -15.38
+  },
+  {
+    "scenario": "recovery_2023",
+    "baseline_profit_pct": 74.33,
+    "candidate_profit_pct": -3.63,
+    "profit_delta_pct": -77.96,
+    "baseline_dd_pct": 19.85,
+    "candidate_dd_pct": 17.16,
+    "drawdown_delta_pct": -2.69
+  },
+  {
+    "scenario": "bull_2024",
+    "baseline_profit_pct": 65.85,
+    "candidate_profit_pct": 8.26,
+    "profit_delta_pct": -57.59,
+    "baseline_dd_pct": 17.65,
+    "candidate_dd_pct": 14.56,
+    "drawdown_delta_pct": -3.09
+  },
+  {
+    "scenario": "choppy_2025",
+    "baseline_profit_pct": -34.17,
+    "candidate_profit_pct": -0.91,
+    "profit_delta_pct": 33.26,
+    "baseline_dd_pct": 36.49,
+    "candidate_dd_pct": 11.61,
+    "drawdown_delta_pct": -24.88
+  },
+  {
+    "scenario": "ytd_2026",
+    "baseline_profit_pct": -3.41,
+    "candidate_profit_pct": 5.92,
+    "profit_delta_pct": 9.33,
+    "baseline_dd_pct": 7.17,
+    "candidate_dd_pct": 3.33,
+    "drawdown_delta_pct": -3.84
+  },
+  {
+    "scenario": "full_2022_2026",
+    "baseline_profit_pct": 30.17,
+    "candidate_profit_pct": 23.36,
+    "profit_delta_pct": -6.81,
+    "baseline_dd_pct": 38.56,
+    "candidate_dd_pct": 17.16,
+    "drawdown_delta_pct": -21.4
+  }
+]

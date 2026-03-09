@@ -1,151 +1,76 @@
-# Freqtrade + Smart Money Concepts Trading Bot
+# Freqtrade Operations
 
-Bu dizin, **Freqtrade** trading botu ve **Smart Money Concepts (SMC/ICT)** stratejisi için gerekli dosyaları içerir.
+This folder contains the runtime layer for the single supported strategy:
+`KivancSupertrendedMovingAverages1D`.
 
-## 🚀 Hızlı Başlangıç
+## What Is Kept
 
-### 1. Ön Gereksinimler
+- one Docker service
+- one strategy and one hyperopt export
+- one paper/live-safe config
+- one backtest config
+- one production profile and one 4H research profile
+- one separate futures research config and strategy path
+- one profile-safe script runner for research automation
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop) kurulu olmalı
-- WSL2 etkinleştirilmiş olmalı
-- Binance hesabı (API key için)
-
-### 2. Kurulum
-
-PowerShell'de çalıştırın:
+## Commands
 
 ```powershell
-cd "C:\Users\Emre\Desktop\Buy-sell Algorithm\Buy-Sell-Algorithm-for-all-exchange-\freqtrade"
-.\setup_freqtrade.ps1
-```
+cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 
-### 3. Binance API Key
+# Refresh 1D candles
+.\scripts\download_kivanc_1d.ps1
 
-1. Binance'e giriş yapın
-2. [API Management](https://www.binance.com/en/my/settings/api-management) sayfasına gidin
-3. Yeni API key oluşturun
-4. **Sadece** şu izinleri verin:
-   - ✅ Enable Reading
-   - ✅ Enable Spot & Margin Trading
-   - ❌ Enable Withdrawals (KAPALI!)
-5. IP whitelist ekleyin (güvenlik için)
+# Full-period backtest
+.\scripts\backtest_kivanc_1d.ps1
 
-### 4. Konfigürasyon
+# Hyperopt the entry space
+.\scripts\hyperopt_kivanc_1d.ps1
 
-`user_data/config.json` dosyasını düzenleyin:
+# Refresh 4H candles for research
+.\scripts\download_kivanc_4h.ps1
 
-```json
-{
-  "exchange": {
-    "key": "BINANCE_API_KEY_BURAYA",
-    "secret": "BINANCE_SECRET_KEY_BURAYA"
-  }
-}
-```
+# Validate the 4H risk profile
+.\scripts\backtest_kivanc_4h_risk.ps1
 
-### 5. Veri İndirme
+# Compare production-vs-risk profiles on 4H
+.\scripts\compare_kivanc_profiles.ps1
 
-```bash
-docker compose run --rm freqtrade download-data \
-    --pairs BTC/USDT ETH/USDT SOL/USDT XRP/USDT BNB/USDT ADA/USDT \
-    --timeframe 4h 1d \
-    --days 365
-```
+# Hyperopt only the 4H risk layer
+.\scripts\hyperopt_kivanc_4h_risk.ps1
 
-### 6. Backtest
+# Refresh 1D Binance futures candles for long/short research
+.\scripts\download_kivanc_futures_1d.ps1
 
-```bash
-docker compose run --rm freqtrade backtesting \
-    --strategy EPAStrategyV2 \
-    --timeframe 4h \
-    --timerange 20230101-
-```
+# Full-period futures backtest
+.\scripts\backtest_kivanc_futures_1d.ps1
 
-### 6b. Multi-Scenario Backtest (Bull/Bear/Sideways)
+# Regime matrix for futures long/short research
+.\scripts\backtest_kivanc_futures_regimes.ps1
 
-Stratejiyi 3 farklı piyasa rejiminde test etmek için:
-
-```bash
-# Python scripti ile otomatik çalıştır
-cd scripts
-python run_backtests.py
-```
-
-**Senaryolar:**
-| Senaryo | Dönem | Açıklama |
-|---------|-------|----------|
-| 🐂 Bull | 2023-10 → 2024-03 | BTC $25k → $70k rallisi |
-| 🐻 Bear | 2022-05 → 2022-12 | BTC $45k → $16k (FTX crash) |
-| 🦀 Sideways | 2024-04 → 2024-08 | BTC $58k-$72k konsolidasyon |
-
-Çıktı: `reports/multi_scenario_backtest_<timestamp>.json`
-
-### 7. Paper Trading Başlatma
-
-```bash
+# Start the bot
 docker compose up -d
 ```
 
-Web UI: http://localhost:8080
+## Service Name
 
-- Kullanıcı: `freqtrade`
-- Şifre: `freqtrade123`
+The compose service remains `bot1_btceth` so existing `docker compose run --rm bot1_btceth ...`
+commands still work.
 
-## 📁 Dosya Yapısı
+## Files
 
-```
-freqtrade/
-├── docker-compose.yml        # Docker konfigürasyonu
-├── setup_freqtrade.ps1       # Kurulum scripti
-├── README.md                 # Bu dosya
-└── user_data/
-    ├── config.json           # Bot konfigürasyonu
-    ├── strategies/
-    │   ├── SMCStrategy.py    # Ana SMC stratejisi
-    │   └── smc_indicators.py # SMC indikatör modülü
-    ├── data/                 # Tarihsel veri
-    ├── backtest_results/     # Backtest sonuçları
-    └── logs/                 # Log dosyaları
-```
+- Strategy: `user_data/strategies/KivancSupertrendedMovingAverages1D.py`
+- Hyperopt params: `user_data/strategies/KivancSupertrendedMovingAverages1D.json`
+- Profiles: `user_data/profiles/production_1d.json`, `user_data/profiles/risk_validation_4h.json`
+- Runtime config: `user_data/config.json`
+- Research config: `user_data/config_production.json`
+- Futures research config: `user_data/config_futures_research.json`
+- Script runner: `scripts/kivanc_profile_runner.py`
+- Futures strategy path: `user_data/strategies_research/KivancSupertrendedMovingAveragesFutures1D.py`
 
-## 📊 SMC Strateji Mantığı
+## Profile Rules
 
-### Giriş Koşulları (Long)
-
-1. **Trend Filter**: EMA50 > EMA200
-2. **Market Structure**: Bullish BOS veya CHOCH
-3. **Entry Zone**: Fiyat bullish Order Block içinde
-4. **Confirmation**: FVG veya Liquidity sweep
-5. **Volume**: Ortalama üzerinde hacim
-
-### Çıkış Koşulları
-
-- **Stop Loss**: Entry'nin 1.5 ATR altında
-- **Take Profit**: Karşı FVG'ye kadar
-- **Trailing Stop**: %1.5 profit sonrası aktif
-
-## ⚠️ Risk Uyarısı
-
-> **Bu sistem sadece eğitim amaçlıdır.** Kripto para ticareti yüksek risk içerir. Paper trading ile en az 4-8 hafta test etmeden gerçek para kullanmayın.
-
-## 🔧 Faydalı Komutlar
-
-```bash
-# Container durumunu kontrol et
-docker compose ps
-
-# Logları görüntüle
-docker compose logs -f
-
-# Strateji listele
-docker compose run --rm freqtrade list-strategies
-
-# Hyperopt (optimizasyon)
-docker compose run --rm freqtrade hyperopt \
-    --strategy EPAStrategyV2 \
-    --hyperopt-loss SortinoHyperOptLoss \
-    --epochs 100
-
-# Container'ı durdur
-docker compose down
-```
+- `production_1d` is the default live/paper profile and should match the strategy JSON.
+- `risk_validation_4h` is research-only and is applied temporarily by scripts.
+- The scripts always back up and restore `user_data/strategies/KivancSupertrendedMovingAverages1D.json`.
+- Futures research uses a separate strategy class with `can_short=True` and never replaces the spot production strategy.

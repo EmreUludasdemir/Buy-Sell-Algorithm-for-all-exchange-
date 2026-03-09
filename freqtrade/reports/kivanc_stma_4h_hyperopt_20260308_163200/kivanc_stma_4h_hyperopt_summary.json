@@ -1,0 +1,126 @@
+{
+  "baseline_train_2022_2025": {
+    "profit_pct": 29.26,
+    "final_balance": 1292.64,
+    "profit_factor": 1.08,
+    "max_dd_pct": 37.43,
+    "trades": 284,
+    "source": "4h buy-only hyperopt best remained current 1d parameter set"
+  },
+  "claimed_hyperopt_best": {
+    "profit_pct": 8.13,
+    "final_balance": 1081.27,
+    "profit_factor": 1.05,
+    "max_dd_pct": 18.33,
+    "trades": 318,
+    "avg_duration": "3 days, 2:21:00",
+    "params": {
+      "buy": {
+        "atr_multiplier": 0.1,
+        "atr_period": 29,
+        "ma_length": 134,
+        "ma_type": "DEMA",
+        "t3_volume_factor": 0.3,
+        "use_builtin_atr": true
+      },
+      "minimal_roi": {
+        "0": 0.456,
+        "537": 0.146,
+        "1765": 0.081,
+        "5743": 0
+      },
+      "stoploss": -0.094,
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.146,
+      "trailing_stop_positive_offset": 0.224,
+      "trailing_only_offset_is_reached": false,
+      "max_open_trades": 4
+    }
+  },
+  "reproduced_backtests": [
+    {
+      "scenario": "train_2022_2025",
+      "date_range": "2022-01-01 00:00:00 -> 2025-12-31 00:00:00",
+      "profit_pct": -57.25,
+      "final_balance": 427.52,
+      "profit_factor": 0.79,
+      "max_dd_pct": 57.74,
+      "trades": 1212,
+      "market_change_pct": 45.98,
+      "win_rate_pct": 22.69,
+      "avg_holding": "1 day, 7:39:00"
+    },
+    {
+      "scenario": "bear_2022",
+      "date_range": "2022-05-01 00:00:00 -> 2022-12-31 00:00:00",
+      "profit_pct": -11.6,
+      "final_balance": 883.95,
+      "profit_factor": 0.86,
+      "max_dd_pct": 24.04,
+      "trades": 204,
+      "market_change_pct": -56.16,
+      "win_rate_pct": 27.45,
+      "avg_holding": "1 day, 9:28:00"
+    },
+    {
+      "scenario": "recovery_2023",
+      "date_range": "2023-01-01 00:00:00 -> 2023-12-31 00:00:00",
+      "profit_pct": -17.98,
+      "final_balance": 820.17,
+      "profit_factor": 0.77,
+      "max_dd_pct": 25.63,
+      "trades": 299,
+      "market_change_pct": 253.94,
+      "win_rate_pct": 20.74,
+      "avg_holding": "1 day, 7:48:00"
+    },
+    {
+      "scenario": "bull_2024",
+      "date_range": "2024-01-01 00:00:00 -> 2024-12-31 00:00:00",
+      "profit_pct": -0.88,
+      "final_balance": 991.21,
+      "profit_factor": 0.99,
+      "max_dd_pct": 24.91,
+      "trades": 281,
+      "market_change_pct": 121.61,
+      "win_rate_pct": 23.49,
+      "avg_holding": "1 day, 8:32:00"
+    },
+    {
+      "scenario": "choppy_2025",
+      "date_range": "2025-01-01 00:00:00 -> 2025-12-31 00:00:00",
+      "profit_pct": -19.63,
+      "final_balance": 803.66,
+      "profit_factor": 0.81,
+      "max_dd_pct": 24.8,
+      "trades": 319,
+      "market_change_pct": -8.1,
+      "win_rate_pct": 23.82,
+      "avg_holding": "1 day, 7:35:00"
+    },
+    {
+      "scenario": "ytd_2026",
+      "date_range": "2026-01-01 00:00:00 -> 2026-03-01 00:00:00",
+      "profit_pct": 5.61,
+      "final_balance": 1056.11,
+      "profit_factor": 1.64,
+      "max_dd_pct": 5.94,
+      "trades": 31,
+      "market_change_pct": -27.07,
+      "win_rate_pct": 29.03,
+      "avg_holding": "1 day, 13:25:00"
+    },
+    {
+      "scenario": "full_2022_2026",
+      "date_range": "2022-01-01 00:00:00 -> 2026-03-01 00:00:00",
+      "profit_pct": -54.01,
+      "final_balance": 459.87,
+      "profit_factor": 0.8,
+      "max_dd_pct": 57.78,
+      "trades": 1244,
+      "market_change_pct": 7.88,
+      "win_rate_pct": 22.91,
+      "avg_holding": "1 day, 7:49:00"
+    }
+  ]
+}

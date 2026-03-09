@@ -1,0 +1,93 @@
+[
+  {
+    "scenario": "train_2022_2025",
+    "date_range": "2022-01-01 00:00:00 -> 2025-12-31 00:00:00",
+    "profit_pct": 13.7,
+    "final_balance": 1136.96,
+    "trades": 319,
+    "win_rate_pct": 46.71,
+    "profit_factor": 1.07,
+    "max_dd_pct": 17.16,
+    "market_change_pct": 45.98,
+    "avg_holding": "2 days, 22:41:00",
+    "zip_file": "backtest-result-2026-03-08_13-53-33.zip"
+  },
+  {
+    "scenario": "bear_2022",
+    "date_range": "2022-05-01 00:00:00 -> 2022-12-31 00:00:00",
+    "profit_pct": 12.51,
+    "final_balance": 1125.12,
+    "trades": 56,
+    "win_rate_pct": 55.36,
+    "profit_factor": 1.37,
+    "max_dd_pct": 12.49,
+    "market_change_pct": -56.16,
+    "avg_holding": "2 days, 13:51:00",
+    "zip_file": "backtest-result-2026-03-08_13-53-44.zip"
+  },
+  {
+    "scenario": "recovery_2023",
+    "date_range": "2023-01-01 00:00:00 -> 2023-12-31 00:00:00",
+    "profit_pct": -3.63,
+    "final_balance": 963.72,
+    "trades": 87,
+    "win_rate_pct": 42.53,
+    "profit_factor": 0.91,
+    "max_dd_pct": 17.16,
+    "market_change_pct": 253.94,
+    "avg_holding": "3 days, 0:36:00",
+    "zip_file": "backtest-result-2026-03-08_13-53-55.zip"
+  },
+  {
+    "scenario": "bull_2024",
+    "date_range": "2024-01-01 00:00:00 -> 2024-12-31 00:00:00",
+    "profit_pct": 8.26,
+    "final_balance": 1082.61,
+    "trades": 74,
+    "win_rate_pct": 44.59,
+    "profit_factor": 1.22,
+    "max_dd_pct": 14.56,
+    "market_change_pct": 121.61,
+    "avg_holding": "2 days, 21:08:00",
+    "zip_file": "backtest-result-2026-03-08_13-54-05.zip"
+  },
+  {
+    "scenario": "choppy_2025",
+    "date_range": "2025-01-01 00:00:00 -> 2025-12-31 00:00:00",
+    "profit_pct": -0.91,
+    "final_balance": 990.93,
+    "trades": 83,
+    "win_rate_pct": 48.19,
+    "profit_factor": 0.98,
+    "max_dd_pct": 11.61,
+    "market_change_pct": -8.1,
+    "avg_holding": "3 days, 2:04:00",
+    "zip_file": "backtest-result-2026-03-08_13-54-16.zip"
+  },
+  {
+    "scenario": "ytd_2026",
+    "date_range": "2026-01-01 00:00:00 -> 2026-03-01 00:00:00",
+    "profit_pct": 5.92,
+    "final_balance": 1059.2,
+    "trades": 12,
+    "win_rate_pct": 58.33,
+    "profit_factor": 2.7,
+    "max_dd_pct": 3.33,
+    "market_change_pct": -27.07,
+    "avg_holding": "3 days, 10:40:00",
+    "zip_file": "backtest-result-2026-03-08_13-54-25.zip"
+  },
+  {
+    "scenario": "full_2022_2026",
+    "date_range": "2022-01-01 00:00:00 -> 2026-03-01 00:00:00",
+    "profit_pct": 23.36,
+    "final_balance": 1233.65,
+    "trades": 333,
+    "win_rate_pct": 47.45,
+    "profit_factor": 1.12,
+    "max_dd_pct": 17.16,
+    "market_change_pct": 7.88,
+    "avg_holding": "2 days, 23:21:00",
+    "zip_file": "backtest-result-2026-03-08_13-54-42.zip"
+  }
+]

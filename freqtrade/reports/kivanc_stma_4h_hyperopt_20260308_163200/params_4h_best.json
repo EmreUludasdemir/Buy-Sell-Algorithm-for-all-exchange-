@@ -1,0 +1,33 @@
+{
+  "strategy_name": "KivancSupertrendedMovingAverages4HOpt",
+  "params": {
+    "roi": {
+      "0": 0.456,
+      "537": 0.146,
+      "1765": 0.081,
+      "5743": 0
+    },
+    "stoploss": {
+      "stoploss": -0.094
+    },
+    "trailing": {
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.146,
+      "trailing_stop_positive_offset": 0.224,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 4
+    },
+    "buy": {
+      "atr_multiplier": 0.1,
+      "atr_period": 29,
+      "ma_length": 134,
+      "ma_type": "DEMA",
+      "t3_volume_factor": 0.3,
+      "use_builtin_atr": true
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-03-08T13:32:43.669514+00:00"
+}

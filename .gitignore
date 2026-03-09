@@ -1,47 +1,31 @@
 # Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
 .Python
+.venv/
 venv/
-.env
+.mypy_cache/
+.pytest_cache/
 
-# Freqtrade Data
-freqtrade/user_data/data/
-freqtrade/user_data/backtest_results/
-freqtrade/user_data/hyperopt_results/
-freqtrade/user_data/plot/
-freqtrade/user_data/logs/
-*.sqlite
-
-# Geçici Dosyalar
-temp_*/
-*.zip
-*.tar.gz
-last_result.json
-session_logs/
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Secrets
+# Local secrets
 .env
 *.pem
 *.key
-config_live.json
+
+# Runtime outputs
+freqtrade/user_data/data/
+freqtrade/user_data/backtest_results/
+freqtrade/user_data/hyperopt_results/
+freqtrade/user_data/logs/
+freqtrade/user_data/*.log
+freqtrade/user_data/hyperopt.lock
+*.sqlite
 
 # Reports
-reports/*.json
-reports/*.html
+freqtrade/reports/.last_*
 
-# Large Files
-*.zip
-*.tar.gz
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

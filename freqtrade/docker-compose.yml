@@ -1,10 +1,8 @@
----
 services:
-  # Bot 1: BTC/ETH - Conservative
   bot1_btceth:
     image: freqtradeorg/freqtrade:stable
+    container_name: kivanc_stma_1d
     restart: unless-stopped
-    container_name: epa_bot1_btceth
     volumes:
       - "./user_data:/freqtrade/user_data"
     ports:
@@ -13,61 +11,7 @@ services:
       - "host.docker.internal:host-gateway"
     command: >
       trade
-      --logfile /freqtrade/user_data/logs/bot1_btceth.log
-      --db-url sqlite:////freqtrade/user_data/tradesv3_bot1.sqlite
-      --config /freqtrade/user_data/configs/config_bot1.json
-      --strategy EPAUltimateV3
-
-  # Bot 2: Altcoins - All Coins
-  bot2_altcoins:
-    image: freqtradeorg/freqtrade:stable
-    restart: unless-stopped
-    container_name: epa_bot2_altcoins
-    volumes:
-      - "./user_data:/freqtrade/user_data"
-    ports:
-      - "8081:8081"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command: >
-      trade
-      --logfile /freqtrade/user_data/logs/bot2_altcoins.log
-      --db-url sqlite:////freqtrade/user_data/tradesv3_bot2.sqlite
-      --config /freqtrade/user_data/configs/config_bot2.json
-      --strategy EPAUltimateV3
-
-  # Bot 3: Paper Trading - Test
-  bot3_paper:
-    image: freqtradeorg/freqtrade:stable
-    restart: unless-stopped
-    container_name: epa_bot3_paper
-    volumes:
-      - "./user_data:/freqtrade/user_data"
-    ports:
-      - "8082:8082"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command: >
-      trade
-      --logfile /freqtrade/user_data/logs/bot3_paper.log
-      --db-url sqlite:////freqtrade/user_data/tradesv3_bot3.sqlite
-      --config /freqtrade/user_data/configs/config_bot3.json
-      --strategy EPAUltimateV3
-
-  # Bot 4: Futures Trading
-  bot4_futures:
-    image: freqtradeorg/freqtrade:stable
-    restart: unless-stopped
-    container_name: epa_bot4_futures
-    volumes:
-      - "./user_data:/freqtrade/user_data"
-    ports:
-      - "8083:8083"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    command: >
-      trade
-      --logfile /freqtrade/user_data/logs/bot4_futures.log
-      --db-url sqlite:////freqtrade/user_data/tradesv3_bot4.sqlite
-      --config /freqtrade/user_data/configs/config_futures.json
-      --strategy EPAUltimateV3
+      --logfile /freqtrade/user_data/kivanc_stma_1d.log
+      --db-url sqlite:////freqtrade/user_data/tradesv3_kivanc.sqlite
+      --config /freqtrade/user_data/config.json
+      --strategy KivancSupertrendedMovingAverages1D

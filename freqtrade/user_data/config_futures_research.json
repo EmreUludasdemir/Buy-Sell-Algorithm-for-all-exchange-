@@ -7,8 +7,9 @@
   "dry_run": true,
   "dry_run_wallet": 1000,
   "cancel_open_orders_on_exit": true,
-  "trading_mode": "spot",
-  "margin_mode": "",
+  "trading_mode": "futures",
+  "margin_mode": "isolated",
+  "liquidation_buffer": 0.05,
   "unfilledtimeout": {
     "entry": 30,
     "exit": 30,
@@ -37,11 +38,11 @@
     "ccxt_config": {},
     "ccxt_async_config": {},
     "pair_whitelist": [
-      "BTC/USDT",
-      "ETH/USDT",
-      "BNB/USDT",
-      "SOL/USDT",
-      "XRP/USDT"
+      "BTC/USDT:USDT",
+      "ETH/USDT:USDT",
+      "BNB/USDT:USDT",
+      "SOL/USDT:USDT",
+      "XRP/USDT:USDT"
     ],
     "pair_blacklist": []
   },
@@ -56,9 +57,9 @@
     "chat_id": ""
   },
   "api_server": {
-    "enabled": true,
+    "enabled": false,
     "listen_ip_address": "0.0.0.0",
-    "listen_port": 8080,
+    "listen_port": 8081,
     "verbosity": "error",
     "enable_openapi": true,
     "jwt_secret_key": "change-me",
@@ -67,8 +68,8 @@
     "username": "freqtrade",
     "password": "change-me"
   },
-  "bot_name": "Kivanc_STMA_1D_Backtest",
-  "strategy": "KivancSupertrendedMovingAverages1D",
+  "bot_name": "Kivanc_STMA_Futures_Research",
+  "strategy": "KivancSupertrendedMovingAveragesFutures1D",
   "initial_state": "running",
   "force_entry_enable": true,
   "internals": {

@@ -1,0 +1,17 @@
+﻿{
+  "baseline": {
+    "timerange": "20220101-20260301",
+    "profit_pct": 191.78,
+    "final_balance": 2917.811,
+    "trades": 34,
+    "profit_factor": 3.35,
+    "max_drawdown_pct": 27.86
+  },
+  "hyperopt_candidate": {
+    "result_file": "strategy_KivancSupertrendedMovingAverages1D_2026-03-09_13-48-39.fthypt",
+    "profit_pct": 191.78,
+    "use_regime_filter": false,
+    "use_adx_filter": false
+  },
+  "decision": "keep_current_production_profile"
+}

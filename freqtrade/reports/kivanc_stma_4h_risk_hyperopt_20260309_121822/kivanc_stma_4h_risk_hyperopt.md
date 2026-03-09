@@ -1,0 +1,32 @@
+# Kivanc STMA 4H Risk Hyperopt
+
+Base profile: `production_1d`
+Timeframe: `4h`
+Result file: `strategy_KivancSupertrendedMovingAverages1D_2026-03-09_12-18-26.fthypt`
+
+## Best Params
+
+```json
+{
+  "params": {
+    "atr_multiplier": 1.9,
+    "atr_period": 29,
+    "ma_length": 225,
+    "ma_type": "TSF",
+    "t3_volume_factor": 0.2,
+    "use_builtin_atr": false
+  },
+  "minimal_roi": {
+    "0": 0.138,
+    "1105": 0.086,
+    "2904": 0.051,
+    "5842": 0
+  },
+  "stoploss": -0.078,
+  "trailing_stop": true,
+  "trailing_stop_positive": 0.132,
+  "trailing_stop_positive_offset": 0.167,
+  "trailing_only_offset_is_reached": true,
+  "max_open_trades": 4
+}
+```

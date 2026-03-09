@@ -1,0 +1,61 @@
+{
+  "hyperopt_report_dir": "C:\\Users\\Emre\\Desktop\\Buy-sell Algorithm\\freqtrade\\reports\\kivanc_stma_4h_risk_hyperopt_20260309_121822",
+  "current_profile": "risk_validation_4h",
+  "param_match": true,
+  "comparison_rows": [
+    {
+      "scenario": "bear_2022",
+      "current_profit_pct": 12.51,
+      "candidate_profit_pct": 12.51,
+      "profit_delta_pct": 0.0,
+      "current_dd_pct": 12.49,
+      "candidate_dd_pct": 12.49,
+      "drawdown_delta_pct": 0.0
+    },
+    {
+      "scenario": "recovery_2023",
+      "current_profit_pct": -3.63,
+      "candidate_profit_pct": -3.63,
+      "profit_delta_pct": 0.0,
+      "current_dd_pct": 17.16,
+      "candidate_dd_pct": 17.16,
+      "drawdown_delta_pct": 0.0
+    },
+    {
+      "scenario": "bull_2024",
+      "current_profit_pct": 8.26,
+      "candidate_profit_pct": 8.26,
+      "profit_delta_pct": 0.0,
+      "current_dd_pct": 14.56,
+      "candidate_dd_pct": 14.56,
+      "drawdown_delta_pct": 0.0
+    },
+    {
+      "scenario": "choppy_2025",
+      "current_profit_pct": -0.91,
+      "candidate_profit_pct": -0.91,
+      "profit_delta_pct": 0.0,
+      "current_dd_pct": 11.61,
+      "candidate_dd_pct": 11.61,
+      "drawdown_delta_pct": 0.0
+    },
+    {
+      "scenario": "ytd_2026",
+      "current_profit_pct": 5.92,
+      "candidate_profit_pct": 5.92,
+      "profit_delta_pct": 0.0,
+      "current_dd_pct": 3.33,
+      "candidate_dd_pct": 3.33,
+      "drawdown_delta_pct": 0.0
+    },
+    {
+      "scenario": "full_2022_2026",
+      "current_profit_pct": 23.36,
+      "candidate_profit_pct": 23.36,
+      "profit_delta_pct": 0.0,
+      "current_dd_pct": 17.16,
+      "candidate_dd_pct": 17.16,
+      "drawdown_delta_pct": 0.0
+    }
+  ]
+}

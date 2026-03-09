@@ -1,319 +1,137 @@
-# 🚀 EPA Trading Bot - Algorithmic Crypto Trading
+# Kivanc SuperTrended Moving Averages
 
-[![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Freqtrade](https://img.shields.io/badge/Freqtrade-2025.11-green.svg)](https://www.freqtrade.io/)
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://opensource.org/licenses/MPL-2.0)
-[![Trading](https://img.shields.io/badge/Trading-Spot-orange.svg)](https://www.binance.com/)
+Single-strategy crypto repo built around one idea: a long-horizon spot system that ports Kivanc Ozbilgic's SuperTrended Moving Averages into Freqtrade and keeps the project lean enough to run, audit, and improve quickly.
 
-**High-performance algorithmic trading bot** based on Efloud Price Action methodology with Smart Money Concepts. Built for Freqtrade with optimized parameters for BTC/USDT and BNB/USDT pairs.
+## Snapshot
 
----
+| Metric | Value |
+|---|---:|
+| Strategy | `KivancSupertrendedMovingAverages1D` |
+| Market | Binance spot |
+| Production timeframe | `1d` |
+| Research timeframe | `4h` risk validation, `1d` futures long/short |
+| Pairs | `BTC ETH BNB SOL XRP` |
+| Hyperopt window | `2022-01-01 -> 2026-03-01` |
+| Full-period return | `+191.78%` |
+| Final balance | `2917.81 USDT` from `1000 USDT` |
+| Profit factor | `3.35` |
+| Max drawdown | `27.86%` |
 
-## 📊 Performance Metrics (2-Year Backtest)
+```mermaid
+flowchart LR
+    A["1D Binance candles"] --> B["TSF moving average (225)"]
+    B --> C["ATR bands (29, x1.9)"]
+    C --> D["Supertrend state"]
+    D --> E["Long-only entry / exit"]
+    E --> F["Backtest and hyperopt"]
+```
 
-| Metric            | Value   |
-| ----------------- | ------- |
-| **Total Profit**  | +90.05% |
-| **CAGR**          | 38.73%  |
-| **Profit Factor** | 1.65    |
-| **Win Rate**      | 49.1%   |
-| **Max Drawdown**  | 24.04%  |
-| **Sharpe Ratio**  | 0.54    |
-| **Calmar Ratio**  | 10.00   |
+## Why This Repo Exists
 
-_Backtest period: Jan 2023 - Dec 2024 | Pairs: BTC/USDT, ETH/USDT, SOL/USDT | Timeframe: 4h_
+- One production strategy is easier to validate than a folder full of abandoned experiments.
+- The system is intentionally slow and selective: it is designed to catch larger swings, not intraday noise.
+- The repo now keeps only the parts needed to download data, backtest, hyperopt, and run the live/paper bot.
+- Research now happens through profile-safe scripts that can validate a `4h` risk pack without changing the live `1d` default.
 
----
+## Production And Research Profiles
 
-## ✨ Features
+- `production_1d`: canonical live/paper profile for the current long-horizon system.
+- `risk_validation_4h`: validated research profile that keeps the same entry logic and only changes ROI, stoploss, and trailing behavior on `4h`.
+- `futures research`: separate `1d` long/short research path that uses Binance USDT-margined futures without changing the spot production bot.
+- Both profiles live under `freqtrade/user_data/profiles/`.
 
-- 🎯 **Smart Money Concepts** - ADX regime filtering, Choppiness Index
-- 📈 **Price Action Signals** - EMA crossovers, breakouts, SFP patterns
-- 🛡️ **Risk Management** - ATR-based stops, trailing protection
-- ⚡ **Optimized Parameters** - Hyperopt tuned for maximum Sortino
-- 🔒 **Built-in Protections** - Cooldown, StoplossGuard, MaxDrawdown
+## Regime Results
 
----
+| Regime | Profit | Trades | Profit Factor | MaxDD |
+|---|---:|---:|---:|---:|
+| `bear_2022` | `-14.18%` | 6 | `0.00` | `14.18%` |
+| `recovery_2023` | `+55.16%` | 9 | `11.77` | `4.12%` |
+| `bull_2024` | `+28.12%` | 8 | `3.87` | `9.79%` |
+| `choppy_2025` | `+35.54%` | 8 | `3.14` | `8.18%` |
+| `ytd_2026` | `0.00%` | 0 | `0.00` | `0.00%` |
 
-## 🚀 Quick Start
+The optimized version is weakest in hard bear conditions and strongest in recovery or trend continuation phases. It behaves like a trend-following allocator, not a high-frequency trader.
 
-### Prerequisites
+## Regime-Aware Validation
 
-- Docker & Docker Compose
-- Python 3.10+
-- Binance API keys (for live trading)
+- `1d` remains the production decision layer.
+- `4h` is used as a research and risk-validation surface, not as the live default.
+- Validation is fixed across the same market regimes so profile changes can be compared without moving goalposts.
 
-### Installation
+## Quick Start
 
-```bash
-# Clone repository
-git clone https://github.com/EmreUludasdemir/Buy-Sell-Algorithm-for-all-exchange-.git
-cd Buy-Sell-Algorithm-for-all-exchange-/freqtrade
+```powershell
+cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 
-# Start bot (paper trading)
+# 1) Download or refresh 1D data
+.\scripts\download_kivanc_1d.ps1
+
+# 2) Run a full-period backtest
+.\scripts\backtest_kivanc_1d.ps1
+
+# 3) Re-run hyperopt if needed
+.\scripts\hyperopt_kivanc_1d.ps1
+
+# 4) Download and validate the 4H research profile
+.\scripts\download_kivanc_4h.ps1
+.\scripts\backtest_kivanc_4h_risk.ps1
+.\scripts\compare_kivanc_profiles.ps1
+
+# 5) Download and backtest the 1D futures long/short research variant
+.\scripts\download_kivanc_futures_1d.ps1
+.\scripts\backtest_kivanc_futures_regimes.ps1
+
+# 6) Start the bot in dry-run mode
 docker compose up -d
-
-# Check logs
-docker compose logs -f
 ```
 
-### Web UI Access
+## Repo Layout
 
-```
-URL: http://127.0.0.1:8080
-Username: freqtrade
-Password: (see config.json)
-```
-
----
-
-## 📁 Project Structure
-
-```
-├── freqtrade/
-│   ├── user_data/
-│   │   ├── strategies/
-│   │   │   ├── EPAStrategyV2.py      # EPA Strategy V2
-│   │   │   ├── EPAStrategyV2.json    # Optimized params
-│   │   │   ├── EPAUltimateV3.py      # 🆕 Ultimate V3 (EPA + Kıvanç)
-│   │   │   ├── kivanc_indicators.py  # 🆕 Kıvanç Özbilgiç indicators
-│   │   │   ├── smc_indicators.py     # Smart Money Concepts
-│   │   │   └── config_btc_backtest.json  # 🆕 BTC backtest config
-│   │   └── config.json               # Bot configuration
-│   ├── scripts/
-│   │   ├── daily_report.py           # Daily performance
-│   │   ├── weekly_summary.py         # Weekly summary
-│   │   ├── backtest_btc.sh           # 🆕 BTC backtest script
-│   │   └── hyperopt_btc.sh           # 🆕 Hyperopt script
-│   └── docker-compose.yml
-├── EfloudPriceAction_Strategy_v7.pine  # TradingView indicator
-└── README.md
-```
-
----
-
-## ⚙️ Strategy Configuration
-
-### 🆕 EPAUltimateV3 - Maximum Confluence Strategy
-
-**The latest and most advanced strategy combining EPA methodology with Kıvanç Özbilgiç's proven indicators.**
-
-#### Key Features
-
-- **📊 EPA Base Filters**: ADX regime, Choppiness Index, EMA system, Volume confirmation
-- **🎯 Kıvanç Indicators**: Supertrend, Half Trend, QQE, Waddah Attar Explosion
-- **🔄 Multi-Indicator Confluence**: Requires agreement from multiple indicators
-- **⚡ Dynamic Risk Management**: Position sizing based on volatility regime
-- **🌐 HTF Trend Filter**: 1D timeframe for macro trend alignment
-- **🛡️ Advanced Exits**: Multiple reversal signals + Chandelier Exit stops
-
-#### Trading Logic
-
-**Entry Requirements (ALL must be true):**
-1. ✅ Trending market (ADX > 30, Choppiness < 50)
-2. ✅ EMA alignment (Fast > Slow > Trend EMA)
-3. ✅ At least 3 Kıvanç indicators bullish (Supertrend, HalfTrend, QQE)
-4. ✅ Waddah Attar shows momentum explosion
-5. ✅ Volume confirmation
-6. ✅ Daily trend aligned
-
-**Exit Signals:**
-- Supertrend or QQE reversal
-- EMA cross reversal
-- ROI targets (10% → 6% → 4% → 2.5%)
-- ATR-based Chandelier Exit stop
-
-#### Performance Targets
-
-| Metric             | Target  |
-| ------------------ | ------- |
-| Sharpe Ratio       | > 1.0   |
-| Win Rate           | > 45%   |
-| Max Drawdown       | < 20%   |
-| Profit Factor      | > 1.5   |
-
-#### Usage
-
-```bash
-# Backtest on BTC/USDT (2023-2025)
-cd freqtrade/scripts
-./backtest_btc.sh
-
-# Hyperopt parameter optimization
-./hyperopt_btc.sh
-
-# Live trading (after backtesting)
-docker compose up -d
-# Edit config.json to use EPAUltimateV3 strategy
+```text
+.
+|-- README.md
+|-- freqtrade/
+|   |-- docker-compose.yml
+|   |-- README.md
+|   |-- reports/
+|   |   `-- kivanc_stma_1d_hyperopt_20260308.md
+|   |-- scripts/
+|   |   |-- backtest_kivanc_1d.ps1
+|   |   |-- backtest_kivanc_4h_risk.ps1
+|   |   |-- backtest_kivanc_futures_1d.ps1
+|   |   |-- backtest_kivanc_futures_regimes.ps1
+|   |   |-- compare_kivanc_profiles.ps1
+|   |   |-- download_kivanc_1d.ps1
+|   |   |-- download_kivanc_4h.ps1
+|   |   |-- download_kivanc_futures_1d.ps1
+|   |   |-- hyperopt_kivanc_1d.ps1
+|   |   |-- hyperopt_kivanc_4h_risk.ps1
+|   |   `-- kivanc_profile_runner.py
+|   `-- user_data/
+|       |-- config.json
+|       |-- config_futures_research.json
+|       |-- config_production.json
+|       |-- data/binance/*.feather
+|       |-- profiles/
+|       |   |-- production_1d.json
+|       |   `-- risk_validation_4h.json
+|       |-- strategies_research/
+|       |   |-- KivancSupertrendedMovingAveragesFutures1D.py
+|       |   `-- KivancSupertrendedMovingAveragesFutures1D.json
+|       `-- strategies/
+|           |-- KivancSupertrendedMovingAverages1D.py
+|           `-- KivancSupertrendedMovingAverages1D.json
+`-- tests/
+    `-- test_kivanc_strategy.py
 ```
 
-#### Hyperopt Parameters
+## Security
 
-The strategy includes optimizable parameters:
+- No exchange keys are committed.
+- `config.json` and `config_production.json` are safe defaults.
+- Research scripts always restore the production strategy JSON after temporary profile application.
+- Fill API credentials locally before live trading.
 
-- **EMA**: Fast (8-15), Slow (25-40), Trend (80-120)
-- **Regime Filters**: ADX threshold (25-45), Chop threshold (45-65)
-- **Supertrend**: Period (7-15), Multiplier (2.0-4.0)
-- **Half Trend**: Amplitude (1-4), Deviation (1.5-3.0)
-- **QQE**: RSI period (10-20), Factor (3.0-5.0)
-- **Risk**: ATR multiplier (2.0-4.0)
+## Disclaimer
 
----
-
-## ⚙️ EPAStrategyV2 Configuration
-
-### EPAStrategyV2 Parameters
-
-| Parameter      | Value  | Description           |
-| -------------- | ------ | --------------------- |
-| Timeframe      | 4h     | Trading timeframe     |
-| Stoploss       | -20%   | Base stop loss        |
-| Trailing Stop  | +31.4% | Activate after profit |
-| ADX Threshold  | 32     | Trend strength filter |
-| Chop Threshold | 45     | Choppy market filter  |
-
-### Trading Pairs
-
-- ✅ BTC/USDT
-- ✅ ETH/USDT
-- ✅ SOL/USDT
-- ✅ XRP/USDT
-- ✅ BNB/USDT
-- ✅ ADA/USDT
-
----
-
-## 🛡️ Risk Management
-
-### Built-in Protections
-
-```python
-protections = [
-    {"method": "CooldownPeriod", "stop_duration_candles": 12},
-    {"method": "StoplossGuard", "trade_limit": 2, "stop_duration_candles": 24},
-    {"method": "MaxDrawdown", "max_allowed_drawdown": 0.12}
-]
-```
-
-### Risk Philosophy
-
-> _"NEVER go all in. It could be a trap, project could fail, BTC could dump."_
-> — @EfloudTheSurfer
-
----
-
----
-
-## 🎯 Kıvanç Özbilgiç Indicators
-
-The EPAUltimateV3 strategy integrates popular TradingView indicators by **Kıvanç Özbilgiç**, a renowned technical analyst and indicator developer.
-
-### Supertrend
-- **Purpose**: Primary trend direction identification
-- **Method**: ATR-based dynamic bands
-- **Signal**: 1 = Bullish trend, -1 = Bearish trend
-- **Parameters**: Period (10), Multiplier (3.0)
-
-### Half Trend
-- **Purpose**: Smooth trend detection with reduced whipsaw
-- **Method**: ATR channels with amplitude filtering
-- **Signal**: Clear trend direction with support/resistance levels
-- **Parameters**: Amplitude (2), Channel Deviation (2.0)
-
-### QQE (Quantitative Qualitative Estimation)
-- **Purpose**: RSI-based momentum confirmation
-- **Method**: Smoothed RSI with dynamic bands
-- **Signal**: Excellent for trend confirmation
-- **Parameters**: RSI Period (14), Smoothing (5), QQ Factor (4.238)
-
-### Waddah Attar Explosion
-- **Purpose**: Volatility and momentum timing
-- **Method**: MACD + Bollinger Bands analysis
-- **Signal**: Shows "explosion" (high momentum) vs "dead zone" (low momentum)
-- **Usage**: Enter during explosions, avoid dead zones
-- **Parameters**: Sensitivity (150), Fast (20), Slow (40)
-
-### Why These Indicators?
-
-1. **Proven Track Record**: Used by thousands of traders on TradingView
-2. **Complementary Signals**: Each indicator measures different market aspects
-3. **Reduced False Signals**: Multi-indicator confluence filters out noise
-4. **Adaptable**: Work well across different market conditions
-
----
-
-## 📈 Backtesting
-
-```bash
-# Run backtest
-docker compose run --rm freqtrade backtesting \
-    --strategy EPAStrategyV2 \
-    --config user_data/config.json \
-    --timerange 20230101-20241222 \
-    --timeframe 4h
-
-# Hyperopt optimization
-docker compose run --rm freqtrade hyperopt \
-    --strategy EPAStrategyV2 \
-    --config user_data/config.json \
-    --hyperopt-loss SortinoHyperOptLoss \
-    --epochs 150
-```
-
----
-
-## 🔧 Development
-
-### Daily Report Generation
-
-```bash
-python scripts/daily_report.py
-# Output: reports/YYYY-MM-DD.json
-```
-
-### Multi-Scenario Backtest
-
-```bash
-cd freqtrade/scripts
-python run_backtests.py
-# Output: reports/multi_scenario_backtest_<timestamp>.json
-# Tests: Bull (2023-Q4), Bear (2022-H2), Sideways (2024-Q2) markets
-```
-
-### Weekly Summary
-
-```bash
-python scripts/weekly_summary.py
-# Output: reports/summary.md
-```
-
----
-
-## ⚠️ Disclaimer
-
-**This software is for educational purposes only.**
-
-- Past performance does not guarantee future results
-- Cryptocurrency trading involves substantial risk of loss
-- Never trade with money you cannot afford to lose
-- The authors are not responsible for any financial losses
-
----
-
-## 📜 License
-
-Mozilla Public License 2.0
-
----
-
-## 🙏 Credits
-
-- **Methodology**: [@EfloudTheSurfer](https://twitter.com/EfloudTheSurfer)
-- **Framework**: [Freqtrade](https://www.freqtrade.io/)
-- **Concepts**: ICT Smart Money Concepts
-
----
-
-<p align="center">
-  <b>⭐ Star this repo if you find it useful! ⭐</b>
-</p>
+This repository is for research and educational use. Backtests are not forward returns, and crypto market risk remains substantial.
