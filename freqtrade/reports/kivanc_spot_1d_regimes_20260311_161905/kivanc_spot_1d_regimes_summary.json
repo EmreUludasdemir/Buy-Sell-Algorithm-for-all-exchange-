@@ -1,0 +1,68 @@
+[
+  {
+    "scenario": "bear_2022",
+    "date_range": "2022-05-01 00:00:00 -> 2022-12-31 00:00:00",
+    "profit_pct": -14.18,
+    "final_balance": 858.24,
+    "trades": 6,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0,
+    "max_dd_pct": 14.18,
+    "market_change_pct": -56.91
+  },
+  {
+    "scenario": "recovery_2023",
+    "date_range": "2023-01-01 00:00:00 -> 2023-12-31 00:00:00",
+    "profit_pct": 55.16,
+    "final_balance": 1551.63,
+    "trades": 9,
+    "win_rate_pct": 77.78,
+    "profit_factor": 11.77,
+    "max_dd_pct": 4.12,
+    "market_change_pct": 254.42
+  },
+  {
+    "scenario": "bull_2024",
+    "date_range": "2024-01-01 00:00:00 -> 2024-12-31 00:00:00",
+    "profit_pct": 28.12,
+    "final_balance": 1281.19,
+    "trades": 8,
+    "win_rate_pct": 50.0,
+    "profit_factor": 3.87,
+    "max_dd_pct": 9.79,
+    "market_change_pct": 116.2
+  },
+  {
+    "scenario": "choppy_2025",
+    "date_range": "2025-01-01 00:00:00 -> 2025-12-31 00:00:00",
+    "profit_pct": 35.54,
+    "final_balance": 1355.42,
+    "trades": 8,
+    "win_rate_pct": 50.0,
+    "profit_factor": 3.14,
+    "max_dd_pct": 8.18,
+    "market_change_pct": -10.73
+  },
+  {
+    "scenario": "ytd_2026",
+    "date_range": "2026-01-01 00:00:00 -> 2026-03-01 00:00:00",
+    "profit_pct": 0,
+    "final_balance": 1000.0,
+    "trades": 0,
+    "win_rate_pct": 0.0,
+    "profit_factor": 0,
+    "max_dd_pct": 0,
+    "market_change_pct": -30.42
+  },
+  {
+    "scenario": "full_2022_2026",
+    "date_range": "2022-01-01 00:00:00 -> 2026-03-01 00:00:00",
+    "profit_pct": 191.78,
+    "final_balance": 2917.81,
+    "trades": 34,
+    "win_rate_pct": 47.06,
+    "profit_factor": 3.35,
+    "max_dd_pct": 27.86,
+    "market_change_pct": 2.44
+  }
+]

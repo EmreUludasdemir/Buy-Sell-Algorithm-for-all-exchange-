@@ -1,0 +1,103 @@
+{
+  "spot_report_dir": "C:\\Users\\Emre\\Desktop\\Buy-sell Algorithm\\freqtrade\\reports\\kivanc_spot_1d_regimes_20260311_161905",
+  "futures_report_dir": "C:\\Users\\Emre\\Desktop\\Buy-sell Algorithm\\freqtrade\\reports\\kivanc_futures_1d_regimes_20260309_180632",
+  "futures_hyperopt_file": "strategy_KivancSupertrendedMovingAveragesFutures1D_2026-03-11_13-11-20.fthypt",
+  "futures_hyperopt_candidate": {
+    "params": {
+      "adx_threshold": 21,
+      "atr_multiplier": 4.8,
+      "atr_period": 24,
+      "ma_length": 188,
+      "ma_type": "ZLEMA",
+      "regime_ema_length": 136,
+      "regime_slope_lookback": 11,
+      "regime_slope_min": 0.053,
+      "t3_volume_factor": 0.5,
+      "use_adx_filter": false,
+      "use_builtin_atr": false,
+      "use_regime_filter": false
+    },
+    "minimal_roi": {
+      "0": 1.0
+    },
+    "stoploss": -0.2,
+    "trailing_stop": false,
+    "trailing_stop_positive": null,
+    "trailing_stop_positive_offset": 0.0,
+    "trailing_only_offset_is_reached": false,
+    "max_open_trades": 4
+  },
+  "futures_hyperopt_decision": "rejected_no_improvement",
+  "futures_baseline_full_profit_pct": 239.95,
+  "futures_baseline_full_max_dd_pct": 22.3,
+  "spot_full_profit_pct": 191.78,
+  "spot_full_max_dd_pct": 27.86,
+  "comparison": [
+    {
+      "scenario": "bear_2022",
+      "spot_profit_pct": -14.18,
+      "futures_profit_pct": -20.18,
+      "profit_delta_pct": -6.0,
+      "spot_dd_pct": 14.18,
+      "futures_dd_pct": 21.23,
+      "drawdown_delta_pct": 7.05,
+      "spot_trades": 6,
+      "futures_trades": 11
+    },
+    {
+      "scenario": "recovery_2023",
+      "spot_profit_pct": 55.16,
+      "futures_profit_pct": 66.18,
+      "profit_delta_pct": 11.02,
+      "spot_dd_pct": 4.12,
+      "futures_dd_pct": 8.79,
+      "drawdown_delta_pct": 4.67,
+      "spot_trades": 9,
+      "futures_trades": 15
+    },
+    {
+      "scenario": "bull_2024",
+      "spot_profit_pct": 28.12,
+      "futures_profit_pct": 4.45,
+      "profit_delta_pct": -23.67,
+      "spot_dd_pct": 9.79,
+      "futures_dd_pct": 24.44,
+      "drawdown_delta_pct": 14.65,
+      "spot_trades": 8,
+      "futures_trades": 17
+    },
+    {
+      "scenario": "choppy_2025",
+      "spot_profit_pct": 35.54,
+      "futures_profit_pct": 52.46,
+      "profit_delta_pct": 16.92,
+      "spot_dd_pct": 8.18,
+      "futures_dd_pct": 9.26,
+      "drawdown_delta_pct": 1.08,
+      "spot_trades": 8,
+      "futures_trades": 20
+    },
+    {
+      "scenario": "ytd_2026",
+      "spot_profit_pct": 0,
+      "futures_profit_pct": 0,
+      "profit_delta_pct": 0,
+      "spot_dd_pct": 0,
+      "futures_dd_pct": 0,
+      "drawdown_delta_pct": 0,
+      "spot_trades": 0,
+      "futures_trades": 0
+    },
+    {
+      "scenario": "full_2022_2026",
+      "spot_profit_pct": 191.78,
+      "futures_profit_pct": 239.95,
+      "profit_delta_pct": 48.17,
+      "spot_dd_pct": 27.86,
+      "futures_dd_pct": 22.3,
+      "drawdown_delta_pct": -5.56,
+      "spot_trades": 34,
+      "futures_trades": 70
+    }
+  ]
+}

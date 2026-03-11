@@ -12,6 +12,11 @@ $scenarios = @(
 )
 
 foreach ($sc in $scenarios) {
+  $before = @(
+    Get-ChildItem "user_data/backtest_results" -Filter "backtest-result-*.zip" |
+      Select-Object -ExpandProperty FullName
+  )
+
   docker compose run --rm bot1_btceth backtesting `
     --config user_data/config_futures_research.json `
     --strategy KivancSupertrendedMovingAveragesFutures1D `
@@ -21,23 +26,54 @@ foreach ($sc in $scenarios) {
     --pairs BTC/USDT:USDT ETH/USDT:USDT BNB/USDT:USDT SOL/USDT:USDT XRP/USDT:USDT `
     --data-format-ohlcv feather `
     --enable-protections `
-    --export trades `
-    --export-filename "$out/$($sc.id).json"
+    --export trades
+
+  $created = Get-ChildItem "user_data/backtest_results" -Filter "backtest-result-*.zip" |
+    Where-Object { $before -notcontains $_.FullName } |
+    Sort-Object LastWriteTime
+
+  if (-not $created) {
+    throw "No new backtest zip was created for $($sc.id)."
+  }
+
+  Copy-Item $created[-1].FullName "$out/$($sc.id).zip" -Force
 }
 
 @'
 import json
 import pathlib
+from zipfile import ZipFile
 
 root = pathlib.Path("reports")
 latest = sorted([p for p in root.iterdir() if p.is_dir() and p.name.startswith("kivanc_futures_1d_regimes_")], key=lambda p: p.stat().st_mtime)[-1]
+scenario_ids = [
+    "bear_2022",
+    "recovery_2023",
+    "bull_2024",
+    "choppy_2025",
+    "ytd_2026",
+    "full_2022_2026",
+]
 rows = []
 
-for fp in sorted(latest.glob("*.json")):
-    payload = json.loads(fp.read_text(encoding="utf-8"))
+for scenario_id in scenario_ids:
+    fp = latest / f"{scenario_id}.zip"
+    if not fp.exists():
+        continue
+    with ZipFile(fp) as zf:
+        payload_name = next(
+            name for name in zf.namelist()
+            if name.endswith(".json")
+            and "_config" not in name
+            and "_market_change.feather" not in name
+            and "_signals.pkl" not in name
+            and "_rejected.pkl" not in name
+            and "_exited.pkl" not in name
+        )
+        payload = json.loads(zf.read(payload_name))
     strategy = next(iter(payload["strategy"].values()))
     rows.append({
-        "scenario": fp.stem,
+        "scenario": scenario_id,
         "date_range": f"{strategy['backtest_start']} -> {strategy['backtest_end']}",
         "profit_pct": round((strategy.get("profit_total", 0) or 0) * 100, 2),
         "final_balance": round(strategy.get("final_balance", 0) or 0, 2),
@@ -46,8 +82,10 @@ for fp in sorted(latest.glob("*.json")):
         "profit_factor": round(strategy.get("profit_factor", 0) or 0, 2),
         "max_dd_pct": round((strategy.get("max_drawdown_account", 0) or 0) * 100, 2),
         "market_change_pct": round((strategy.get("market_change", 0) or 0) * 100, 2),
-        "longs": strategy.get("long_trades", 0),
-        "shorts": strategy.get("short_trades", 0),
+        "longs": strategy.get("trade_count_long", 0),
+        "shorts": strategy.get("trade_count_short", 0),
+        "long_profit_pct": round((strategy.get("profit_total_long", 0) or 0) * 100, 2),
+        "short_profit_pct": round((strategy.get("profit_total_short", 0) or 0) * 100, 2),
     })
 
 summary_path = latest / "kivanc_futures_1d_regimes_summary.json"
@@ -59,14 +97,14 @@ lines = [
     "Research config: `user_data/config_futures_research.json`",
     "Strategy: `KivancSupertrendedMovingAveragesFutures1D`",
     "",
-    "| Scenario | Date | Profit | 1000 USDT Result | Trades | Longs | Shorts | Win Rate | PF | MaxDD | Market |",
-    "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    "| Scenario | Date | Profit | 1000 USDT Result | Trades | Longs | Shorts | Long PnL | Short PnL | Win Rate | PF | MaxDD | Market |",
+    "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
 ]
 
 for row in rows:
     lines.append(
         f"| {row['scenario']} | {row['date_range']} | {row['profit_pct']:.2f}% | {row['final_balance']:.2f} | "
-        f"{row['trades']} | {row['longs']} | {row['shorts']} | {row['win_rate_pct']:.2f}% | "
+        f"{row['trades']} | {row['longs']} | {row['shorts']} | {row['long_profit_pct']:.2f}% | {row['short_profit_pct']:.2f}% | {row['win_rate_pct']:.2f}% | "
         f"{row['profit_factor']:.2f} | {row['max_dd_pct']:.2f}% | {row['market_change_pct']:.2f}% |"
     )
 

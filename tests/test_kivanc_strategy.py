@@ -128,12 +128,15 @@ def test_profile_scripts_exist() -> None:
         "backtest_kivanc_4h_risk.ps1",
         "backtest_kivanc_futures_1d.ps1",
         "backtest_kivanc_futures_regimes.ps1",
+        "compare_kivanc_spot_vs_futures_1d.ps1",
         "compare_kivanc_profiles.ps1",
         "download_kivanc_1d.ps1",
         "download_kivanc_4h.ps1",
         "download_kivanc_futures_1d.ps1",
         "hyperopt_kivanc_1d.ps1",
         "hyperopt_kivanc_4h_risk.ps1",
+        "hyperopt_kivanc_futures_1d_risk.ps1",
+        "kivanc_futures_workflow.py",
         "kivanc_profile_runner.py",
     }
     assert expected.issubset({path.name for path in SCRIPT_DIR.iterdir() if path.is_file()})

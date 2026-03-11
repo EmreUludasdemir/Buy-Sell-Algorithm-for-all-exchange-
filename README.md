@@ -81,7 +81,13 @@ cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 .\scripts\download_kivanc_futures_1d.ps1
 .\scripts\backtest_kivanc_futures_regimes.ps1
 
-# 6) Start the bot in dry-run mode
+# 6) Hyperopt only the futures risk layer
+.\scripts\hyperopt_kivanc_futures_1d_risk.ps1
+
+# 7) Compare spot 1D vs futures 1D decision table
+.\scripts\compare_kivanc_spot_vs_futures_1d.ps1
+
+# 8) Start the bot in dry-run mode
 docker compose up -d
 ```
 
@@ -100,12 +106,15 @@ docker compose up -d
 |   |   |-- backtest_kivanc_4h_risk.ps1
 |   |   |-- backtest_kivanc_futures_1d.ps1
 |   |   |-- backtest_kivanc_futures_regimes.ps1
+|   |   |-- compare_kivanc_spot_vs_futures_1d.ps1
 |   |   |-- compare_kivanc_profiles.ps1
 |   |   |-- download_kivanc_1d.ps1
 |   |   |-- download_kivanc_4h.ps1
 |   |   |-- download_kivanc_futures_1d.ps1
 |   |   |-- hyperopt_kivanc_1d.ps1
+|   |   |-- hyperopt_kivanc_futures_1d_risk.ps1
 |   |   |-- hyperopt_kivanc_4h_risk.ps1
+|   |   |-- kivanc_futures_workflow.py
 |   |   `-- kivanc_profile_runner.py
 |   `-- user_data/
 |       |-- config.json

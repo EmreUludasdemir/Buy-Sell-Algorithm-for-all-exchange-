@@ -48,6 +48,12 @@ cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 # Regime matrix for futures long/short research
 .\scripts\backtest_kivanc_futures_regimes.ps1
 
+# Hyperopt only the futures risk layer, with safe keep-or-reject logic
+.\scripts\hyperopt_kivanc_futures_1d_risk.ps1
+
+# Build a spot-vs-futures decision table from the latest regime reports
+.\scripts\compare_kivanc_spot_vs_futures_1d.ps1
+
 # Start the bot
 docker compose up -d
 ```
@@ -67,6 +73,7 @@ commands still work.
 - Futures research config: `user_data/config_futures_research.json`
 - Script runner: `scripts/kivanc_profile_runner.py`
 - Futures strategy path: `user_data/strategies_research/KivancSupertrendedMovingAveragesFutures1D.py`
+- Futures workflow helper: `scripts/kivanc_futures_workflow.py`
 
 ## Profile Rules
 
@@ -74,3 +81,4 @@ commands still work.
 - `risk_validation_4h` is research-only and is applied temporarily by scripts.
 - The scripts always back up and restore `user_data/strategies/KivancSupertrendedMovingAverages1D.json`.
 - Futures research uses a separate strategy class with `can_short=True` and never replaces the spot production strategy.
+- Futures risk hyperopt only writes `user_data/strategies_research/KivancSupertrendedMovingAveragesFutures1D.json` if the validated candidate improves on the current futures baseline.
