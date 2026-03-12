@@ -4,6 +4,6 @@ param(
 
 $scriptPath = Join-Path $PSScriptRoot "kivanc_futures_workflow.py"
 
-python $scriptPath risk-hyperopt-validate `
+python $scriptPath buy-hyperopt-validate `
   --epochs $Epochs `
-  --label kivanc_futures_1d_risk_hyperopt
+  --label kivanc_futures_1d_buy_hyperopt

@@ -1,0 +1,36 @@
+{
+  "strategy_name": "KivancSupertrendedMovingAveragesFutures1D",
+  "params": {
+    "roi": {
+      "0": 1.0
+    },
+    "stoploss": {
+      "stoploss": -0.2
+    },
+    "trailing": {
+      "trailing_stop": false,
+      "trailing_stop_positive": null,
+      "trailing_stop_positive_offset": 0.0,
+      "trailing_only_offset_is_reached": false
+    },
+    "max_open_trades": {
+      "max_open_trades": 4
+    },
+    "buy": {
+      "adx_threshold": 21,
+      "atr_multiplier": 4.8,
+      "atr_period": 24,
+      "ma_length": 188,
+      "ma_type": "ZLEMA",
+      "regime_ema_length": 136,
+      "regime_slope_lookback": 11,
+      "regime_slope_min": 0.053,
+      "t3_volume_factor": 0.5,
+      "use_adx_filter": false,
+      "use_builtin_atr": false,
+      "use_regime_filter": false
+    }
+  },
+  "ft_stratparam_v": 1,
+  "export_time": "2026-03-12 06:36:51+00:00"
+}

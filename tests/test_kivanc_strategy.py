@@ -19,6 +19,7 @@ FUTURES_PARAM_FILE = (
     ROOT / "freqtrade" / "user_data" / "strategies_research" / "KivancSupertrendedMovingAveragesFutures1D.json"
 )
 FUTURES_CONFIG = ROOT / "freqtrade" / "user_data" / "config_futures_research.json"
+FILTERED_FUTURES_CONFIG = ROOT / "freqtrade" / "user_data" / "config_futures_filtered_research.json"
 
 
 def _load_tree() -> ast.Module:
@@ -33,6 +34,7 @@ def test_strategy_files_exist() -> None:
     assert FUTURES_STRATEGY_FILE.exists()
     assert FUTURES_PARAM_FILE.exists()
     assert FUTURES_CONFIG.exists()
+    assert FILTERED_FUTURES_CONFIG.exists()
 
 
 def test_strategy_declares_expected_class_and_timeframe() -> None:
@@ -127,17 +129,25 @@ def test_profile_scripts_exist() -> None:
         "backtest_kivanc_1d.ps1",
         "backtest_kivanc_4h_risk.ps1",
         "backtest_kivanc_futures_1d.ps1",
+        "backtest_kivanc_futures_filtered_1d.ps1",
+        "backtest_kivanc_futures_filtered_regimes.ps1",
         "backtest_kivanc_futures_regimes.ps1",
+        "backtest_kivanc_futures_pairsets.ps1",
         "compare_kivanc_spot_vs_futures_1d.ps1",
         "compare_kivanc_profiles.ps1",
         "download_kivanc_1d.ps1",
         "download_kivanc_4h.ps1",
         "download_kivanc_futures_1d.ps1",
         "hyperopt_kivanc_1d.ps1",
+        "hyperopt_kivanc_futures_1d_buy.ps1",
         "hyperopt_kivanc_4h_risk.ps1",
         "hyperopt_kivanc_futures_1d_risk.ps1",
+        "kivanc_futures_pairset_scan.py",
         "kivanc_futures_workflow.py",
+        "kivanc_runtime_selector.py",
         "kivanc_profile_runner.py",
+        "run_kivanc_selected_backtest.ps1",
+        "select_kivanc_runtime_mode.ps1",
     }
     assert expected.issubset({path.name for path in SCRIPT_DIR.iterdir() if path.is_file()})
 
@@ -164,3 +174,26 @@ def test_futures_config_uses_binance_futures_pairs() -> None:
     assert data["trading_mode"] == "futures"
     assert data["margin_mode"] == "isolated"
     assert all(pair.endswith(":USDT") for pair in data["exchange"]["pair_whitelist"])
+
+    filtered = json.loads(FILTERED_FUTURES_CONFIG.read_text(encoding="utf-8"))
+    assert filtered["trading_mode"] == "futures"
+    assert filtered["margin_mode"] == "isolated"
+    assert filtered["exchange"]["pair_whitelist"] == [
+        "BTC/USDT:USDT",
+        "ETH/USDT:USDT",
+        "BNB/USDT:USDT",
+        "XRP/USDT:USDT",
+    ]
+
+
+def test_runtime_selector_exposes_timerange_and_launcher_script() -> None:
+    source = (SCRIPT_DIR / "kivanc_runtime_selector.py").read_text(encoding="utf-8")
+    assert '"timerange"' in source
+    assert "spot_backtest_script" in source
+    assert "futures_backtest_script" in source
+    assert "filtered_futures_backtest_script" in source
+
+    launcher_source = (SCRIPT_DIR / "run_kivanc_selected_backtest.ps1").read_text(encoding="utf-8")
+    assert "backtest_kivanc_1d.ps1" in launcher_source
+    assert "backtest_kivanc_futures_1d.ps1" in launcher_source
+    assert "backtest_kivanc_futures_filtered_1d.ps1" in launcher_source

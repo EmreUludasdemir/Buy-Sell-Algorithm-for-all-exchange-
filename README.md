@@ -38,6 +38,7 @@ flowchart LR
 - `production_1d`: canonical live/paper profile for the current long-horizon system.
 - `risk_validation_4h`: validated research profile that keeps the same entry logic and only changes ROI, stoploss, and trailing behavior on `4h`.
 - `futures research`: separate `1d` long/short research path that uses Binance USDT-margined futures without changing the spot production bot.
+- `filtered futures research`: the same `1d` futures logic on `BTC ETH BNB XRP`, excluding `SOL` after pair-set validation improved full-period return and drawdown.
 - Both profiles live under `freqtrade/user_data/profiles/`.
 
 ## Regime Results
@@ -81,13 +82,28 @@ cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 .\scripts\download_kivanc_futures_1d.ps1
 .\scripts\backtest_kivanc_futures_regimes.ps1
 
+# 5b) Run the filtered 4-pair futures regime matrix
+.\scripts\backtest_kivanc_futures_filtered_regimes.ps1
+
 # 6) Hyperopt only the futures risk layer
 .\scripts\hyperopt_kivanc_futures_1d_risk.ps1
 
-# 7) Compare spot 1D vs futures 1D decision table
+# 7) Hyperopt the futures entry layer safely
+.\scripts\hyperopt_kivanc_futures_1d_buy.ps1
+
+# 8) Compare spot 1D vs futures 1D decision table
 .\scripts\compare_kivanc_spot_vs_futures_1d.ps1
 
-# 8) Start the bot in dry-run mode
+# 9) Ask the runtime selector which mode is preferred
+.\scripts\select_kivanc_runtime_mode.ps1
+
+# 10) Let the launcher choose the mode and run the matching backtest
+.\scripts\run_kivanc_selected_backtest.ps1 -Scenario bull_2024
+
+# 11) Scan futures pair subsets against the current baseline
+.\scripts\backtest_kivanc_futures_pairsets.ps1
+
+# 12) Start the bot in dry-run mode
 docker compose up -d
 ```
 
@@ -105,19 +121,28 @@ docker compose up -d
 |   |   |-- backtest_kivanc_1d.ps1
 |   |   |-- backtest_kivanc_4h_risk.ps1
 |   |   |-- backtest_kivanc_futures_1d.ps1
+|   |   |-- backtest_kivanc_futures_filtered_1d.ps1
+|   |   |-- backtest_kivanc_futures_filtered_regimes.ps1
 |   |   |-- backtest_kivanc_futures_regimes.ps1
+|   |   |-- backtest_kivanc_futures_pairsets.ps1
 |   |   |-- compare_kivanc_spot_vs_futures_1d.ps1
 |   |   |-- compare_kivanc_profiles.ps1
 |   |   |-- download_kivanc_1d.ps1
 |   |   |-- download_kivanc_4h.ps1
 |   |   |-- download_kivanc_futures_1d.ps1
 |   |   |-- hyperopt_kivanc_1d.ps1
+|   |   |-- hyperopt_kivanc_futures_1d_buy.ps1
 |   |   |-- hyperopt_kivanc_futures_1d_risk.ps1
 |   |   |-- hyperopt_kivanc_4h_risk.ps1
+|   |   |-- kivanc_futures_pairset_scan.py
 |   |   |-- kivanc_futures_workflow.py
-|   |   `-- kivanc_profile_runner.py
+|   |   |-- kivanc_runtime_selector.py
+|   |   |-- kivanc_profile_runner.py
+|   |   |-- run_kivanc_selected_backtest.ps1
+|   |   `-- select_kivanc_runtime_mode.ps1
 |   `-- user_data/
 |       |-- config.json
+|       |-- config_futures_filtered_research.json
 |       |-- config_futures_research.json
 |       |-- config_production.json
 |       |-- data/binance/*.feather
