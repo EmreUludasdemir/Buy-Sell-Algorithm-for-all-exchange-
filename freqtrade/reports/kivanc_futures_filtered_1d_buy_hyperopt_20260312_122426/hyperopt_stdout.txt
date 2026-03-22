@@ -1,0 +1,39 @@
+
+Best result:
+
+*    1/250:     62 trades. 28/0/34 Wins/Draws/Losses. Avg profit  12.19%. Median profit  -3.58%. Total profit 2715.36543977 USDT ( 271.54%). Avg duration 80 days, 0:23:00 min. Objective: -2245.24100
+
+
+    # Buy parameters:
+    buy_params = {
+        "adx_threshold": 21,
+        "atr_multiplier": 4.8,
+        "atr_period": 24,
+        "ma_length": 188,
+        "ma_type": "ZLEMA",
+        "regime_ema_length": 136,
+        "regime_slope_lookback": 11,
+        "regime_slope_min": 0.053,
+        "t3_volume_factor": 0.5,
+        "use_adx_filter": False,
+        "use_builtin_atr": False,
+        "use_regime_filter": False,
+    }
+
+    # ROI parameters:  # value loaded from strategy
+    minimal_roi = {
+        "0": 1.0
+    }
+
+    # Stoploss parameters:
+    stoploss = -0.2  # value loaded from strategy
+
+    # Trailing stop parameters:
+    trailing_stop = False  # value loaded from strategy
+    trailing_stop_positive = None  # value loaded from strategy
+    trailing_stop_positive_offset = 0.0  # value loaded from strategy
+    trailing_only_offset_is_reached = False  # value loaded from strategy
+    
+
+    # max_open_trades parameters:
+    max_open_trades = 4  # value loaded from strategy

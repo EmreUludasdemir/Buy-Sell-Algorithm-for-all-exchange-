@@ -14,24 +14,43 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORTS_DIR = ROOT / "reports"
 HYPEROPT_RESULTS_DIR = ROOT / "user_data" / "hyperopt_results"
 BACKTEST_RESULTS_DIR = ROOT / "user_data" / "backtest_results"
-FUTURES_CONFIG = ROOT / "user_data" / "config_futures_research.json"
 FUTURES_PARAM_PATH = ROOT / "user_data" / "strategies_research" / "KivancSupertrendedMovingAveragesFutures1D.json"
 
 STRATEGY_NAME = "KivancSupertrendedMovingAveragesFutures1D"
-PAIR_LIST = [
-    "BTC/USDT:USDT",
-    "ETH/USDT:USDT",
-    "BNB/USDT:USDT",
-    "SOL/USDT:USDT",
-    "XRP/USDT:USDT",
-]
-PAIR_FILES = [
-    "BTC_USDT_USDT-1d-futures.feather",
-    "ETH_USDT_USDT-1d-futures.feather",
-    "BNB_USDT_USDT-1d-futures.feather",
-    "SOL_USDT_USDT-1d-futures.feather",
-    "XRP_USDT_USDT-1d-futures.feather",
-]
+VARIANTS = {
+    "futures": {
+        "config_path": ROOT / "user_data" / "config_futures_research.json",
+        "pairs": [
+            "BTC/USDT:USDT",
+            "ETH/USDT:USDT",
+            "BNB/USDT:USDT",
+            "SOL/USDT:USDT",
+            "XRP/USDT:USDT",
+        ],
+        "pair_files": [
+            "BTC_USDT_USDT-1d-futures.feather",
+            "ETH_USDT_USDT-1d-futures.feather",
+            "BNB_USDT_USDT-1d-futures.feather",
+            "SOL_USDT_USDT-1d-futures.feather",
+            "XRP_USDT_USDT-1d-futures.feather",
+        ],
+    },
+    "filtered_futures": {
+        "config_path": ROOT / "user_data" / "config_futures_filtered_research.json",
+        "pairs": [
+            "BTC/USDT:USDT",
+            "ETH/USDT:USDT",
+            "BNB/USDT:USDT",
+            "XRP/USDT:USDT",
+        ],
+        "pair_files": [
+            "BTC_USDT_USDT-1d-futures.feather",
+            "ETH_USDT_USDT-1d-futures.feather",
+            "BNB_USDT_USDT-1d-futures.feather",
+            "XRP_USDT_USDT-1d-futures.feather",
+        ],
+    },
+}
 
 
 def utc_timestamp() -> str:
@@ -61,9 +80,23 @@ def new_files(directory: Path, pattern: str, before: set[Path]) -> list[Path]:
     )
 
 
-def ensure_futures_data() -> None:
+def variant_spec(name: str) -> dict:
+    if name not in VARIANTS:
+        raise ValueError(f"Unsupported variant: {name}")
+    return VARIANTS[name]
+
+
+def config_cli_path(config_path: Path) -> str:
+    return config_path.relative_to(ROOT).as_posix()
+
+
+def variant_title(name: str) -> str:
+    return name.replace("_", " ").title()
+
+
+def ensure_futures_data(spec: dict) -> None:
     data_dir = ROOT / "user_data" / "data" / "binance" / "futures"
-    missing = [name for name in PAIR_FILES if not (data_dir / name).exists()]
+    missing = [name for name in spec["pair_files"] if not (data_dir / name).exists()]
     if missing:
         raise FileNotFoundError(
             "Missing futures data files: "
@@ -86,7 +119,7 @@ def applied_futures_params(param_path: Path):
         backup_path.unlink()
 
 
-def docker_backtest_full() -> Path:
+def docker_backtest_full(spec: dict) -> Path:
     before = set(BACKTEST_RESULTS_DIR.glob("backtest-result-*.zip"))
     command = [
         "docker",
@@ -96,7 +129,7 @@ def docker_backtest_full() -> Path:
         "bot1_btceth",
         "backtesting",
         "--config",
-        "user_data/config_futures_research.json",
+        config_cli_path(spec["config_path"]),
         "--strategy",
         STRATEGY_NAME,
         "--strategy-path",
@@ -106,7 +139,7 @@ def docker_backtest_full() -> Path:
         "--timerange",
         "20220101-20260301",
         "--pairs",
-        *PAIR_LIST,
+        *spec["pairs"],
         "--data-format-ohlcv",
         "feather",
         "--cache",
@@ -166,15 +199,15 @@ def parse_backtest_zip(zip_path: Path) -> dict:
     }
 
 
-def docker_hyperopt_risk(epochs: int) -> tuple[Path, str]:
-    return docker_hyperopt_generic(["roi", "stoploss", "trailing"], epochs)
+def docker_hyperopt_risk(spec: dict, epochs: int) -> tuple[Path, str]:
+    return docker_hyperopt_generic(spec, ["roi", "stoploss", "trailing"], epochs)
 
 
-def docker_hyperopt_buy(epochs: int) -> tuple[Path, str]:
-    return docker_hyperopt_generic(["buy"], epochs)
+def docker_hyperopt_buy(spec: dict, epochs: int) -> tuple[Path, str]:
+    return docker_hyperopt_generic(spec, ["buy"], epochs)
 
 
-def docker_hyperopt_generic(spaces: list[str], epochs: int) -> tuple[Path, str]:
+def docker_hyperopt_generic(spec: dict, spaces: list[str], epochs: int) -> tuple[Path, str]:
     before = set(HYPEROPT_RESULTS_DIR.glob("*.fthypt"))
     command = [
         "docker",
@@ -184,7 +217,7 @@ def docker_hyperopt_generic(spaces: list[str], epochs: int) -> tuple[Path, str]:
         "bot1_btceth",
         "hyperopt",
         "--config",
-        "user_data/config_futures_research.json",
+        config_cli_path(spec["config_path"]),
         "--strategy",
         STRATEGY_NAME,
         "--strategy-path",
@@ -194,7 +227,7 @@ def docker_hyperopt_generic(spaces: list[str], epochs: int) -> tuple[Path, str]:
         "--timerange",
         "20220101-20260301",
         "--pairs",
-        *PAIR_LIST,
+        *spec["pairs"],
         "--data-format-ohlcv",
         "feather",
         "--hyperopt-loss",
@@ -220,7 +253,7 @@ def docker_hyperopt_generic(spaces: list[str], epochs: int) -> tuple[Path, str]:
     return created[-1], stdout
 
 
-def docker_hyperopt_show(result_file: Path) -> tuple[str, dict]:
+def docker_hyperopt_show(spec: dict, result_file: Path) -> tuple[str, dict]:
     command = [
         "docker",
         "compose",
@@ -229,7 +262,7 @@ def docker_hyperopt_show(result_file: Path) -> tuple[str, dict]:
         "bot1_btceth",
         "hyperopt-show",
         "--config",
-        "user_data/config_futures_research.json",
+        config_cli_path(spec["config_path"]),
         "--best",
         "--print-json",
         "--disable-param-export",
@@ -290,23 +323,24 @@ def candidate_beats_baseline(candidate: dict, baseline: dict) -> bool:
     return False
 
 
-def risk_hyperopt_validate(epochs: int, label: str) -> Path:
-    ensure_futures_data()
+def risk_hyperopt_validate(epochs: int, label: str, variant: str = "futures") -> Path:
+    spec = variant_spec(variant)
+    ensure_futures_data(spec)
     report_dir = REPORTS_DIR / f"{label}_{utc_timestamp()}"
     report_dir.mkdir(parents=True, exist_ok=True)
 
     current_payload = json.loads(FUTURES_PARAM_PATH.read_text(encoding="utf-8"))
-    baseline_zip = docker_backtest_full()
+    baseline_zip = docker_backtest_full(spec)
     baseline_metrics = parse_backtest_zip(baseline_zip)
 
-    result_file, hyperopt_stdout = docker_hyperopt_risk(epochs)
-    hyperopt_show, best_json = docker_hyperopt_show(result_file)
+    result_file, hyperopt_stdout = docker_hyperopt_risk(spec, epochs)
+    hyperopt_show, best_json = docker_hyperopt_show(spec, result_file)
     candidate_payload = build_candidate_params(current_payload, best_json)
     candidate_path = report_dir / "candidate_futures_params.json"
     candidate_path.write_text(json.dumps(candidate_payload, indent=2), encoding="utf-8")
 
     with applied_futures_params(candidate_path):
-        candidate_zip = docker_backtest_full()
+        candidate_zip = docker_backtest_full(spec)
         candidate_metrics = parse_backtest_zip(candidate_zip)
 
     accepted = candidate_beats_baseline(candidate_metrics, baseline_metrics)
@@ -329,7 +363,7 @@ def risk_hyperopt_validate(epochs: int, label: str) -> Path:
     (report_dir / "hyperopt_show.txt").write_text(hyperopt_show, encoding="utf-8")
 
     lines = [
-        "# Kivanc Futures 1D Risk Hyperopt Validation",
+        f"# Kivanc {variant_title(variant)} 1D Risk Hyperopt Validation",
         "",
         f"Decision: `{decision}`",
         f"Hyperopt file: `{result_file.name}`",
@@ -360,23 +394,24 @@ def risk_hyperopt_validate(epochs: int, label: str) -> Path:
     return report_dir
 
 
-def buy_hyperopt_validate(epochs: int, label: str) -> Path:
-    ensure_futures_data()
+def buy_hyperopt_validate(epochs: int, label: str, variant: str = "futures") -> Path:
+    spec = variant_spec(variant)
+    ensure_futures_data(spec)
     report_dir = REPORTS_DIR / f"{label}_{utc_timestamp()}"
     report_dir.mkdir(parents=True, exist_ok=True)
 
     current_payload = json.loads(FUTURES_PARAM_PATH.read_text(encoding="utf-8"))
-    baseline_zip = docker_backtest_full()
+    baseline_zip = docker_backtest_full(spec)
     baseline_metrics = parse_backtest_zip(baseline_zip)
 
-    result_file, hyperopt_stdout = docker_hyperopt_buy(epochs)
-    hyperopt_show, best_json = docker_hyperopt_show(result_file)
+    result_file, hyperopt_stdout = docker_hyperopt_buy(spec, epochs)
+    hyperopt_show, best_json = docker_hyperopt_show(spec, result_file)
     candidate_payload = build_buy_candidate_params(current_payload, best_json)
     candidate_path = report_dir / "candidate_futures_params.json"
     candidate_path.write_text(json.dumps(candidate_payload, indent=2), encoding="utf-8")
 
     with applied_futures_params(candidate_path):
-        candidate_zip = docker_backtest_full()
+        candidate_zip = docker_backtest_full(spec)
         candidate_metrics = parse_backtest_zip(candidate_zip)
 
     accepted = candidate_beats_baseline(candidate_metrics, baseline_metrics)
@@ -399,7 +434,7 @@ def buy_hyperopt_validate(epochs: int, label: str) -> Path:
     (report_dir / "hyperopt_show.txt").write_text(hyperopt_show, encoding="utf-8")
 
     lines = [
-        "# Kivanc Futures 1D Buy Hyperopt Validation",
+        f"# Kivanc {variant_title(variant)} 1D Buy Hyperopt Validation",
         "",
         f"Decision: `{decision}`",
         f"Hyperopt file: `{result_file.name}`",
@@ -437,16 +472,18 @@ def main() -> None:
     risk_parser = subparsers.add_parser("risk-hyperopt-validate")
     risk_parser.add_argument("--epochs", type=int, default=250)
     risk_parser.add_argument("--label", default="kivanc_futures_1d_risk_hyperopt")
+    risk_parser.add_argument("--variant", choices=sorted(VARIANTS.keys()), default="futures")
 
     buy_parser = subparsers.add_parser("buy-hyperopt-validate")
     buy_parser.add_argument("--epochs", type=int, default=250)
     buy_parser.add_argument("--label", default="kivanc_futures_1d_buy_hyperopt")
+    buy_parser.add_argument("--variant", choices=sorted(VARIANTS.keys()), default="futures")
 
     args = parser.parse_args()
     if args.command == "risk-hyperopt-validate":
-        report_dir = risk_hyperopt_validate(args.epochs, args.label)
+        report_dir = risk_hyperopt_validate(args.epochs, args.label, args.variant)
     elif args.command == "buy-hyperopt-validate":
-        report_dir = buy_hyperopt_validate(args.epochs, args.label)
+        report_dir = buy_hyperopt_validate(args.epochs, args.label, args.variant)
     print(report_dir)
 
 

@@ -20,25 +20,25 @@
       "adx_threshold": 20,
       "atr_multiplier": 1.9,
       "atr_period": 29,
-      "long_stake_multiplier": 1.2,
       "ma_length": 225,
       "ma_type": "TSF",
       "regime_ema_length": 200,
       "regime_slope_lookback": 10,
       "regime_slope_min": 0.0,
-      "rolling_sharpe_threshold": 0.0,
-      "rolling_sharpe_window": 90,
-      "short_stake_multiplier": 0.8,
       "t3_volume_factor": 0.2,
-      "tsmom_lookback": 252,
-      "tsmom_threshold": 0.0,
       "use_adx_filter": false,
       "use_builtin_atr": false,
       "use_regime_filter": false,
-      "use_rolling_sharpe_filter": false,
-      "use_tsmom_filter": false
+      "use_tsmom_filter": true,
+      "tsmom_lookback": 252,
+      "tsmom_threshold": 0.0,
+      "use_rolling_sharpe_filter": true,
+      "rolling_sharpe_window": 90,
+      "rolling_sharpe_threshold": 0.0,
+      "long_stake_multiplier": 1.3,
+      "short_stake_multiplier": 0.7
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-03-19 11:10:00+00:00"
+  "export_time": "2026-03-19 11:06:23+00:00"
 }

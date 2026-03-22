@@ -2,16 +2,19 @@
   "strategy_name": "KivancSupertrendedMovingAveragesFutures1D",
   "params": {
     "roi": {
-      "0": 1.0
+      "0": 1.062,
+      "7691": 0.366,
+      "24262": 0.156,
+      "36397": 0
     },
     "stoploss": {
-      "stoploss": -0.2
+      "stoploss": -0.322
     },
     "trailing": {
-      "trailing_stop": false,
-      "trailing_stop_positive": null,
-      "trailing_stop_positive_offset": 0.0,
-      "trailing_only_offset_is_reached": false
+      "trailing_stop": true,
+      "trailing_stop_positive": 0.288,
+      "trailing_stop_positive_offset": 0.388,
+      "trailing_only_offset_is_reached": true
     },
     "max_open_trades": {
       "max_open_trades": 4
@@ -20,25 +23,17 @@
       "adx_threshold": 20,
       "atr_multiplier": 1.9,
       "atr_period": 29,
-      "long_stake_multiplier": 1.2,
       "ma_length": 225,
       "ma_type": "TSF",
       "regime_ema_length": 200,
       "regime_slope_lookback": 10,
       "regime_slope_min": 0.0,
-      "rolling_sharpe_threshold": 0.0,
-      "rolling_sharpe_window": 90,
-      "short_stake_multiplier": 0.8,
       "t3_volume_factor": 0.2,
-      "tsmom_lookback": 252,
-      "tsmom_threshold": 0.0,
       "use_adx_filter": false,
       "use_builtin_atr": false,
-      "use_regime_filter": false,
-      "use_rolling_sharpe_filter": false,
-      "use_tsmom_filter": false
+      "use_regime_filter": false
     }
   },
   "ft_stratparam_v": 1,
-  "export_time": "2026-03-19 11:10:00+00:00"
+  "export_time": "2026-03-12 08:09:45+00:00"
 }

@@ -103,7 +103,24 @@ cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 # 11) Scan futures pair subsets against the current baseline
 .\scripts\backtest_kivanc_futures_pairsets.ps1
 
-# 12) Start the bot in dry-run mode
+# 12) Hyperopt only the filtered futures risk layer
+.\scripts\hyperopt_kivanc_futures_filtered_1d_risk.ps1
+
+# 13) Hyperopt the filtered futures buy layer safely
+.\scripts\hyperopt_kivanc_futures_filtered_1d_buy.ps1
+
+# 14) Start a runtime container from the selector decision
+.\scripts\start_kivanc_selected_runtime.ps1 -Scenario full_2022_2026
+.\scripts\start_kivanc_selected_runtime.ps1 -Scenario full_2022_2026 -ExposeApi
+
+# 15) Auto-start from the current date, with safe fallback to spot_1d when there is no active regime decision
+.\scripts\auto_run_kivanc_selected_runtime.ps1
+.\scripts\auto_run_kivanc_selected_runtime.ps1 -ExposeApi
+
+# 16) Stop the dedicated runtime and remove temporary runtime configs
+.\scripts\stop_kivanc_selected_runtime.ps1 -ContainerName kivanc_auto_runtime
+
+# 17) Start the default spot bot in dry-run mode
 docker compose up -d
 ```
 
@@ -132,14 +149,19 @@ docker compose up -d
 |   |   |-- download_kivanc_futures_1d.ps1
 |   |   |-- hyperopt_kivanc_1d.ps1
 |   |   |-- hyperopt_kivanc_futures_1d_buy.ps1
+|   |   |-- hyperopt_kivanc_futures_filtered_1d_buy.ps1
+|   |   |-- hyperopt_kivanc_futures_filtered_1d_risk.ps1
 |   |   |-- hyperopt_kivanc_futures_1d_risk.ps1
 |   |   |-- hyperopt_kivanc_4h_risk.ps1
+|   |   |-- auto_run_kivanc_selected_runtime.ps1
 |   |   |-- kivanc_futures_pairset_scan.py
 |   |   |-- kivanc_futures_workflow.py
 |   |   |-- kivanc_runtime_selector.py
 |   |   |-- kivanc_profile_runner.py
 |   |   |-- run_kivanc_selected_backtest.ps1
-|   |   `-- select_kivanc_runtime_mode.ps1
+|   |   |-- select_kivanc_runtime_mode.ps1
+|   |   |-- stop_kivanc_selected_runtime.ps1
+|   |   `-- start_kivanc_selected_runtime.ps1
 |   `-- user_data/
 |       |-- config.json
 |       |-- config_futures_filtered_research.json
@@ -165,6 +187,7 @@ docker compose up -d
 - `config.json` and `config_production.json` are safe defaults.
 - Research scripts always restore the production strategy JSON after temporary profile application.
 - Fill API credentials locally before live trading.
+- The auto runtime wrapper is production-safe by default because it falls back to `spot_1d` if the selector currently has no actionable regime.
 
 ## Disclaimer
 

@@ -1,0 +1,42 @@
+
+Best result:
+
+   242/250:     62 trades. 38/0/24 Wins/Draws/Losses. Avg profit   4.42%. Median profit   0.89%. Total profit 777.12888801 USDT (  77.71%). Avg duration 24 days, 5:25:00 min. Objective: -638.09718
+
+
+    # Buy parameters:
+    buy_params = {
+        "adx_threshold": 20,  # value loaded from strategy
+        "atr_multiplier": 1.9,  # value loaded from strategy
+        "atr_period": 29,  # value loaded from strategy
+        "ma_length": 225,  # value loaded from strategy
+        "ma_type": "TSF",  # value loaded from strategy
+        "regime_ema_length": 200,  # value loaded from strategy
+        "regime_slope_lookback": 10,  # value loaded from strategy
+        "regime_slope_min": 0.0,  # value loaded from strategy
+        "t3_volume_factor": 0.2,  # value loaded from strategy
+        "use_adx_filter": False,  # value loaded from strategy
+        "use_builtin_atr": False,  # value loaded from strategy
+        "use_regime_filter": False,  # value loaded from strategy
+    }
+
+    # ROI parameters:
+    minimal_roi = {
+        "0": 1.062,
+        "7691": 0.366,
+        "24262": 0.156,
+        "36397": 0
+    }
+
+    # Stoploss parameters:
+    stoploss = -0.322
+
+    # Trailing stop parameters:
+    trailing_stop = True
+    trailing_stop_positive = 0.288
+    trailing_stop_positive_offset = 0.388
+    trailing_only_offset_is_reached = True
+    
+
+    # max_open_trades parameters:
+    max_open_trades = 4  # value loaded from strategy

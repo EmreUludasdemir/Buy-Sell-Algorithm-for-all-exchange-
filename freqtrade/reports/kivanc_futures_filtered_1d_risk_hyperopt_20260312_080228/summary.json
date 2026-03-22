@@ -1,0 +1,62 @@
+{
+  "decision": "rejected_no_improvement",
+  "baseline": {
+    "date_range": "2022-01-01 00:00:00 -> 2026-03-01 00:00:00",
+    "profit_pct": 271.54,
+    "final_balance": 3715.37,
+    "trades": 62,
+    "win_rate_pct": 45.16,
+    "profit_factor": 2.75,
+    "max_dd_pct": 18.72,
+    "market_change_pct": 16.37,
+    "longs": 31,
+    "shorts": 31,
+    "long_profit_pct": 197.3,
+    "short_profit_pct": 74.24,
+    "zip_file": "backtest-result-2026-03-12_08-02-51.zip"
+  },
+  "candidate": {
+    "date_range": "2022-01-01 00:00:00 -> 2026-03-01 00:00:00",
+    "profit_pct": 77.71,
+    "final_balance": 1777.13,
+    "trades": 62,
+    "win_rate_pct": 61.29,
+    "profit_factor": 2.15,
+    "max_dd_pct": 19.34,
+    "market_change_pct": 16.37,
+    "longs": 31,
+    "shorts": 31,
+    "long_profit_pct": 33.53,
+    "short_profit_pct": 44.18,
+    "zip_file": "backtest-result-2026-03-12_08-10-02.zip"
+  },
+  "hyperopt_file": "strategy_KivancSupertrendedMovingAveragesFutures1D_2026-03-12_08-03-00.fthypt",
+  "candidate_params": {
+    "params": {
+      "adx_threshold": 20,
+      "atr_multiplier": 1.9,
+      "atr_period": 29,
+      "ma_length": 225,
+      "ma_type": "TSF",
+      "regime_ema_length": 200,
+      "regime_slope_lookback": 10,
+      "regime_slope_min": 0.0,
+      "t3_volume_factor": 0.2,
+      "use_adx_filter": false,
+      "use_builtin_atr": false,
+      "use_regime_filter": false
+    },
+    "minimal_roi": {
+      "0": 1.062,
+      "7691": 0.366,
+      "24262": 0.156,
+      "36397": 0
+    },
+    "stoploss": -0.322,
+    "trailing_stop": true,
+    "trailing_stop_positive": 0.288,
+    "trailing_stop_positive_offset": 0.388,
+    "trailing_only_offset_is_reached": true,
+    "max_open_trades": 4
+  }
+}

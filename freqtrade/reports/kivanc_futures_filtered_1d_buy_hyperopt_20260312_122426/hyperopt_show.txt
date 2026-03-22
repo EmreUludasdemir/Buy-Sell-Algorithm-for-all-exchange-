@@ -1,0 +1,112 @@
+Result for strategy KivancSupertrendedMovingAveragesFutures1D
+                                                  BACKTESTING REPORT                                                   
+┏━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃          Pair ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃      Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ BNB/USDT:USDT │     12 │        19.78 │         939.151 │        93.92 │  99 days, 6:00:00 │    8     0     4  66.7 │
+│ ETH/USDT:USDT │     16 │         14.9 │         878.272 │        87.83 │ 80 days, 19:30:00 │    8     0     8  50.0 │
+│ BTC/USDT:USDT │     18 │         8.46 │         468.869 │        46.89 │  76 days, 4:00:00 │    7     0    11  38.9 │
+│ XRP/USDT:USDT │     16 │         7.96 │         429.073 │        42.91 │  69 days, 3:00:00 │    5     0    11  31.2 │
+│         TOTAL │     62 │        12.19 │        2715.365 │       271.54 │  80 days, 0:23:00 │   28     0    34  45.2 │
+└───────────────┴────────┴──────────────┴─────────────────┴──────────────┴───────────────────┴────────────────────────┘
+                                                LEFT OPEN TRADES REPORT                                                 
+┏━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃          Pair ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃       Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ ETH/USDT:USDT │      1 │        49.54 │         310.226 │        31.02 │  141 days, 0:00:00 │    1     0     0   100 │
+│ XRP/USDT:USDT │      1 │        50.04 │         300.192 │        30.02 │  156 days, 0:00:00 │    1     0     0   100 │
+│ BTC/USDT:USDT │      1 │        41.71 │         234.926 │        23.49 │  141 days, 0:00:00 │    1     0     0   100 │
+│ BNB/USDT:USDT │      1 │        35.97 │         223.871 │        22.39 │  109 days, 0:00:00 │    1     0     0   100 │
+│         TOTAL │      4 │        44.32 │        1069.215 │       106.92 │ 136 days, 18:00:00 │    4     0     0   100 │
+└───────────────┴────────┴──────────────┴─────────────────┴──────────────┴────────────────────┴────────────────────────┘
+                                                   ENTER TAG STATS                                                    
+┏━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃   Enter Tag ┃ Entries ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃      Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│   ST_MA_BUY │      31 │        19.86 │        1972.997 │        197.3 │ 85 days, 17:02:00 │   15     0    16  48.4 │
+│ ST_MA_SHORT │      31 │         4.51 │         742.368 │        74.24 │  74 days, 7:45:00 │   13     0    18  41.9 │
+│       TOTAL │      62 │        12.19 │        2715.365 │       271.54 │  80 days, 0:23:00 │   28     0    34  45.2 │
+└─────────────┴─────────┴──────────────┴─────────────────┴──────────────┴───────────────────┴────────────────────────┘
+                                                  EXIT REASON STATS                                                  
+┏━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Exit Reason ┃ Exits ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃       Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│         roi │     7 │        97.75 │        2273.067 │       227.31 │ 110 days, 20:34:00 │    7     0     0   100 │
+│  force_exit │     4 │        44.32 │        1069.215 │       106.92 │ 136 days, 18:00:00 │    4     0     0   100 │
+│ ST_MA_COVER │    19 │         6.45 │         232.022 │         23.2 │  81 days, 15:09:00 │    9     0    10  47.4 │
+│  ST_MA_SELL │    18 │         3.39 │         132.410 │        13.24 │  88 days, 21:20:00 │    8     0    10  44.4 │
+│   stop_loss │    14 │       -20.69 │        -991.349 │       -99.13 │  34 days, 18:51:00 │    0     0    14     0 │
+│       TOTAL │    62 │        12.19 │        2715.365 │       271.54 │   80 days, 0:23:00 │   28     0    34  45.2 │
+└─────────────┴───────┴──────────────┴─────────────────┴──────────────┴────────────────────┴────────────────────────┘
+                                                          MIXED TAG STATS                                                           
+┏━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃   Enter Tag ┃ Exit Reason ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃       Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│   ST_MA_BUY │         roi │      7 │        97.75 │        2273.067 │       227.31 │ 110 days, 20:34:00 │    7     0     0   100 │
+│ ST_MA_SHORT │  force_exit │      4 │        44.32 │        1069.215 │       106.92 │ 136 days, 18:00:00 │    4     0     0   100 │
+│ ST_MA_SHORT │ ST_MA_COVER │     19 │         6.45 │         232.022 │         23.2 │  81 days, 15:09:00 │    9     0    10  47.4 │
+│   ST_MA_BUY │  ST_MA_SELL │     18 │         3.39 │         132.410 │        13.24 │  88 days, 21:20:00 │    8     0    10  44.4 │
+│   ST_MA_BUY │   stop_loss │      6 │       -21.61 │        -432.480 │       -43.25 │  46 days, 20:00:00 │    0     0     6     0 │
+│ ST_MA_SHORT │   stop_loss │      8 │        -20.0 │        -558.869 │       -55.89 │  25 days, 18:00:00 │    0     0     8     0 │
+│       TOTAL │             │     62 │        12.19 │        2715.365 │       271.54 │   80 days, 0:23:00 │   28     0    34  45.2 │
+└─────────────┴─────────────┴────────┴──────────────┴─────────────────┴──────────────┴────────────────────┴────────────────────────┘
+                           SUMMARY METRICS                            
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Metric                        ┃ Value                              ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Backtesting from              │ 2022-01-01 00:00:00                │
+│ Backtesting to                │ 2026-03-01 00:00:00                │
+│ Trading Mode                  │ Isolated Futures                   │
+│ Max open trades               │ 4                                  │
+│                               │                                    │
+│ Total/Daily Avg Trades        │ 62 / 0.04                          │
+│ Starting balance              │ 1000 USDT                          │
+│ Final balance                 │ 3715.365 USDT                      │
+│ Absolute profit               │ 2715.365 USDT                      │
+│ Total profit %                │ 271.54%                            │
+│ CAGR %                        │ 37.05%                             │
+│ Sortino                       │ 1.11                               │
+│ Sharpe                        │ 0.25                               │
+│ Calmar                        │ 18.23                              │
+│ SQN                           │ 2.49                               │
+│ Profit factor                 │ 2.75                               │
+│ Expectancy (Ratio)            │ 43.80 (0.96)                       │
+│ Avg. daily profit             │ 1.786 USDT                         │
+│ Avg. stake amount             │ 340.344 USDT                       │
+│ Total trade volume            │ 43655.011 USDT                     │
+│                               │                                    │
+│ Long / Short trades           │ 31 / 31                            │
+│ Long / Short profit %         │ 197.30% / 74.24%                   │
+│ Long / Short profit USDT      │ 1972.997 / 742.368                 │
+│                               │                                    │
+│ Best Pair                     │ BNB/USDT:USDT 93.92%               │
+│ Worst Pair                    │ XRP/USDT:USDT 42.91%               │
+│ Best trade                    │ BNB/USDT:USDT 105.48%              │
+│ Worst trade                   │ XRP/USDT:USDT -24.65%              │
+│ Best day                      │ 1069.215 USDT                      │
+│ Worst day                     │ -133.903 USDT                      │
+│ Days win/draw/lose            │ 23 / 1351 / 33                     │
+│ Min/Max/Avg. Duration Winners │ 5d 00:00 / 207d 00:00 / 122d 09:26 │
+│ Min/Max/Avg. Duration Losers  │ 0d 00:00 / 152d 00:00 / 45d 02:49  │
+│ Max Consecutive Wins / Loss   │ 4 / 7                              │
+│ Rejected Entry signals        │ 0                                  │
+│ Entry/Exit Timeouts           │ 0 / 0                              │
+│                               │                                    │
+│ Min balance                   │ 808.704 USDT                       │
+│ Max balance                   │ 3715.365 USDT                      │
+│ Max % of account underwater   │ 27.16%                             │
+│ Absolute drawdown             │ 350.525 USDT (18.72%)              │
+│ Drawdown duration             │ 250 days 00:00:00                  │
+│ Profit at drawdown start      │ 872.737 USDT                       │
+│ Profit at drawdown end        │ 522.212 USDT                       │
+│ Drawdown start                │ 2024-03-05 00:00:00                │
+│ Drawdown end                  │ 2024-11-10 00:00:00                │
+│ Market change                 │ 16.37%                             │
+└───────────────────────────────┴────────────────────────────────────┘
+
+
+Epoch details:
+
+*    1/88:     62 trades. 28/0/34 Wins/Draws/Losses. Avg profit  12.19%. Median profit  -3.58%. Total profit 2715.36543977 USDT ( 271.54%). Avg duration 80 days, 0:23:00 min. Objective: -2245.24100
+
+{"params":{"adx_threshold":21,"atr_multiplier":4.8,"atr_period":24,"ma_length":188,"ma_type":"ZLEMA","regime_ema_length":136,"regime_slope_lookback":11,"regime_slope_min":0.053,"t3_volume_factor":0.5,"use_adx_filter":false,"use_builtin_atr":false,"use_regime_filter":false},"minimal_roi":{"0":1.0},"stoploss":-0.2,"trailing_stop":false,"trailing_stop_positive":null,"trailing_stop_positive_offset":0.0,"trailing_only_offset_is_reached":false,"max_open_trades":4}

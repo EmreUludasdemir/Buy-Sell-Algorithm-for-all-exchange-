@@ -1,0 +1,104 @@
+Result for strategy KivancSupertrendedMovingAveragesFutures1D
+                                                  BACKTESTING REPORT                                                   
+┏━━━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃          Pair ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃      Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ XRP/USDT:USDT │     16 │         13.5 │         625.050 │        62.51 │  28 days, 3:00:00 │   11     0     5  68.8 │
+│ ETH/USDT:USDT │     16 │         2.99 │         102.486 │        10.25 │ 21 days, 15:00:00 │   10     0     6  62.5 │
+│ BNB/USDT:USDT │     12 │         2.49 │         101.676 │        10.17 │ 20 days, 14:00:00 │    7     0     5  58.3 │
+│ BTC/USDT:USDT │     18 │        -1.09 │         -52.084 │        -5.21 │ 25 days, 12:00:00 │   10     0     8  55.6 │
+│         TOTAL │     62 │         4.42 │         777.129 │        77.71 │  24 days, 5:25:00 │   38     0    24  61.3 │
+└───────────────┴────────┴──────────────┴─────────────────┴──────────────┴───────────────────┴────────────────────────┘
+                                         LEFT OPEN TRADES REPORT                                          
+┏━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃  Pair ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃ Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ TOTAL │      0 │          0.0 │           0.000 │          0.0 │         0:00 │    0     0     0     0 │
+└───────┴────────┴──────────────┴─────────────────┴──────────────┴──────────────┴────────────────────────┘
+                                                   ENTER TAG STATS                                                    
+┏━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃   Enter Tag ┃ Entries ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃      Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ ST_MA_SHORT │      31 │         4.92 │         441.840 │        44.18 │ 24 days, 13:10:00 │   23     0     8  74.2 │
+│   ST_MA_BUY │      31 │         3.93 │         335.289 │        33.53 │ 23 days, 21:41:00 │   15     0    16  48.4 │
+│       TOTAL │      62 │         4.42 │         777.129 │        77.71 │  24 days, 5:25:00 │   38     0    24  61.3 │
+└─────────────┴─────────┴──────────────┴─────────────────┴──────────────┴───────────────────┴────────────────────────┘
+                                                 EXIT REASON STATS                                                  
+┏━━━━━━━━━━━━━┳━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Exit Reason ┃ Exits ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃      Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━╇━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│         roi │    45 │         11.7 │        1439.738 │       143.97 │  26 days, 3:12:00 │   38     0     7  84.4 │
+│ ST_MA_COVER │     7 │       -14.99 │        -280.866 │       -28.09 │  10 days, 0:00:00 │    0     0     7     0 │
+│  ST_MA_SELL │    10 │       -14.73 │        -381.744 │       -38.17 │ 25 days, 14:24:00 │    0     0    10     0 │
+│       TOTAL │    62 │         4.42 │         777.129 │        77.71 │  24 days, 5:25:00 │   38     0    24  61.3 │
+└─────────────┴───────┴──────────────┴─────────────────┴──────────────┴───────────────────┴────────────────────────┘
+                                                          MIXED TAG STATS                                                          
+┏━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃   Enter Tag ┃ Exit Reason ┃ Trades ┃ Avg Profit % ┃ Tot Profit USDT ┃ Tot Profit % ┃      Avg Duration ┃  Win  Draw  Loss  Win% ┃
+┡━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ ST_MA_SHORT │         roi │     24 │        10.72 │         722.706 │        72.27 │ 28 days, 19:00:00 │   23     0     1  95.8 │
+│   ST_MA_BUY │         roi │     21 │        12.81 │         717.033 │         71.7 │  23 days, 2:17:00 │   15     0     6  71.4 │
+│ ST_MA_SHORT │ ST_MA_COVER │      7 │       -14.99 │        -280.866 │       -28.09 │  10 days, 0:00:00 │    0     0     7     0 │
+│   ST_MA_BUY │  ST_MA_SELL │     10 │       -14.73 │        -381.744 │       -38.17 │ 25 days, 14:24:00 │    0     0    10     0 │
+│       TOTAL │             │     62 │         4.42 │         777.129 │        77.71 │  24 days, 5:25:00 │   38     0    24  61.3 │
+└─────────────┴─────────────┴────────┴──────────────┴─────────────────┴──────────────┴───────────────────┴────────────────────────┘
+                          SUMMARY METRICS                           
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ Metric                        ┃ Value                            ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┩
+│ Backtesting from              │ 2022-01-01 00:00:00              │
+│ Backtesting to                │ 2026-03-01 00:00:00              │
+│ Trading Mode                  │ Isolated Futures                 │
+│ Max open trades               │ 4                                │
+│                               │                                  │
+│ Total/Daily Avg Trades        │ 62 / 0.04                        │
+│ Starting balance              │ 1000 USDT                        │
+│ Final balance                 │ 1777.129 USDT                    │
+│ Absolute profit               │ 777.129 USDT                     │
+│ Total profit %                │ 77.71%                           │
+│ CAGR %                        │ 14.81%                           │
+│ Sortino                       │ 0.41                             │
+│ Sharpe                        │ 0.18                             │
+│ Calmar                        │ 5.05                             │
+│ SQN                           │ 1.84                             │
+│ Profit factor                 │ 2.15                             │
+│ Expectancy (Ratio)            │ 12.53 (0.45)                     │
+│ Avg. daily profit             │ 0.511 USDT                       │
+│ Avg. stake amount             │ 260.841 USDT                     │
+│ Total trade volume            │ 32309.723 USDT                   │
+│                               │                                  │
+│ Long / Short trades           │ 31 / 31                          │
+│ Long / Short profit %         │ 33.53% / 44.18%                  │
+│ Long / Short profit USDT      │ 335.289 / 441.840                │
+│                               │                                  │
+│ Best Pair                     │ XRP/USDT:USDT 62.51%             │
+│ Worst Pair                    │ BTC/USDT:USDT -5.21%             │
+│ Best trade                    │ XRP/USDT:USDT 105.75%            │
+│ Worst trade                   │ BTC/USDT:USDT -27.03%            │
+│ Best day                      │ 271.236 USDT                     │
+│ Worst day                     │ -98.47 USDT                      │
+│ Days win/draw/lose            │ 38 / 1257 / 20                   │
+│ Min/Max/Avg. Duration Winners │ 5d 00:00 / 76d 00:00 / 25d 16:25 │
+│ Min/Max/Avg. Duration Losers  │ 1d 00:00 / 76d 00:00 / 21d 22:00 │
+│ Max Consecutive Wins / Loss   │ 6 / 7                            │
+│ Rejected Entry signals        │ 0                                │
+│ Entry/Exit Timeouts           │ 0 / 0                            │
+│                               │                                  │
+│ Min balance                   │ 857.776 USDT                     │
+│ Max balance                   │ 1777.129 USDT                    │
+│ Max % of account underwater   │ 19.34%                           │
+│ Absolute drawdown             │ 213.154 USDT (19.34%)            │
+│ Drawdown duration             │ 184 days 00:00:00                │
+│ Profit at drawdown start      │ 102.082 USDT                     │
+│ Profit at drawdown end        │ -111.072 USDT                    │
+│ Drawdown start                │ 2022-08-10 00:00:00              │
+│ Drawdown end                  │ 2023-02-10 00:00:00              │
+│ Market change                 │ 16.37%                           │
+└───────────────────────────────┴──────────────────────────────────┘
+
+
+Epoch details:
+
+   242/250:     62 trades. 38/0/24 Wins/Draws/Losses. Avg profit   4.42%. Median profit   0.89%. Total profit 777.12888801 USDT (  77.71%). Avg duration 24 days, 5:25:00 min. Objective: -638.09718
+
+{"params":{"adx_threshold":20,"atr_multiplier":1.9,"atr_period":29,"ma_length":225,"ma_type":"TSF","regime_ema_length":200,"regime_slope_lookback":10,"regime_slope_min":0.0,"t3_volume_factor":0.2,"use_adx_filter":false,"use_builtin_atr":false,"use_regime_filter":false},"minimal_roi":{"0":1.062,"7691":0.366,"24262":0.156,"36397":0},"stoploss":-0.322,"trailing_stop":true,"trailing_stop_positive":0.288,"trailing_stop_positive_offset":0.388,"trailing_only_offset_is_reached":true,"max_open_trades":4}

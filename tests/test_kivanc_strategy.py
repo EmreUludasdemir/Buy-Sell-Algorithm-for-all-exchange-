@@ -140,14 +140,19 @@ def test_profile_scripts_exist() -> None:
         "download_kivanc_futures_1d.ps1",
         "hyperopt_kivanc_1d.ps1",
         "hyperopt_kivanc_futures_1d_buy.ps1",
+        "hyperopt_kivanc_futures_filtered_1d_buy.ps1",
+        "hyperopt_kivanc_futures_filtered_1d_risk.ps1",
         "hyperopt_kivanc_4h_risk.ps1",
         "hyperopt_kivanc_futures_1d_risk.ps1",
+        "auto_run_kivanc_selected_runtime.ps1",
         "kivanc_futures_pairset_scan.py",
         "kivanc_futures_workflow.py",
         "kivanc_runtime_selector.py",
         "kivanc_profile_runner.py",
         "run_kivanc_selected_backtest.ps1",
         "select_kivanc_runtime_mode.ps1",
+        "stop_kivanc_selected_runtime.ps1",
+        "start_kivanc_selected_runtime.ps1",
     }
     assert expected.issubset({path.name for path in SCRIPT_DIR.iterdir() if path.is_file()})
 
@@ -167,6 +172,12 @@ def test_futures_research_strategy_enables_shorting() -> None:
     )
     assert isinstance(can_short_assign.value, ast.Constant)
     assert can_short_assign.value.value is True
+
+    source = FUTURES_STRATEGY_FILE.read_text(encoding="utf-8")
+    assert "use_tsmom_filter" in source
+    assert "use_rolling_sharpe_filter" in source
+    assert "long_stake_multiplier" in source
+    assert "custom_stake_amount" in source
 
 
 def test_futures_config_uses_binance_futures_pairs() -> None:
@@ -197,3 +208,24 @@ def test_runtime_selector_exposes_timerange_and_launcher_script() -> None:
     assert "backtest_kivanc_1d.ps1" in launcher_source
     assert "backtest_kivanc_futures_1d.ps1" in launcher_source
     assert "backtest_kivanc_futures_filtered_1d.ps1" in launcher_source
+
+    runtime_source = (SCRIPT_DIR / "start_kivanc_selected_runtime.ps1").read_text(encoding="utf-8")
+    assert "config_futures_filtered_research.json" in runtime_source
+    assert "config_futures_research.json" in runtime_source
+    assert "config.json" in runtime_source
+    assert "FallbackMode" in runtime_source
+    assert "OverrideMode" in runtime_source
+    assert "containerSlug" in runtime_source
+    assert "--publish" in runtime_source
+    assert "runtime_configs" in runtime_source
+
+    auto_runtime_source = (SCRIPT_DIR / "auto_run_kivanc_selected_runtime.ps1").read_text(encoding="utf-8")
+    assert "FallbackMode" in auto_runtime_source
+    assert "Strict" in auto_runtime_source
+    assert "start_kivanc_selected_runtime.ps1" in auto_runtime_source
+
+    stop_runtime_source = (SCRIPT_DIR / "stop_kivanc_selected_runtime.ps1").read_text(encoding="utf-8")
+    assert "docker rm -f" in stop_runtime_source
+    assert "containerSlug" in stop_runtime_source
+    assert "runtime_configs" in stop_runtime_source
+    assert "PurgeArtifacts" in stop_runtime_source

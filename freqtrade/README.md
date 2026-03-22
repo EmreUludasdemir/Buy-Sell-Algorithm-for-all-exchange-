@@ -61,6 +61,12 @@ cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 # Hyperopt only the futures buy layer, with the same keep-or-reject validation
 .\scripts\hyperopt_kivanc_futures_1d_buy.ps1
 
+# Hyperopt only the filtered-futures buy layer
+.\scripts\hyperopt_kivanc_futures_filtered_1d_buy.ps1
+
+# Hyperopt only the filtered-futures risk layer
+.\scripts\hyperopt_kivanc_futures_filtered_1d_risk.ps1
+
 # Build a spot-vs-futures decision table from the latest regime reports
 .\scripts\compare_kivanc_spot_vs_futures_1d.ps1
 
@@ -71,6 +77,17 @@ cd "c:\Users\Emre\Desktop\Buy-sell Algorithm\freqtrade"
 
 # Use the selector output to launch the matching spot or futures backtest
 .\scripts\run_kivanc_selected_backtest.ps1 -Scenario bull_2024
+
+# Start a dedicated runtime container from the selector decision
+.\scripts\start_kivanc_selected_runtime.ps1 -Scenario full_2022_2026
+.\scripts\start_kivanc_selected_runtime.ps1 -Scenario full_2022_2026 -ExposeApi
+
+# Auto-start from the current date, with safe fallback to spot_1d when the selector has no regime decision
+.\scripts\auto_run_kivanc_selected_runtime.ps1
+.\scripts\auto_run_kivanc_selected_runtime.ps1 -ExposeApi
+
+# Stop the dedicated runtime container and clean temporary runtime configs
+.\scripts\stop_kivanc_selected_runtime.ps1 -ContainerName kivanc_auto_runtime
 
 # Scan 3-5 pair futures subsets with the current baseline params
 .\scripts\backtest_kivanc_futures_pairsets.ps1
@@ -98,6 +115,7 @@ commands still work.
 - Futures workflow helper: `scripts/kivanc_futures_workflow.py`
 - Runtime selector: `scripts/kivanc_runtime_selector.py`
 - Runtime launcher: `scripts/run_kivanc_selected_backtest.ps1`
+- Runtime starter: `scripts/start_kivanc_selected_runtime.ps1`
 - Futures pairset scan: `scripts/kivanc_futures_pairset_scan.py`
 
 ## Profile Rules
@@ -111,4 +129,9 @@ commands still work.
 - Futures buy hyperopt follows the same validation rule and also leaves the current params untouched when the candidate is worse.
 - The runtime selector is advisory only. It reads the latest comparison report and returns a recommended mode; it does not reconfigure the bot by itself.
 - The runtime launcher is execution-oriented. It uses the selector output to run the correct spot or futures backtest for the selected scenario.
+- The runtime starter launches a separate container named `kivanc_selected_runtime` by default, so it does not need to replace the default compose-managed spot bot.
+- `auto_run_kivanc_selected_runtime.ps1` is convenience glue on top of the runtime starter. It resolves the mode from the current date unless you pass `-Scenario` or `-Date`.
+- The auto-run wrapper falls back to `spot_1d` by default when the selector returns `none`. Use `-Strict` if you want it to stop instead.
+- `stop_kivanc_selected_runtime.ps1` removes the dedicated runtime container and any temporary runtime config files. Add `-PurgeArtifacts` to also remove runtime DB/log artifacts for the resolved mode.
+- `-ExposeApi` publishes a mode-specific host port by default: `8090` for spot, `8091` for futures, `8092` for filtered futures.
 - The pairset scan is research-only. It does not change the futures params file and is used to test whether a smaller whitelist improves the current baseline.

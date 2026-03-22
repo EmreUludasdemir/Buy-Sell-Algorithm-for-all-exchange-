@@ -40,11 +40,28 @@ scenario_ids = [
     "full_2022_2026",
 ]
 
-spot_rows = json.loads((spot_dir / "kivanc_spot_1d_regimes_summary.json").read_text(encoding="utf-8"))
-futures_rows = json.loads((futures_dir / "kivanc_futures_1d_regimes_summary.json").read_text(encoding="utf-8"))
+def resolve_summary_path(directory: pathlib.Path, *preferred_names: str) -> pathlib.Path:
+    for name in preferred_names:
+        candidate = directory / name
+        if candidate.exists():
+            return candidate
+    summaries = sorted(directory.glob("*summary.json"))
+    if summaries:
+        return summaries[0]
+    raise FileNotFoundError(f"No summary json found in {directory}")
+
+
+spot_rows = json.loads(resolve_summary_path(spot_dir, "kivanc_spot_1d_regimes_summary.json").read_text(encoding="utf-8"))
+futures_rows = json.loads(resolve_summary_path(futures_dir, "kivanc_futures_1d_regimes_summary.json").read_text(encoding="utf-8"))
 filtered_rows = []
 if filtered_dir:
-    filtered_rows = json.loads((filtered_dir / "kivanc_futures_filtered_1d_regimes_summary.json").read_text(encoding="utf-8"))
+    filtered_rows = json.loads(
+        resolve_summary_path(
+            filtered_dir,
+            "kivanc_futures_filtered_1d_regimes_summary.json",
+            "asym60_regimes_summary.json",
+        ).read_text(encoding="utf-8")
+    )
 spot_by = {row["scenario"]: row for row in spot_rows}
 futures_by = {row["scenario"]: row for row in futures_rows}
 filtered_by = {row["scenario"]: row for row in filtered_rows}

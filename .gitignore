@@ -20,6 +20,9 @@ freqtrade/user_data/logs/
 freqtrade/user_data/*.log
 freqtrade/user_data/hyperopt.lock
 *.sqlite
+*.sqlite-shm
+*.sqlite-wal
+freqtrade/user_data/runtime_configs/
 
 # Reports
 freqtrade/reports/.last_*
