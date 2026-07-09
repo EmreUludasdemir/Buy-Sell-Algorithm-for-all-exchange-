@@ -1,6 +1,6 @@
 # Kivanc SuperTrended Moving Averages
 
-Single-strategy crypto repo built around one idea: a long-horizon spot system that ports Kivanc Ozbilgic's SuperTrended Moving Averages into Freqtrade and keeps the project lean enough to run, audit, and improve quickly.
+Lean Freqtrade crypto repo built around a long-horizon spot system that ports Kivanc Ozbilgic's SuperTrended Moving Averages into Freqtrade, plus a short-horizon `4h/1d` momentum strategy (`MomentumVolumeCompound4H`) that compounds realized profit into the next position.
 
 ## Snapshot
 
@@ -58,6 +58,46 @@ The optimized version is weakest in hard bear conditions and strongest in recove
 - `1d` remains the production decision layer.
 - `4h` is used as a research and risk-validation surface, not as the live default.
 - Validation is fixed across the same market regimes so profile changes can be compared without moving goalposts.
+
+## New: Momentum Volume Compound 4H
+
+A second, short-horizon strategy now lives alongside the Kivanc system:
+`MomentumVolumeCompound4H` (`freqtrade/user_data/strategies_momentum/`).
+
+| Aspect | Design |
+|---|---|
+| Execution timeframe | `4h` (entries, exits, momentum signals) |
+| Regime timeframe | `1d` informative layer (EMA200/EMA50 + daily RSI bull filter) |
+| Universe | High-volume pairs via `VolumePairList` (top 12 by quote volume) in dry-run/live; static 8 majors for backtests |
+| Entry | EMA(12/36) crossover or 20-bar Donchian breakout, confirmed by a 1.5x volume surge, ADX > 20 and an RSI momentum band |
+| Exit | Tiered ROI ladder (6% -> 1% over 48h), -4.5% stoploss, trailing stop after +3.2%, plus trend-flip / RSI-overheat signal exits |
+| Compounding | `custom_stake_amount` sizes each entry from the CURRENT total wallet (25% per trade), so realized profit rolls into the next position; a win-streak boost (+15% per consecutive winner, capped at 3) adds size after wins and resets after a loss |
+
+```mermaid
+flowchart LR
+    A["1d candles: EMA regime + RSI"] -->|bull filter| C["4h entry gate"]
+    B["4h candles: EMA cross / breakout + volume surge + ADX"] --> C
+    C --> D["Entry: MOM_BREAKOUT / MOM_EMA_CROSS"]
+    D --> E["Short-term exits: ROI ladder, trailing, trend flip"]
+    E --> F["Compounded stake for next trade"]
+```
+
+```powershell
+# Download 4h + 1d data for the high-volume pair set
+.\scripts\download_momentum_4h.ps1
+
+# Backtest the momentum strategy
+.\scripts\backtest_momentum_4h.ps1
+
+# Hyperopt buy/sell spaces
+.\scripts\hyperopt_momentum_4h.ps1
+
+# Dry-run with dynamic high-volume pair scanning
+docker compose run --rm bot1_btceth trade --config user_data/config_momentum_4h.json
+```
+
+Note: run the backtest before trusting the defaults. The parameter defaults are
+reasonable starting points, not hyperopt-validated values like the Kivanc 1D system.
 
 ## Quick Start
 
